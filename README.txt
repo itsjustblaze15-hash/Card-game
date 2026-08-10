@@ -1,28 +1,20 @@
-GOLDEN PULLS V4
+GOLDEN PULLS V5
 
-NEW IN V4
-- Animated pack entrance and pack-tear opening.
-- Animated 3D card reveals with rarity-color burst and shine.
-- Smooth animation between each revealed card.
-- All paid prices are 300% higher than V3, meaning 4x the previous price.
-  Common Pack: 4,000
-  Uncommon Pack: 12,000
-  Rare Pack: 30,000
-  Epic Pack: 56,000
-  Legendary Pack: 96,000
-  Wheel spin: 20,000
-- Collection now shows ACCOUNT VALUE.
-- Account Value = current coin balance + current sell value of every owned card, including duplicate-value bonuses.
-- Existing V3 reward fixes, wheel pointer, Card Index, saving, update button, PWA behavior, and Home Screen icon remain.
+NEW
+- Prize wheel costs 3,000 coins.
+- PLAY mode with 1-5 star bot difficulty.
+- Choose 3 owned cards before battle.
+- Cards have Attack, Defense and Speed stats.
+- Fast animated 3-round bot battles.
+- Green VICTORY screen and red DEFEAT screen.
+- Higher bot difficulty gives stronger bot decks and larger coin rewards.
+- Every battle victory gives each eligible card used +1 evolution progress.
+- At 10/10 wins, a card evolves one rarity tier:
+  Common -> Uncommon -> Rare -> Epic -> Legendary.
+- After evolution, that card has a 24-hour upgrade cooldown.
+- UPGRADE CENTER shows tier, progress, cooldown and combat stats.
+- Collection now displays collected cards / total cards and completion percentage.
+- Existing V4 animations, Account Value, saving, rewards, wheel, update button and PWA icon remain.
 
-UPLOAD TO GITHUB
-Replace the existing site files with the CONTENTS of this ZIP:
-assets/
-icons/
-index.html
-manifest.webmanifest
-service-worker.js
-version.json
-README.txt
-
-Keep them directly in the repository root and keep the same GitHub Pages URL so local player progress can carry forward.
+UPLOAD
+Upload the CONTENTS of this ZIP directly to the same GitHub Pages repository root.

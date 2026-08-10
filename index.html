@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Golden Pulls">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="manifest" href="./manifest.webmanifest">
-<title>Golden Pulls V4</title>
+<title>Golden Pulls V5</title>
 <style>
 :root{--gold:#f3c933;--deep:#8d6500;--cream:#fff7d6;--ink:#201700;--common:#9b9b9b;--uncommon:#27c45b;--rare:#2587ff;--epic:#a34cff;--legendary:#ff8a1f}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -35,7 +35,7 @@ button{font:inherit;cursor:pointer}
 .card img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:10px;background:#ddd} .card .nm{font-size:12px;font-weight:1000;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card .meta{display:flex;justify-content:space-between;font-size:11px;font-weight:900;margin-top:4px} .card .sell{width:100%;margin-top:7px;border:0;border-radius:9px;padding:8px;background:#251a00;color:#ffe16b;font-weight:900}
 .locked img{filter:grayscale(1) brightness(.28)} .locked .sell{display:none}
-.nav{position:fixed;z-index:10;left:50%;transform:translateX(-50%);bottom:0;width:min(520px,100%);display:grid;grid-template-columns:repeat(4,1fr);background:#211800f2;padding:8px 8px calc(8px + env(safe-area-inset-bottom));gap:5px}
+.nav{position:fixed;z-index:10;left:50%;transform:translateX(-50%);bottom:0;width:min(520px,100%);display:grid;grid-template-columns:repeat(6,1fr);background:#211800f2;padding:8px 8px calc(8px + env(safe-area-inset-bottom));gap:5px}
 .nav button{border:0;border-radius:12px;padding:10px 3px;background:transparent;color:#fff2b5;font-weight:1000;font-size:10px} .nav button.on{background:#f2c536;color:#241900}
 .modal{position:fixed;inset:0;z-index:30;background:radial-gradient(circle,#f8da58,#9a6700);display:none;align-items:center;justify-content:center;padding:18px} .modal.show{display:flex}
 .opening{width:min(390px,100%);text-align:center} .packbag{height:410px;border-radius:30px;background:linear-gradient(145deg,var(--packcolor),#211500);border:5px solid #ffe98c;display:flex;align-items:center;justify-content:center;color:white;font-size:30px;font-weight:1000;box-shadow:0 25px 50px #0006;position:relative;overflow:hidden;animation:float 1.6s ease-in-out infinite}
@@ -49,6 +49,28 @@ button{font:inherit;cursor:pointer}
 .wheel-center{position:absolute;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);width:78px;height:78px;border-radius:50%;background:#241a00;color:#ffd84d;border:5px solid #fff0a4;display:grid;place-items:center;font-weight:1000}
 .wheel-label{position:absolute;left:50%;top:50%;width:95px;margin-left:-47.5px;margin-top:-9px;text-align:right;transform-origin:47.5px 9px;font-size:9px;font-weight:1000;color:white;text-shadow:0 1px 2px #000;pointer-events:none}
 .resultbox{display:none;background:#fff2aa;border:2px solid #e5a900;border-radius:15px;padding:12px;margin:12px 0;font-weight:1000;text-align:center}
+
+
+/* V5 battle + upgrades */
+.battle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.slot{min-height:135px;border:2px dashed #8d6500;border-radius:15px;background:#fff3c4;padding:7px;text-align:center;display:flex;flex-direction:column;justify-content:center}
+.slot img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:9px}.slot b{font-size:10px;margin-top:5px}
+.bot-stars{font-size:24px;letter-spacing:2px;color:#8d6500;font-weight:1000;text-align:center}
+.statline{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;font-size:10px;font-weight:900;margin-top:5px}
+.statline span{background:#fff1b5;border-radius:7px;padding:4px;text-align:center}
+.pick-overlay{position:fixed;inset:0;z-index:40;background:#000b;display:none;align-items:flex-end}.pick-overlay.show{display:flex}
+.picker{width:min(520px,100%);max-height:80dvh;overflow:auto;background:#f3c933;border-radius:24px 24px 0 0;padding:16px}
+.battle-modal{position:fixed;inset:0;z-index:45;background:#181000f4;display:none;align-items:center;justify-content:center;padding:18px;color:white}.battle-modal.show{display:flex}
+.battle-stage{width:min(430px,100%);text-align:center}.fighters{display:grid;grid-template-columns:1fr 60px 1fr;align-items:center;gap:7px;margin:18px 0}
+.fighter{background:#fff1ba;color:#201700;border-radius:18px;padding:8px;transition:.35s}.fighter img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:11px}
+.fighter.hit{animation:hit .35s}.fighter.attack{animation:attack .35s}.versus{font-size:20px;font-weight:1000;color:#ffd84d}
+.result-screen{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;text-align:center;color:white;padding:20px}.result-screen.show{display:flex}
+.result-screen.win{background:radial-gradient(circle,#20c95b,#063d18);box-shadow:inset 0 0 60px #8cffaa}.result-screen.lose{background:radial-gradient(circle,#e32929,#490606);box-shadow:inset 0 0 60px #ff8b8b}
+.result-screen h1{font-size:55px;margin:0}.result-screen button{border:0;border-radius:14px;padding:13px 18px;font-weight:1000;margin:6px}
+.upgrade-card{background:#fff7d6;border:3px solid var(--rarity);border-radius:18px;padding:10px;margin-bottom:10px}.upgrade-row{display:grid;grid-template-columns:76px 1fr;gap:10px}.upgrade-row img{width:76px;height:100px;object-fit:cover;border-radius:10px}
+.progress{height:10px;background:#c9a944;border-radius:99px;overflow:hidden;margin:7px 0}.progress i{display:block;height:100%;background:#241a00}
+.cooldown{font-size:11px;font-weight:900;color:#8d2100}
+@keyframes hit{50%{transform:translateX(9px) rotate(3deg);filter:brightness(1.8)}}@keyframes attack{50%{transform:translateX(18px) scale(1.05)}}
 
 /* V4 pack + card animations */
 .packbag.opening-pop{animation:packEnter .55s cubic-bezier(.16,.8,.2,1) both,packPulse 1.25s .55s ease-in-out infinite}
@@ -79,7 +101,7 @@ button{font:inherit;cursor:pointer}
 <body>
 <div class="app">
 <div class="top">
-  <div class="brand">GOLDEN PULLS <span class="vbadge">V4</span></div>
+  <div class="brand">GOLDEN PULLS <span class="vbadge">V5</span></div>
   <button id="updateBtn" class="update" onclick="checkForUpdate()">UPDATE</button>
   <div class="wallet">● <span id="coins">0</span></div>
 </div>
@@ -94,16 +116,28 @@ button{font:inherit;cursor:pointer}
   <div class="hero"><h1>REWARDS</h1><p>Free packs, timers, and the prize wheel.</p></div>
   <div id="freePackBox"></div>
   <div class="pack">
-    <div class="pack-head"><div class="pack-name">PRIZE WHEEL</div><div class="pack-price">● 20,000</div></div>
+    <div class="pack-head"><div class="pack-name">PRIZE WHEEL</div><div class="pack-price">● 3,000</div></div>
     <div class="wheel-wrap"><div class="pointer"></div><div id="wheel" class="wheel"></div><div class="wheel-center">SPIN</div></div>
     <div id="wheelResult" class="resultbox"></div>
-    <button id="spinBtn" onclick="spinWheel()">SPIN FOR 20,000</button>
+    <button id="spinBtn" onclick="spinWheel()">SPIN FOR 3,000</button>
     <div style="font-size:11px;font-weight:900;text-align:center;margin-top:12px">12 slots: 5 Common · 3 Uncommon · 2 Rare · 1 Epic · 1 × 5,000 points</div>
   </div>
 </section>
 
+<section id="battle" class="screen">
+<div class="hero"><h1>BATTLE</h1><p>Pick 3 owned cards and fight a bot. Wins power up the cards you used.</p></div>
+<div class="panel"><b>BOT DIFFICULTY</b><div class="bot-stars" id="stars">★★★☆☆</div><input id="difficulty" type="range" min="1" max="5" value="3" style="width:100%" oninput="renderBattle()"></div>
+<div class="battle-grid" id="teamSlots"></div>
+<button class="primary" onclick="startBattle()">PLAY</button>
+</section>
+
+<section id="upgrade" class="screen">
+<div class="hero"><h1>UPGRADE CENTER</h1><p>Battle wins build evolution progress. Every 10 wins advances a card one rarity tier.</p></div>
+<div id="upgradeList"></div>
+</section>
+
 <section id="collection" class="screen">
-  <div class="hero"><h1>COLLECTION</h1><p><span id="ownedCount">0</span> unique cards owned.</p></div><div class="account-value"><b>ACCOUNT VALUE</b><div class="big">● <span id="accountValue">0</span></div><div class="sub">Coins + current sell value of every card you own</div></div>
+  <div class="hero"><h1>COLLECTION</h1><p><span id="ownedCount">0</span> / <span id="totalCards">0</span> cards collected · <span id="collectionPct">0</span>%</p></div><div class="account-value"><b>ACCOUNT VALUE</b><div class="big">● <span id="accountValue">0</span></div><div class="sub">Coins + current sell value of every card you own</div></div>
   <div class="collection-head" id="ownedFilters"></div>
   <div class="cards" id="ownedCards"></div>
 </section>
@@ -118,8 +152,10 @@ button{font:inherit;cursor:pointer}
 <div class="nav">
   <button class="on" data-screen="shop">PACKS</button>
   <button data-screen="rewards">REWARDS</button>
+  <button data-screen="battle">PLAY</button>
+  <button data-screen="upgrade">UPGRADE</button>
   <button data-screen="collection">COLLECTION</button>
-  <button data-screen="cardindex">CARD INDEX</button>
+  <button data-screen="cardindex">INDEX</button>
 </div>
 
 <div class="modal" id="modal">
@@ -132,6 +168,9 @@ button{font:inherit;cursor:pointer}
     </div>
   </div>
 </div>
+<div class="pick-overlay" id="pickOverlay"><div class="picker"><h2>CHOOSE A CARD</h2><div class="cards" id="pickCards"></div><button class="close" onclick="closePicker()">CANCEL</button></div></div>
+<div class="battle-modal" id="battleModal"><div class="battle-stage"><h2 id="roundText">ROUND 1</h2><div class="fighters"><div class="fighter" id="playerFighter"></div><div class="versus">VS</div><div class="fighter" id="botFighter"></div></div><div id="battleLog" style="font-weight:900">FIGHT!</div></div></div>
+<div class="result-screen" id="resultScreen"><div><h1 id="resultTitle">WIN</h1><p id="resultText"></p><button onclick="closeResult()">BACK</button><button onclick="closeResult();startBattle()">PLAY AGAIN</button></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -163,6 +202,12 @@ if(state.coins===undefined) state.coins=0;
 if(state.welcome===undefined) state.welcome=3;
 if(state.freeUncommonAt===undefined) state.freeUncommonAt=0;
 if(state.wheelSpins===undefined) state.wheelSpins=0;
+if(!state.cardXP) state.cardXP={};
+if(!state.cardTier) state.cardTier={};
+if(!state.cardCooldown) state.cardCooldown={};
+if(!state.battleWins) state.battleWins=0;
+if(!state.battleLosses) state.battleLosses=0;
+if(!state.team) state.team=[];
 
 let current=[],idx=0,packSource="paid",ownedFilter="ALL",indexFilter="ALL",spinning=false,pendingWheelPrize=null;
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -194,6 +239,8 @@ function render(){
 
  const ownedUnique=Object.values(state.owned).filter(q=>q>0).length;
  $("#ownedCount").textContent=ownedUnique;
+ $("#totalCards").textContent=CARDS.length;
+ $("#collectionPct").textContent=CARDS.length?Math.round(ownedUnique/CARDS.length*100):0;
  let cardValue=0;
  for(const c of CARDS){
    const q=state.owned[c.id]||0;
@@ -210,6 +257,9 @@ function render(){
  $("#indexFilters").innerHTML=chars.map(x=>`<button class="chip ${indexFilter===x?"on":""}" onclick="setIndexFilter('${x.replaceAll("'","\\'")}')">${x}</button>`).join("");
  let idxList=indexFilter==="ALL"?CARDS:CARDS.filter(c=>c.character===indexFilter);
  $("#indexCards").innerHTML=idxList.map(c=>{let q=state.owned[c.id]||0;return `<div class="card ${q?"":"locked"}" style="--rarity:${R[c.rarity].color}"><img src="${c.image}"><div class="nm">${q?c.name:"NOT COLLECTED"}</div><div class="meta"><span style="color:${R[c.rarity].color}">${c.rarity}</span><span>${q?"x"+q:"LOCKED"}</span></div></div>`}).join("");
+ renderBattle();
+ renderUpgrades();
+
 }
 function setOwnedFilter(x){ownedFilter=x;render()} function setIndexFilter(x){indexFilter=x;render()}
 
@@ -284,8 +334,8 @@ buildWheel();
 
 function spinWheel(){
  if(spinning)return;
- if(state.coins<20000){toast("You need 5,000 points");return}
- state.coins-=20000;save();spinning=true;pendingWheelPrize=null;
+ if(state.coins<3000){toast("You need 5,000 points");return}
+ state.coins-=3000;save();spinning=true;pendingWheelPrize=null;
  $("#spinBtn").disabled=true;$("#wheelResult").style.display="none";
  const slot=Math.floor(Math.random()*WHEEL_SLOTS.length);
  const deg=360/WHEEL_SLOTS.length;
@@ -314,8 +364,186 @@ function claimWheelPack(){
  openPack(prize,"reward");
 }
 
+
+const TIERS=["Common","Uncommon","Rare","Epic","Legendary"];
+let pickSlot=0,battleBusy=false;
+function tierFor(c){return state.cardTier[c.id]||c.rarity}
+function stats(c){
+ const tier=tierFor(c),ti=Math.max(0,TIERS.indexOf(tier)),xp=state.cardXP[c.id]||0;
+ const seed=(c.id*37)%23;
+ return {atk:40+ti*18+seed+xp,def:38+ti*17+(seed%11)+xp,spd:35+ti*13+(seed%17)+Math.floor(xp/2)};
+}
+function renderBattle(){
+ const d=Number($("#difficulty")?.value||3);
+ if($("#stars")) $("#stars").textContent="★".repeat(d)+"☆".repeat(5-d);
+ if(!$("#teamSlots"))return;
+ $("#teamSlots").innerHTML=[0,1,2].map(i=>{
+   const id=state.team[i],c=CARDS.find(x=>x.id===id);
+   if(!c)return `<div class="slot" onclick="openPicker(${i})"><b>+ CHOOSE CARD</b></div>`;
+   const s=stats(c);return `<div class="slot" onclick="openPicker(${i})"><img src="${c.image}"><b>${c.name}</b><div class="statline"><span>A ${s.atk}</span><span>D ${s.def}</span><span>S ${s.spd}</span></div></div>`;
+ }).join("");
+}
+function openPicker(i){
+ pickSlot=i;
+ const owned=CARDS.filter(c=>(state.owned[c.id]||0)>0);
+ $("#pickCards").innerHTML=owned.map(c=>`<div class="card" style="--rarity:${R[tierFor(c)].color}" onclick="chooseTeamCard(${c.id})"><img src="${c.image}"><div class="nm">${c.name}</div><div class="meta"><span>${tierFor(c)}</span><span>+${state.cardXP[c.id]||0}/10</span></div></div>`).join("");
+ $("#pickOverlay").classList.add("show");
+}
+function closePicker(){$("#pickOverlay").classList.remove("show")}
+function chooseTeamCard(id){
+ state.team=state.team.filter(x=>x!==id);
+ state.team.splice(pickSlot,0,id);state.team=state.team.slice(0,3);
+ save();closePicker();renderBattle();
+}
+function botDeck(d){
+ const weights=[
+  ["Common"],["Common","Uncommon"],["Uncommon","Rare"],["Rare","Epic"],["Epic","Legendary"]
+ ][d-1];
+ return Array.from({length:3},()=>{let r=weights[Math.floor(Math.random()*weights.length)],pool=CARDS.filter(c=>c.rarity===r);return pool[Math.floor(Math.random()*pool.length)]||CARDS[0]});
+}
+function cardPower(c,botBonus=0){
+ const s=stats(c);return s.atk*1.05+s.def*.85+s.spd*.55+Math.random()*30+botBonus;
+}
+async function startBattle(){
+ if(battleBusy)return;
+ if(state.team.length<3){toast("Choose 3 cards first");return}
+ const team=state.team.map(id=>CARDS.find(c=>c.id===id)).filter(Boolean);
+ if(team.length<3){toast("Choose 3 valid cards");return}
+ const d=Number($("#difficulty")?.value||3),bots=botDeck(d);battleBusy=true;$("#battleModal").classList.add("show");
+ let pw=0,bw=0;
+ for(let i=0;i<3;i++){
+   $("#roundText").textContent=`ROUND ${i+1}`;
+   const ps=stats(team[i]),bs=stats(bots[i]);
+   $("#playerFighter").innerHTML=`<img src="${team[i].image}"><b>${team[i].name}</b><div>A ${ps.atk} · D ${ps.def} · S ${ps.spd}</div>`;
+   $("#botFighter").innerHTML=`<img src="${bots[i].image}"><b>${bots[i].name}</b><div>${bots[i].rarity}</div>`;
+   $("#battleLog").textContent="FIGHT!";
+   $("#playerFighter").classList.add("attack");await wait(350);$("#playerFighter").classList.remove("attack");$("#botFighter").classList.add("hit");await wait(350);$("#botFighter").classList.remove("hit");
+   const win=cardPower(team[i])>cardPower(bots[i],(d-3)*16);
+   if(win){pw++;$("#battleLog").textContent=`${team[i].name} WINS THE ROUND`;}else{bw++;$("#battleLog").textContent="BOT WINS THE ROUND";}
+   await wait(850);
+ }
+ $("#battleModal").classList.remove("show");battleBusy=false;
+ const won=pw>bw;
+ if(won){
+   state.battleWins++;const reward=1500*d;state.coins+=reward;
+   const now=Date.now();
+   team.forEach(c=>{
+     if((state.cardCooldown[c.id]||0)>now)return;
+     state.cardXP[c.id]=(state.cardXP[c.id]||0)+1;
+     if(state.cardXP[c.id]>=10){
+       const cur=tierFor(c),ti=TIERS.indexOf(cur);
+       if(ti<TIERS.length-1){state.cardTier[c.id]=TIERS[ti+1];state.cardXP[c.id]=0;state.cardCooldown[c.id]=now+24*60*60*1000;}
+       else state.cardXP[c.id]=10;
+     }
+   });
+   save();showResult(true,`You won ${fmt(reward)} coins. Each eligible card used gained +1 upgrade progress.`);
+ }else{state.battleLosses++;save();showResult(false,`Bot won ${bw}-${pw}. Try a lower star level or stronger cards.`)}
+}
+function wait(ms){return new Promise(r=>setTimeout(r,ms))}
+function showResult(win,text){const r=$("#resultScreen");r.className="result-screen show "+(win?"win":"lose");$("#resultTitle").textContent=win?"VICTORY":"DEFEAT";$("#resultText").textContent=text}
+function closeResult(){$("#resultScreen").className="result-screen"}
+function renderUpgrades(){
+ if(!$("#upgradeList"))return;
+ const now=Date.now(),owned=CARDS.filter(c=>(state.owned[c.id]||0)>0);
+ $("#upgradeList").innerHTML=owned.length?owned.map(c=>{
+   const tier=tierFor(c),xp=state.cardXP[c.id]||0,left=Math.max(0,(state.cardCooldown[c.id]||0)-now);
+   let cd="";if(left){let h=Math.ceil(left/3600000);cd=`<div class="cooldown">Evolution cooldown: about ${h}h remaining</div>`}
+   const s=stats(c);
+   return `<div class="upgrade-card" style="--rarity:${R[tier].color}"><div class="upgrade-row"><img src="${c.image}"><div><b>${c.name}</b><div>${tier} · ${xp}/10 wins</div><div class="progress"><i style="width:${Math.min(100,xp*10)}%"></i></div>${cd}<div class="statline"><span>ATK ${s.atk}</span><span>DEF ${s.def}</span><span>SPD ${s.spd}</span></div></div></div></div>`
+ }).join(""):`<div class="panel">Collect some cards first.</div>`;
+}
+setInterval(()=>{if($("#upgrade").classList.contains("active"))renderUpgrades()},60000);
 $$(".nav button").forEach(b=>b.onclick=()=>{
- $$(".nav button").forEach(x=>x.classList.remove("on"));b.classList.add("on");
+ 
+const TIERS=["Common","Uncommon","Rare","Epic","Legendary"];
+let pickSlot=0,battleBusy=false;
+function tierFor(c){return state.cardTier[c.id]||c.rarity}
+function stats(c){
+ const tier=tierFor(c),ti=Math.max(0,TIERS.indexOf(tier)),xp=state.cardXP[c.id]||0;
+ const seed=(c.id*37)%23;
+ return {atk:40+ti*18+seed+xp,def:38+ti*17+(seed%11)+xp,spd:35+ti*13+(seed%17)+Math.floor(xp/2)};
+}
+function renderBattle(){
+ const d=Number($("#difficulty")?.value||3);
+ if($("#stars")) $("#stars").textContent="★".repeat(d)+"☆".repeat(5-d);
+ if(!$("#teamSlots"))return;
+ $("#teamSlots").innerHTML=[0,1,2].map(i=>{
+   const id=state.team[i],c=CARDS.find(x=>x.id===id);
+   if(!c)return `<div class="slot" onclick="openPicker(${i})"><b>+ CHOOSE CARD</b></div>`;
+   const s=stats(c);return `<div class="slot" onclick="openPicker(${i})"><img src="${c.image}"><b>${c.name}</b><div class="statline"><span>A ${s.atk}</span><span>D ${s.def}</span><span>S ${s.spd}</span></div></div>`;
+ }).join("");
+}
+function openPicker(i){
+ pickSlot=i;
+ const owned=CARDS.filter(c=>(state.owned[c.id]||0)>0);
+ $("#pickCards").innerHTML=owned.map(c=>`<div class="card" style="--rarity:${R[tierFor(c)].color}" onclick="chooseTeamCard(${c.id})"><img src="${c.image}"><div class="nm">${c.name}</div><div class="meta"><span>${tierFor(c)}</span><span>+${state.cardXP[c.id]||0}/10</span></div></div>`).join("");
+ $("#pickOverlay").classList.add("show");
+}
+function closePicker(){$("#pickOverlay").classList.remove("show")}
+function chooseTeamCard(id){
+ state.team=state.team.filter(x=>x!==id);
+ state.team.splice(pickSlot,0,id);state.team=state.team.slice(0,3);
+ save();closePicker();renderBattle();
+}
+function botDeck(d){
+ const weights=[
+  ["Common"],["Common","Uncommon"],["Uncommon","Rare"],["Rare","Epic"],["Epic","Legendary"]
+ ][d-1];
+ return Array.from({length:3},()=>{let r=weights[Math.floor(Math.random()*weights.length)],pool=CARDS.filter(c=>c.rarity===r);return pool[Math.floor(Math.random()*pool.length)]||CARDS[0]});
+}
+function cardPower(c,botBonus=0){
+ const s=stats(c);return s.atk*1.05+s.def*.85+s.spd*.55+Math.random()*30+botBonus;
+}
+async function startBattle(){
+ if(battleBusy)return;
+ if(state.team.length<3){toast("Choose 3 cards first");return}
+ const team=state.team.map(id=>CARDS.find(c=>c.id===id)).filter(Boolean);
+ if(team.length<3){toast("Choose 3 valid cards");return}
+ const d=Number($("#difficulty")?.value||3),bots=botDeck(d);battleBusy=true;$("#battleModal").classList.add("show");
+ let pw=0,bw=0;
+ for(let i=0;i<3;i++){
+   $("#roundText").textContent=`ROUND ${i+1}`;
+   const ps=stats(team[i]),bs=stats(bots[i]);
+   $("#playerFighter").innerHTML=`<img src="${team[i].image}"><b>${team[i].name}</b><div>A ${ps.atk} · D ${ps.def} · S ${ps.spd}</div>`;
+   $("#botFighter").innerHTML=`<img src="${bots[i].image}"><b>${bots[i].name}</b><div>${bots[i].rarity}</div>`;
+   $("#battleLog").textContent="FIGHT!";
+   $("#playerFighter").classList.add("attack");await wait(350);$("#playerFighter").classList.remove("attack");$("#botFighter").classList.add("hit");await wait(350);$("#botFighter").classList.remove("hit");
+   const win=cardPower(team[i])>cardPower(bots[i],(d-3)*16);
+   if(win){pw++;$("#battleLog").textContent=`${team[i].name} WINS THE ROUND`;}else{bw++;$("#battleLog").textContent="BOT WINS THE ROUND";}
+   await wait(850);
+ }
+ $("#battleModal").classList.remove("show");battleBusy=false;
+ const won=pw>bw;
+ if(won){
+   state.battleWins++;const reward=1500*d;state.coins+=reward;
+   const now=Date.now();
+   team.forEach(c=>{
+     if((state.cardCooldown[c.id]||0)>now)return;
+     state.cardXP[c.id]=(state.cardXP[c.id]||0)+1;
+     if(state.cardXP[c.id]>=10){
+       const cur=tierFor(c),ti=TIERS.indexOf(cur);
+       if(ti<TIERS.length-1){state.cardTier[c.id]=TIERS[ti+1];state.cardXP[c.id]=0;state.cardCooldown[c.id]=now+24*60*60*1000;}
+       else state.cardXP[c.id]=10;
+     }
+   });
+   save();showResult(true,`You won ${fmt(reward)} coins. Each eligible card used gained +1 upgrade progress.`);
+ }else{state.battleLosses++;save();showResult(false,`Bot won ${bw}-${pw}. Try a lower star level or stronger cards.`)}
+}
+function wait(ms){return new Promise(r=>setTimeout(r,ms))}
+function showResult(win,text){const r=$("#resultScreen");r.className="result-screen show "+(win?"win":"lose");$("#resultTitle").textContent=win?"VICTORY":"DEFEAT";$("#resultText").textContent=text}
+function closeResult(){$("#resultScreen").className="result-screen"}
+function renderUpgrades(){
+ if(!$("#upgradeList"))return;
+ const now=Date.now(),owned=CARDS.filter(c=>(state.owned[c.id]||0)>0);
+ $("#upgradeList").innerHTML=owned.length?owned.map(c=>{
+   const tier=tierFor(c),xp=state.cardXP[c.id]||0,left=Math.max(0,(state.cardCooldown[c.id]||0)-now);
+   let cd="";if(left){let h=Math.ceil(left/3600000);cd=`<div class="cooldown">Evolution cooldown: about ${h}h remaining</div>`}
+   const s=stats(c);
+   return `<div class="upgrade-card" style="--rarity:${R[tier].color}"><div class="upgrade-row"><img src="${c.image}"><div><b>${c.name}</b><div>${tier} · ${xp}/10 wins</div><div class="progress"><i style="width:${Math.min(100,xp*10)}%"></i></div>${cd}<div class="statline"><span>ATK ${s.atk}</span><span>DEF ${s.def}</span><span>SPD ${s.spd}</span></div></div></div></div>`
+ }).join(""):`<div class="panel">Collect some cards first.</div>`;
+}
+setInterval(()=>{if($("#upgrade").classList.contains("active"))renderUpgrades()},60000);
+$$(".nav button").forEach(x=>x.classList.remove("on"));b.classList.add("on");
  $$(".screen").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.screen).classList.add("active");render();
 });
 setInterval(()=>{if($("#rewards").classList.contains("active"))render()},1000);
