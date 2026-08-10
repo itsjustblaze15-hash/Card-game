@@ -25,3 +25,16 @@ V7 additions:
 - Removed the 5,000-coin wheel prize outcome.
 - Kept all V6 systems: saving, packs, rewards, battles, upgrades, OVR, abilities, win streaks, boss battles, account value, animations, PWA, icons, and mobile navigation.
 - No uploaded photos were generated or edited.
+
+V7 GAMEPLAY UPDATE
+- Replaced best-of-three battle scoring with 3v3 HP combat.
+- Attack, Defense, Speed and OVR now affect combat.
+- Bot difficulty remains random 1-5 stars.
+- Difficulty stars: gray, green, blue, purple, gold.
+- Battle cards now use stronger rarity coloring.
+- I Need More Bullets has its own fresh 0/20 progress counter.
+- Upgraded rarity changes card sell value and account value.
+- Added Sell All Cards with 3-second hold confirmation.
+- Added Reset Everything with 3-second hold confirmation.
+- Added search bars to Collection and Card Index.
+- Card picker Cancel is now sticky at the top.

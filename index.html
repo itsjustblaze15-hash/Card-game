@@ -125,6 +125,29 @@ button{font:inherit;cursor:pointer}
 .account-value .sub{font-size:11px;font-weight:800;opacity:.82;margin-top:4px}
 
 @keyframes float{50%{transform:translateY(-8px) rotate(-1deg)}} @keyframes shine{to{transform:translateX(120%)}} @keyframes pop{from{transform:scale(.72) rotateY(60deg);opacity:.2}}
+
+/* V7 gameplay update */
+.bot-stars.s1{color:#9b9b9b}.bot-stars.s2{color:#27c45b}.bot-stars.s3{color:#2587ff}.bot-stars.s4{color:#a34cff}.bot-stars.s5{color:#f0ad16;text-shadow:0 1px 7px #ffce55}
+.picker-head{position:sticky;top:-16px;z-index:8;margin:-16px -16px 12px;padding:14px 16px;background:#f3c933;border-bottom:2px solid #8d650055;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.picker-head h2{margin:0}.picker-cancel{border:0;border-radius:999px;padding:9px 13px;background:#241a00;color:#ffd84d;font-weight:1000}
+.battle-arena{width:min(480px,100%);text-align:center}
+.arena-stars{font-size:25px;font-weight:1000;letter-spacing:3px;margin-bottom:8px}
+.arena-team{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:8px 0}
+.arena-card{border:4px solid var(--rarity);background:color-mix(in srgb,var(--rarity) 28%,white);color:#161100;border-radius:15px;padding:6px;position:relative;transition:.25s;box-shadow:0 6px 14px #0004}
+.arena-card img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px}
+.arena-card b{display:block;font-size:9px;line-height:1.1;margin-top:4px}
+.arena-card.dead{filter:grayscale(1) brightness(.42);opacity:.65}
+.arena-card.active{transform:translateY(-9px) scale(1.04);box-shadow:0 0 0 3px #fff,0 0 25px var(--rarity)}
+.hp{height:10px;background:#3c2700;border-radius:999px;overflow:hidden;margin:5px 0 2px;border:1px solid #0005}.hp i{display:block;height:100%;background:linear-gradient(90deg,#22c95b,#d7ef43);transition:width .45s}.hp-txt{font-size:9px;font-weight:1000}
+.arena-log{background:#fff2b5;color:#211800;border-radius:12px;padding:9px;font-weight:1000;min-height:38px;margin:8px 0}
+.danger-zone{margin:18px 0 8px;padding:14px;border:2px solid #9b2300;border-radius:18px;background:#3a1008;color:#fff1d1}
+.danger-zone h3{margin:0 0 8px;color:#ff9d79}.danger-zone button{width:100%;border:0;border-radius:12px;padding:12px;margin-top:8px;font-weight:1000}
+.sell-all-btn{background:#f2c536;color:#241900}.reset-btn{background:#a92020;color:white}
+.confirm-overlay{position:fixed;inset:0;z-index:90;background:#000c;display:none;align-items:center;justify-content:center;padding:18px}.confirm-overlay.show{display:flex}
+.confirm-box{width:min(390px,100%);background:#fff7d6;color:#201700;border-radius:20px;padding:18px;text-align:center;border:3px solid #f3c933}.confirm-box h2{margin:0 0 8px}.confirm-box button{width:100%;border:0;border-radius:13px;padding:13px;font-weight:1000;margin-top:9px}
+.hold-confirm{position:relative;overflow:hidden;background:#a92020;color:white}.hold-confirm:before{content:"";position:absolute;inset:0 auto 0 0;width:var(--hold,0%);background:#4fae3c;z-index:0}.hold-confirm span{position:relative;z-index:1}
+.searchbox{width:100%;border:2px solid #8d6500;border-radius:14px;padding:12px 13px;font:inherit;font-weight:800;background:#fff9df;color:#201700;margin:0 0 10px}
+
 </style>
 </head>
 <body>
@@ -172,13 +195,13 @@ button{font:inherit;cursor:pointer}
 
 <section id="collection" class="screen">
   <div class="hero"><h1>COLLECTION</h1><p><span id="ownedCount">0</span> / <span id="totalCards">0</span> cards collected · <span id="collectionPct">0</span>%</p></div><div class="account-value"><b>ACCOUNT VALUE</b><div class="big">● <span id="accountValue">0</span></div><div class="sub">Coins + current sell value of every card you own</div></div>
-  <div class="collection-head" id="ownedFilters"></div>
-  <div class="cards" id="ownedCards"></div>
+  <input id="collectionSearch" class="searchbox" type="search" placeholder="Search your cards..." oninput="collectionSearch=this.value;render()"><div class="collection-head" id="ownedFilters"></div>
+  <div class="cards" id="ownedCards"></div><div class="danger-zone"><h3>ACCOUNT ACTIONS</h3><div style="font-size:11px;font-weight:800">These actions require holding YES for 3 seconds.</div><button class="sell-all-btn" onclick="openDanger('sell')">SELL ALL CARDS</button><button class="reset-btn" onclick="openDanger('reset')">RESET EVERYTHING</button></div>
 </section>
 
 <section id="cardindex" class="screen">
   <div class="hero"><h1>CARD INDEX</h1><p>Every card currently in the game.</p></div>
-  <div class="collection-head" id="indexFilters"></div>
+  <input id="indexSearch" class="searchbox" type="search" placeholder="Search the card index..." oninput="indexSearch=this.value;render()"><div class="collection-head" id="indexFilters"></div>
   <div class="cards" id="indexCards"></div>
 </section>
 </div>
@@ -203,10 +226,20 @@ button{font:inherit;cursor:pointer}
     </div>
   </div>
 </div>
-<div class="pick-overlay" id="pickOverlay"><div class="picker"><h2>CHOOSE A CARD</h2><div class="cards" id="pickCards"></div><button class="close" onclick="closePicker()">CANCEL</button></div></div>
-<div class="battle-modal" id="battleModal"><div class="battle-stage"><h2 id="roundText">ROUND 1</h2><div class="fighters"><div class="fighter" id="playerFighter"></div><div class="versus">VS</div><div class="fighter" id="botFighter"></div></div><div id="battleLog" style="font-weight:900">FIGHT!</div><div id="roundResult" class="round-result"></div></div></div>
+<div class="pick-overlay" id="pickOverlay"><div class="picker"><div class="picker-head"><h2>CHOOSE A CARD</h2><button class="picker-cancel" onclick="closePicker()">CANCEL</button></div><div class="cards" id="pickCards"></div></div></div>
+<div class="battle-modal" id="battleModal"><div class="battle-arena">
+<div id="arenaStars" class="arena-stars"></div>
+<div style="font-size:11px;font-weight:1000">ENEMY TEAM</div><div id="enemyArena" class="arena-team"></div>
+<div id="arenaLog" class="arena-log">FIGHT!</div>
+<div style="font-size:11px;font-weight:1000">YOUR TEAM</div><div id="playerArena" class="arena-team"></div>
+</div></div>
 <div class="result-screen" id="resultScreen"><div><h1 id="resultTitle">WIN</h1><p id="resultText"></p><button onclick="closeResult()">BACK</button><button onclick="closeResult();startBattle()">PLAY AGAIN</button></div></div>
 <div class="toast" id="toast"></div>
+<div class="confirm-overlay" id="dangerOverlay"><div class="confirm-box">
+<h2 id="dangerTitle">ARE YOU SURE?</h2><p id="dangerText"></p>
+<button id="holdYes" class="hold-confirm"><span>HOLD YES FOR 3 SECONDS</span></button>
+<button onclick="closeDanger()" style="background:#241a00;color:#ffd84d">CANCEL</button>
+</div></div>
 
 <script>
 const CARDS = [{"id": 1, "character": "TIGGY", "name": "TIGGY #01", "rarity": "Common", "image": "assets/card_001.jpeg"}, {"id": 2, "character": "TIGGY", "name": "TIGGY #02", "rarity": "Common", "image": "assets/card_002.jpeg"}, {"id": 3, "character": "TIGGY", "name": "TIGGY #03", "rarity": "Common", "image": "assets/card_003.jpg"}, {"id": 4, "character": "TIGGY", "name": "TIGGY #04", "rarity": "Common", "image": "assets/card_004.jpg"}, {"id": 5, "character": "TIGGY", "name": "TIGGY #05", "rarity": "Common", "image": "assets/card_005.jpeg"}, {"id": 6, "character": "TIGGY", "name": "TIGGY #06", "rarity": "Common", "image": "assets/card_006.jpg"}, {"id": 7, "character": "TIGGY", "name": "TIGGY #07", "rarity": "Common", "image": "assets/card_007.jpg"}, {"id": 8, "character": "TIGGY", "name": "TIGGY #08", "rarity": "Common", "image": "assets/card_008.jpg"}, {"id": 9, "character": "TIGGY", "name": "TIGGY #09", "rarity": "Common", "image": "assets/card_009.jpg"}, {"id": 10, "character": "TIGGY", "name": "TIGGY #10", "rarity": "Common", "image": "assets/card_010.jpg"}, {"id": 11, "character": "TIGGY", "name": "TIGGY #11", "rarity": "Common", "image": "assets/card_011.jpg"}, {"id": 12, "character": "TIGGY", "name": "TIGGY #12", "rarity": "Common", "image": "assets/card_012.jpg"}, {"id": 13, "character": "TIGGY", "name": "TIGGY #13", "rarity": "Common", "image": "assets/card_013.jpg"}, {"id": 14, "character": "TIGGY", "name": "TIGGY #14", "rarity": "Common", "image": "assets/card_014.jpg"}, {"id": 15, "character": "TIGGY", "name": "TIGGY #15", "rarity": "Uncommon", "image": "assets/card_015.jpg"}, {"id": 16, "character": "TIGGY", "name": "TIGGY #16", "rarity": "Uncommon", "image": "assets/card_016.jpg"}, {"id": 17, "character": "TIGGY", "name": "TIGGY #17", "rarity": "Uncommon", "image": "assets/card_017.jpeg"}, {"id": 18, "character": "TIGGY", "name": "TIGGY #18", "rarity": "Uncommon", "image": "assets/card_018.jpeg"}, {"id": 19, "character": "TIGGY", "name": "TIGGY #19", "rarity": "Uncommon", "image": "assets/card_019.jpeg"}, {"id": 20, "character": "TIGGY", "name": "TIGGY #20", "rarity": "Uncommon", "image": "assets/card_020.jpeg"}, {"id": 21, "character": "TIGGY", "name": "TIGGY #21", "rarity": "Uncommon", "image": "assets/card_021.jpeg"}, {"id": 22, "character": "TIGGY", "name": "TIGGY #22", "rarity": "Uncommon", "image": "assets/card_022.jpg"}, {"id": 23, "character": "TIGGY", "name": "TIGGY #23", "rarity": "Uncommon", "image": "assets/card_023.jpg"}, {"id": 24, "character": "TIGGY", "name": "TIGGY #24", "rarity": "Uncommon", "image": "assets/card_024.jpg"}, {"id": 25, "character": "TIGGY", "name": "TIGGY #25", "rarity": "Rare", "image": "assets/card_025.jpg"}, {"id": 26, "character": "TIGGY", "name": "TIGGY #26", "rarity": "Rare", "image": "assets/card_026.jpeg"}, {"id": 27, "character": "TIGGY", "name": "TIGGY #27", "rarity": "Rare", "image": "assets/card_027.jpeg"}, {"id": 28, "character": "TIGGY", "name": "TIGGY #28", "rarity": "Rare", "image": "assets/card_028.jpeg"}, {"id": 29, "character": "TIGGY", "name": "TIGGY #29", "rarity": "Rare", "image": "assets/card_029.jpeg"}, {"id": 30, "character": "TIGGY", "name": "TIGGY #30", "rarity": "Rare", "image": "assets/card_030.jpeg"}, {"id": 31, "character": "TIGGY", "name": "TIGGY #31", "rarity": "Rare", "image": "assets/card_031.jpeg"}, {"id": 32, "character": "TIGGY", "name": "TIGGY #32", "rarity": "Epic", "image": "assets/card_032.jpeg"}, {"id": 33, "character": "TIGGY", "name": "TIGGY #33", "rarity": "Epic", "image": "assets/card_033.jpeg"}, {"id": 34, "character": "TIGGY", "name": "TIGGY #34", "rarity": "Epic", "image": "assets/card_034.jpeg"}, {"id": 35, "character": "TIGGY", "name": "TIGGY #35", "rarity": "Epic", "image": "assets/card_035.jpeg"}, {"id": 36, "character": "TIGGY", "name": "TIGGY #36", "rarity": "Legendary", "image": "assets/card_036.jpeg"}, {"id": 37, "character": "TIGGY", "name": "TIGGY #37", "rarity": "Legendary", "image": "assets/card_037.jpeg"}, {"id": 38, "character": "VGO", "name": "VGO #01", "rarity": "Common", "image": "assets/card_038.jpeg"}, {"id": 39, "character": "VGO", "name": "VGO #02", "rarity": "Common", "image": "assets/card_039.jpg"}, {"id": 40, "character": "VGO", "name": "VGO #03", "rarity": "Common", "image": "assets/card_040.jpg"}, {"id": 41, "character": "VGO", "name": "VGO #04", "rarity": "Common", "image": "assets/card_041.jpg"}, {"id": 42, "character": "VGO", "name": "VGO #05", "rarity": "Common", "image": "assets/card_042.jpg"}, {"id": 43, "character": "VGO", "name": "VGO #06", "rarity": "Uncommon", "image": "assets/card_043.jpg"}, {"id": 44, "character": "VGO", "name": "VGO #07", "rarity": "Uncommon", "image": "assets/card_044.jpg"}, {"id": 45, "character": "VGO", "name": "VGO #08", "rarity": "Uncommon", "image": "assets/card_045.jpeg"}, {"id": 46, "character": "VGO", "name": "VGO #09", "rarity": "Uncommon", "image": "assets/card_046.jpeg"}, {"id": 47, "character": "VGO", "name": "VGO #10", "rarity": "Rare", "image": "assets/card_047.jpg"}, {"id": 48, "character": "VGO", "name": "VGO #11", "rarity": "Rare", "image": "assets/card_048.jpeg"}, {"id": 49, "character": "VGO", "name": "VGO #12", "rarity": "Rare", "image": "assets/card_049.jpeg"}, {"id": 50, "character": "VGO", "name": "VGO #13", "rarity": "Epic", "image": "assets/card_050.jpeg"}, {"id": 51, "character": "VGO", "name": "VGO #14", "rarity": "Legendary", "image": "assets/card_051.jpeg"}, {"id": 52, "character": "HAYK THE THUG", "name": "HAYK THE THUG #01", "rarity": "Common", "image": "assets/card_052.jpeg"}, {"id": 53, "character": "HAYK THE THUG", "name": "HAYK THE THUG #02", "rarity": "Common", "image": "assets/card_053.jpg"}, {"id": 54, "character": "HAYK THE THUG", "name": "HAYK THE THUG #03", "rarity": "Common", "image": "assets/card_054.jpg"}, {"id": 55, "character": "HAYK THE THUG", "name": "HAYK THE THUG #04", "rarity": "Common", "image": "assets/card_055.jpg"}, {"id": 56, "character": "HAYK THE THUG", "name": "HAYK THE THUG #05", "rarity": "Common", "image": "assets/card_056.jpg"}, {"id": 57, "character": "HAYK THE THUG", "name": "HAYK THE THUG #06", "rarity": "Common", "image": "assets/card_057.jpeg"}, {"id": 58, "character": "HAYK THE THUG", "name": "HAYK THE THUG #07", "rarity": "Common", "image": "assets/card_058.jpg"}, {"id": 59, "character": "HAYK THE THUG", "name": "HAYK THE THUG #08", "rarity": "Uncommon", "image": "assets/card_059.jpg"}, {"id": 60, "character": "HAYK THE THUG", "name": "HAYK THE THUG #09", "rarity": "Uncommon", "image": "assets/card_060.jpg"}, {"id": 61, "character": "HAYK THE THUG", "name": "HAYK THE THUG #10", "rarity": "Uncommon", "image": "assets/card_061.jpg"}, {"id": 62, "character": "HAYK THE THUG", "name": "HAYK THE THUG #11", "rarity": "Uncommon", "image": "assets/card_062.jpg"}, {"id": 63, "character": "HAYK THE THUG", "name": "HAYK THE THUG #12", "rarity": "Uncommon", "image": "assets/card_063.jpg"}, {"id": 64, "character": "HAYK THE THUG", "name": "HAYK THE THUG #13", "rarity": "Rare", "image": "assets/card_064.jpg"}, {"id": 65, "character": "HAYK THE THUG", "name": "HAYK THE THUG #14", "rarity": "Rare", "image": "assets/card_065.jpeg"}, {"id": 66, "character": "HAYK THE THUG", "name": "HAYK THE THUG #15", "rarity": "Rare", "image": "assets/card_066.jpeg"}, {"id": 67, "character": "HAYK THE THUG", "name": "HAYK THE THUG #16", "rarity": "Epic", "image": "assets/card_067.jpeg"}, {"id": 68, "character": "HAYK THE THUG", "name": "HAYK THE THUG #17", "rarity": "Epic", "image": "assets/card_068.jpeg"}, {"id": 69, "character": "HAYK THE THUG", "name": "HAYK THE THUG #18", "rarity": "Legendary", "image": "assets/card_069.jpg"}, {"id": 70, "character": "THE GOOF", "name": "THE GOOF #01", "rarity": "Epic", "image": "assets/card_070.jpeg"}, {"id": 71, "character": "THE GOOF", "name": "THE GOOF #02", "rarity": "Legendary", "image": "assets/card_071.jpeg"}, {"id": 72, "character": "THE GOOF", "name": "THE GOOF #03", "rarity": "Legendary", "image": "assets/card_072.jpeg"}, {"id": 73, "character": "THE 3 NERDS", "name": "THE 3 NERDS #01", "rarity": "Rare", "image": "assets/card_073.jpg"}, {"id": 74, "character": "THE 3 NERDS", "name": "THE 3 NERDS #02", "rarity": "Rare", "image": "assets/card_074.jpeg"}, {"id": 75, "character": "THE 3 NERDS", "name": "THE 3 NERDS #03", "rarity": "Epic", "image": "assets/card_075.jpeg"}, {"id": 76, "character": "THE 3 NERDS", "name": "THE 3 NERDS #04", "rarity": "Epic", "image": "assets/card_076.jpeg"}, {"id": 77, "character": "THE 3 NERDS", "name": "THE 3 NERDS #05", "rarity": "Legendary", "image": "assets/card_077.jpeg"}, {"id": 78, "character": "THE 3 NERDS", "name": "THE 3 NERDS #06", "rarity": "Rare", "image": "assets/card_078.jpeg"}, {"id": 79, "character": "THE 3 NERDS", "name": "THE 3 NERDS #07", "rarity": "Epic", "image": "assets/card_079.jpeg"}, {"id": 80, "character": "THE 3 NERDS", "name": "THE 3 NERDS #08", "rarity": "Legendary", "image": "assets/card_080.jpeg"}, {"id": 81, "character": "BOSS EXCLUSIVE", "name": "Ice Agents", "rarity": "Exotic", "image": "assets/ice_agents.jpeg", "bossExclusive": true}, {"id": 82, "character": "Shant", "name": "Shant Uncommon", "rarity": "Uncommon", "image": "assets/shant_uncommon.jpeg"}, {"id": 83, "character": "Shant", "name": "Shant Rare", "rarity": "Rare", "image": "assets/shant_rare.JPG"}, {"id": 84, "character": "Shant", "name": "Shant Epic", "rarity": "Epic", "image": "assets/shant_epic.jpeg"}, {"id": 85, "character": "Shant", "name": "Shant Legendary", "rarity": "Legendary", "image": "assets/shant_legendary.JPG"}, {"id": 86, "character": "Gaylex", "name": "Gaylex 1", "rarity": "Common", "image": "assets/gaylex_common_1.JPG"}, {"id": 87, "character": "Gaylex", "name": "Gaylex 2", "rarity": "Common", "image": "assets/gaylex_common_2.JPG"}, {"id": 88, "character": "Gaylex", "name": "Gaylex 3", "rarity": "Common", "image": "assets/gaylex_common_3.jpeg"}, {"id": 89, "character": "I Need More Bullets", "name": "I Need More Bullets", "rarity": "Exotic", "image": "assets/i_need_more_bullets.JPG", "bossExclusive": true}, {"id": 90, "character": "Balery", "name": "Balery 1", "rarity": "Rare", "image": "assets/balery_rare_1.JPG"}, {"id": 91, "character": "Balery", "name": "Balery 2", "rarity": "Rare", "image": "assets/balery_rare_2.JPG"}, {"id": 92, "character": "Balery", "name": "Balery 3", "rarity": "Rare", "image": "assets/balery_rare_3.jpeg"}, {"id": 93, "character": "Balery", "name": "Balery 4", "rarity": "Rare", "image": "assets/balery_rare_4.JPG"}, {"id": 94, "character": "Random", "name": "Random 1", "rarity": "Epic", "image": "assets/random_epic_1.JPG"}, {"id": 95, "character": "Random", "name": "Random 2", "rarity": "Epic", "image": "assets/random_epic_2.jpeg"}, {"id": 96, "character": "Random", "name": "Random 3", "rarity": "Legendary", "image": "assets/random_legendary_1.JPG"}, {"id": 97, "character": "Random", "name": "Random 4", "rarity": "Legendary", "image": "assets/random_legendary_2.jpg"}, {"id": 98, "character": "HarOUT", "name": "HarOUT 1", "rarity": "Common", "image": "assets/harout_1.JPG"}, {"id": 99, "character": "HarOUT", "name": "HarOUT 2", "rarity": "Uncommon", "image": "assets/harout_2.JPG"}, {"id": 100, "character": "HarOUT", "name": "HarOUT 3", "rarity": "Rare", "image": "assets/harout_3.JPG"}, {"id": 101, "character": "HarOUT", "name": "HarOUT 4", "rarity": "Epic", "image": "assets/harout_4.JPG"}, {"id": 102, "character": "HarOUT", "name": "HarOUT 5", "rarity": "Legendary", "image": "assets/harout_5.JPG"}, {"id": 103, "character": "HarOUT", "name": "HarOUT 6", "rarity": "Rare", "image": "assets/harout_6.JPG"}, {"id": 104, "character": "HarOUT", "name": "HarOUT 7", "rarity": "Epic", "image": "assets/harout_7.JPG"}, {"id": 105, "character": "HarOUT", "name": "HarOUT 8", "rarity": "Legendary", "image": "assets/harout_8.JPG"}, {"id": 106, "character": "VGO", "name": "VGO #15", "rarity": "Rare", "image": "assets/vgo_new_1.JPG"}, {"id": 107, "character": "VGO", "name": "VGO #16", "rarity": "Epic", "image": "assets/vgo_new_2.JPG"}, {"id": 108, "character": "VGO", "name": "VGO #17", "rarity": "Legendary", "image": "assets/vgo_new_3.JPG"}, {"id": 109, "character": "VGO", "name": "VGO #18", "rarity": "Rare", "image": "assets/vgo_new_4.JPG"}, {"id": 110, "character": "Hayko The Thug", "name": "Hayko The Thug 1", "rarity": "Common", "image": "assets/hayko_1.JPG"}, {"id": 111, "character": "Hayko The Thug", "name": "Hayko The Thug 2", "rarity": "Uncommon", "image": "assets/hayko_2.JPG"}, {"id": 112, "character": "Hayko The Thug", "name": "Hayko The Thug 3", "rarity": "Rare", "image": "assets/hayko_3.JPG"}, {"id": 113, "character": "Hayko The Thug", "name": "Hayko The Thug 4", "rarity": "Epic", "image": "assets/hayko_4.JPG"}, {"id": 114, "character": "Hayko The Thug", "name": "Hayko The Thug 5", "rarity": "Legendary", "image": "assets/hayko_5.JPG"}, {"id": 115, "character": "Hayko The Thug", "name": "Hayko The Thug 6", "rarity": "Rare", "image": "assets/hayko_6.JPG"}, {"id": 116, "character": "Hayko The Thug", "name": "Hayko The Thug 7", "rarity": "Epic", "image": "assets/hayko_7.JPG"}, {"id": 117, "character": "The 3 Nerds", "name": "The 3 Nerds 1", "rarity": "Uncommon", "image": "assets/three_nerds_1.JPG"}, {"id": 118, "character": "The 3 Nerds", "name": "The 3 Nerds 2", "rarity": "Rare", "image": "assets/three_nerds_2.JPG"}];
@@ -255,6 +288,12 @@ if(state.goldenKingUnlocked===undefined) state.goldenKingUnlocked=false;
 if(state.moreBulletsBossUnlocked===undefined) state.moreBulletsBossUnlocked=false;
 if(state.moreBulletsUnlocked===undefined) state.moreBulletsUnlocked=false;
 if(state.moreBulletsBossWins===undefined) state.moreBulletsBossWins=0;
+if(state.moreBulletsProgress===undefined) state.moreBulletsProgress=0;
+if(!state.moreBulletsProgressMigrationDone){
+  state.moreBulletsProgress=0;
+  state.moreBulletsBossUnlocked=false;
+  state.moreBulletsProgressMigrationDone=true;
+}
 if(!state.progressionMigrationV2Done){
   for(const c of CARDS){
     const tier=state.cardTier[c.id]||c.rarity;
@@ -266,6 +305,7 @@ if(!state.progressionMigrationV2Done){
 }
 
 let current=[],idx=0,packSource="paid",ownedFilter="ALL",indexFilter="ALL",spinning=false,pendingWheelPrize=null;
+let collectionSearch="",indexSearch="",dangerAction=null,holdTimer=null,holdStart=0;
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 
 function save(){
@@ -283,6 +323,10 @@ function fmt(n){return Math.round(n).toLocaleString()}
 function pickRarity(odds){let x=Math.random()*100,a=0;for(const k of Object.keys(odds)){a+=odds[k];if(x<a)return k}return "Common"}
 function pickCard(r){let pool=CARDS.filter(c=>c.rarity===r&&!c.bossExclusive);if(!pool.length)pool=CARDS.filter(c=>!c.bossExclusive);return pool[Math.floor(Math.random()*pool.length)]}
 
+function cardSellValue(c,q=1){
+ const tier=tierFor(c);
+ return Math.round(R[tier].value*(1+Math.max(0,q-1)*.15));
+}
 function render(){
  $("#coins").textContent=fmt(state.coins);
  $("#gift").innerHTML=state.welcome>0?`<div class="gift"><b>WELCOME GIFT</b><div style="font-size:24px;font-weight:1000;margin:5px 0">3 FREE RARE PACKS</div><div style="margin-bottom:12px">${state.welcome} remaining</div><button onclick="openPack('Rare','welcome')">OPEN FREE RARE PACK</button></div>`:"";
@@ -304,13 +348,15 @@ function render(){
  for(const c of CARDS){
    const q=state.owned[c.id]||0;
    if(q>0){
-     for(let copy=1;copy<=q;copy++) cardValue+=Math.round(R[tierFor(c)].value*(1+Math.max(0,copy-1)*.15));
+     for(let copy=1;copy<=q;copy++) cardValue+=cardSellValue(c,copy);
    }
  }
  $("#accountValue").textContent=fmt((state.coins||0)+cardValue);
+ if($("#collectionSearch")&&$("#collectionSearch").value!==collectionSearch) $("#collectionSearch").value=collectionSearch;
+ if($("#indexSearch")&&$("#indexSearch").value!==indexSearch) $("#indexSearch").value=indexSearch;
  const chars=["ALL",...new Set(CARDS.map(c=>c.character))];
  $("#ownedFilters").innerHTML=chars.map(x=>`<button class="chip ${ownedFilter===x?"on":""}" onclick="setOwnedFilter('${x.replaceAll("'","\\'")}')">${x}</button>`).join("");
- let ownList=CARDS.filter(c=>(state.owned[c.id]||0)>0 && (ownedFilter==="ALL"||c.character===ownedFilter))
+ let ownList=CARDS.filter(c=>(state.owned[c.id]||0)>0 && (ownedFilter==="ALL"||c.character===ownedFilter) && (!collectionSearch||((c.character+" "+c.name).toLowerCase().includes(collectionSearch.toLowerCase()))))
  .sort((a,b)=>{
    const order={Exotic:6,Legendary:5,Epic:4,Rare:3,Uncommon:2,Common:1};
    const ra=order[tierFor(a)]||0, rb=order[tierFor(b)]||0;
@@ -318,10 +364,10 @@ function render(){
    const ca=(a.character||"").localeCompare(b.character||"");
    return ca!==0?ca:(a.name||"").localeCompare(b.name||"");
  });
- $("#ownedCards").innerHTML=ownList.length?ownList.map(c=>{let q=state.owned[c.id]||0,t=tierFor(c),val=Math.round(R[t].value*(1+Math.max(0,q-1)*.15));return `<div class="card" style="--rarity:${R[t].color}"><img src="${c.image}"><div class="nm">${c.name} · OVR ${overall(c)}</div><div class="meta"><span style="color:${R[t].color}">${t}</span><span>x${q}</span></div><div class="ability">${abilityFor(c).name}</div><button class="sell" onclick="sell(${c.id})">SELL 1 · ● ${fmt(val)}</button></div>`}).join(""):`<div style="grid-column:1/-1;text-align:center;padding:28px 12px;font-weight:900">No cards owned in this category yet.</div>`;
+ $("#ownedCards").innerHTML=ownList.length?ownList.map(c=>{let q=state.owned[c.id]||0,t=tierFor(c),val=cardSellValue(c,q);return `<div class="card" style="--rarity:${R[t].color}"><img src="${c.image}"><div class="nm">${c.name} · OVR ${overall(c)}</div><div class="meta"><span style="color:${R[t].color}">${t}</span><span>x${q}</span></div><div class="ability">${abilityFor(c).name}</div><button class="sell" onclick="sell(${c.id})">SELL 1 · ● ${fmt(val)}</button></div>`}).join(""):`<div style="grid-column:1/-1;text-align:center;padding:28px 12px;font-weight:900">No cards owned in this category yet.</div>`;
 
  $("#indexFilters").innerHTML=chars.map(x=>`<button class="chip ${indexFilter===x?"on":""}" onclick="setIndexFilter('${x.replaceAll("'","\\'")}')">${x}</button>`).join("");
- let idxList=(indexFilter==="ALL"?CARDS:CARDS.filter(c=>c.character===indexFilter)).slice().sort((a,b)=>{
+ let idxList=(indexFilter==="ALL"?CARDS:CARDS.filter(c=>c.character===indexFilter)).filter(c=>!indexSearch||((c.character+" "+c.name).toLowerCase().includes(indexSearch.toLowerCase()))).slice().sort((a,b)=>{
    const order={Exotic:6,Legendary:5,Epic:4,Rare:3,Uncommon:2,Common:1};
    const ra=order[tierFor(a)]||0, rb=order[tierFor(b)]||0;
    if(rb!==ra) return rb-ra;
@@ -340,7 +386,7 @@ function setOwnedFilter(x){ownedFilter=x;render()} function setIndexFilter(x){in
 
 function sell(id){
  let q=state.owned[id]||0;if(!q)return;
- let c=CARDS.find(x=>x.id===id),t=tierFor(c),val=Math.round(R[t].value*(1+Math.max(0,q-1)*.15));
+ let c=CARDS.find(x=>x.id===id),t=tierFor(c),val=cardSellValue(c,q);
  state.owned[id]=q-1;
  if(state.owned[id]<=0){
    state.owned[id]=0;
@@ -519,7 +565,7 @@ function openPicker(i){
    const order={Exotic:6,Legendary:5,Epic:4,Rare:3,Uncommon:2,Common:1};
    return (order[tierFor(b)]||0)-(order[tierFor(a)]||0);
  });
- $("#pickCards").innerHTML=owned.map(c=>`<div class="card" style="--rarity:${R[tierFor(c)].color}" onclick="chooseTeamCard(${c.id})"><img src="${c.image}"><div class="nm">${c.name} · OVR ${overall(c)}</div><div class="meta"><span>${tierFor(c)}</span><span>+${Math.min(state.cardXP[c.id]||0,winsNeeded(c))}/${winsNeeded(c)}</span></div><div class="ability">${abilityFor(c).name}</div></div>`).join("");
+ $("#pickCards").innerHTML=owned.map(c=>`<div class="card" style="--rarity:${R[tierFor(c)].color};background:color-mix(in srgb,${R[tierFor(c)].color} 28%,white)" onclick="chooseTeamCard(${c.id})"><img src="${c.image}"><div class="nm">${c.name} · OVR ${overall(c)}</div><div class="meta"><span>${tierFor(c)}</span><span>+${Math.min(state.cardXP[c.id]||0,winsNeeded(c))}/${winsNeeded(c)}</span></div><div class="ability">${abilityFor(c).name}</div></div>`).join("");
  $("#pickOverlay").classList.add("show");
 }
 function closePicker(){$("#pickOverlay").classList.remove("show")}
@@ -530,82 +576,103 @@ function chooseTeamCard(id){
 }
 function botDeck(d){
  const weights=[
-  ["Common"],["Common","Uncommon"],["Uncommon","Rare"],["Rare","Epic"],["Epic","Legendary"]
+  {Common:86,Uncommon:12,Rare:2,Epic:0,Legendary:0},
+  {Common:58,Uncommon:34,Rare:7,Epic:1,Legendary:0},
+  {Common:28,Uncommon:35,Rare:27,Epic:9,Legendary:1},
+  {Common:12,Uncommon:23,Rare:34,Epic:25,Legendary:6},
+  {Common:3,Uncommon:10,Rare:27,Epic:38,Legendary:22}
  ][d-1];
- return Array.from({length:3},()=>{let r=weights[Math.floor(Math.random()*weights.length)],pool=CARDS.filter(c=>c.rarity===r);return pool[Math.floor(Math.random()*pool.length)]||CARDS[0]});
+ return Array.from({length:3},()=>pickCard(pickRarity(weights)));
 }
-function cardPower(c,botBonus=0,roundIndex=0,teamScore=0,enemyScore=0){
+function starColor(d){return ["#9b9b9b","#27c45b","#2587ff","#a34cff","#f0ad16"][d-1]}
+function starClass(d){return "s"+d}
+function maxHP(c,difficulty=0){
  const s=stats(c);
- return s.atk*1.05+s.def*.85+s.spd*.55+Math.random()*30+botBonus+abilityPower(c,roundIndex,teamScore,enemyScore);
+ return Math.round(105+s.def*1.65+s.spd*.22+difficulty*8);
 }
+function damage(attacker,defender,difficulty=0){
+ const a=stats(attacker),d=stats(defender);
+ const raw=a.atk*1.25+a.spd*.28-d.def*.62+difficulty*3;
+ const variance=.9+Math.random()*.2;
+ return Math.max(7,Math.round(raw*variance));
+}
+function arenaCard(c,hp,max,active=false){
+ const tier=tierFor(c),pct=Math.max(0,Math.min(100,hp/max*100));
+ return `<div class="arena-card ${hp<=0?"dead":""} ${active?"active":""}" style="--rarity:${R[tier].color}">
+ <img src="${c.image}"><b>${c.name}<br>${tier} · OVR ${overall(c)}</b>
+ <div class="hp"><i style="width:${pct}%"></i></div><div class="hp-txt">${Math.max(0,hp)} / ${max} HP</div></div>`;
+}
+function drawArena(team,enemy,php,ehp,pmax,emax,pa=-1,ea=-1,d=1){
+ $("#arenaStars").className="arena-stars "+starClass(d);
+ $("#arenaStars").style.color=starColor(d);
+ $("#arenaStars").textContent="★".repeat(d);
+ $("#playerArena").innerHTML=team.map((c,i)=>arenaCard(c,php[i],pmax[i],i===pa)).join("");
+ $("#enemyArena").innerHTML=enemy.map((c,i)=>arenaCard(c,ehp[i],emax[i],i===ea)).join("");
+}
+function nextAlive(hp){return hp.findIndex(x=>x>0)}
+function allDead(hp){return hp.every(x=>x<=0)}
 async function startBattle(){
  cleanTeam();
  if(battleBusy)return;
  if(state.team.length<3){toast("Choose 3 cards first");return}
  const team=state.team.map(id=>CARDS.find(c=>c.id===id)).filter(Boolean);
- if(team.length<3){toast("Choose 3 valid cards");return}
- const d=1+Math.floor(Math.random()*5),bots=botDeck(d);battleBusy=true;$("#battleModal").classList.add("show");$("#roundText").textContent=`${"★".repeat(d)}${"☆".repeat(5-d)} BOT`;await wait(550);
- let pw=0,bw=0;
- for(let i=0;i<3;i++){
-   $("#roundText").textContent=`${"★".repeat(d)}${"☆".repeat(5-d)} · ROUND ${i+1}`;
-   const ps=stats(team[i]),bs=stats(bots[i]);
-   $("#playerFighter").innerHTML=`<img src="${team[i].image}"><b>${team[i].name} · OVR ${overall(team[i])}</b><div>A ${ps.atk} · D ${ps.def} · S ${ps.spd}</div>`;
-   $("#botFighter").innerHTML=`<img src="${bots[i].image}"><b>${bots[i].name} · OVR ${overall(bots[i])}</b><div>${bots[i].rarity}</div>`;
-   $("#battleLog").textContent="FIGHT!";
-   const rr=$("#roundResult");rr.className="round-result";rr.textContent="";
-   await wait(500);
-   $("#playerFighter").classList.add("attack");await wait(500);$("#playerFighter").classList.remove("attack");
-   $("#botFighter").classList.add("hit");await wait(500);$("#botFighter").classList.remove("hit");
-   const win=cardPower(team[i],0,i,pw,bw)>cardPower(bots[i],(d-3)*16,i,bw,pw);
-   if(win){
-     pw++;$("#battleLog").textContent=`${team[i].name} WINS THE ROUND`;
-     rr.textContent="YOU WON THIS ROUND";rr.className="round-result win show";
-     $("#playerFighter").style.boxShadow="0 0 28px #20c95b";$("#botFighter").style.opacity=".58";
-   }else{
-     bw++;$("#battleLog").textContent="BOT WINS THE ROUND";
-     rr.textContent="YOU LOST THIS ROUND";rr.className="round-result lose show";
-     $("#botFighter").style.boxShadow="0 0 28px #e32929";$("#playerFighter").style.opacity=".58";
-   }
-   await wait(1500);
-   $("#playerFighter").style.boxShadow="";$("#botFighter").style.boxShadow="";
-   $("#playerFighter").style.opacity="";$("#botFighter").style.opacity="";
-   rr.className="round-result";
+ if(team.length<3){toast("Choose 3 owned cards first");return}
+ const difficulty=1+Math.floor(Math.random()*5);
+ const enemy=botDeck(difficulty);
+ const pmax=team.map(c=>maxHP(c)),emax=enemy.map(c=>maxHP(c,difficulty));
+ const php=pmax.slice(),ehp=emax.slice();
+ battleBusy=true;$("#battleModal").classList.add("show");
+ $("#arenaLog").textContent=`${difficulty}-STAR BOT · BATTLE START`;
+ drawArena(team,enemy,php,ehp,pmax,emax,-1,-1,difficulty);
+ await wait(900);
+
+ let turn=0;
+ while(!allDead(php)&&!allDead(ehp)&&turn<120){
+   const pi=nextAlive(php),ei=nextAlive(ehp);
+   if(pi<0||ei<0)break;
+
+   // Your active card attacks each surviving enemy in order.
+   drawArena(team,enemy,php,ehp,pmax,emax,pi,ei,difficulty);
+   const pd=damage(team[pi],enemy[ei],0);
+   $("#arenaLog").textContent=`${team[pi].name} attacks ${enemy[ei].name} for ${pd}`;
+   await wait(520);ehp[ei]=Math.max(0,ehp[ei]-pd);
+   drawArena(team,enemy,php,ehp,pmax,emax,pi,ei,difficulty);
+   await wait(620);
+   if(allDead(ehp))break;
+
+   // Enemy active card retaliates against your first surviving card.
+   const epi=nextAlive(php),eei=nextAlive(ehp);
+   drawArena(team,enemy,php,ehp,pmax,emax,epi,eei,difficulty);
+   const ed=damage(enemy[eei],team[epi],difficulty);
+   $("#arenaLog").textContent=`${enemy[eei].name} attacks ${team[epi].name} for ${ed}`;
+   await wait(520);php[epi]=Math.max(0,php[epi]-ed);
+   drawArena(team,enemy,php,ehp,pmax,emax,epi,eei,difficulty);
+   await wait(620);
+   turn++;
  }
+ const won=allDead(ehp)&&!allDead(php);
  $("#battleModal").classList.remove("show");battleBusy=false;
- const won=pw>bw;
  if(won){
-   state.battleWins++;
+   state.battleWins=(state.battleWins||0)+1;
    state.normalWinsSinceBoss=(state.normalWinsSinceBoss||0)+1;
-   state.winStreak=(state.winStreak||0)+1;
-   state.bestWinStreak=Math.max(state.bestWinStreak||0,state.winStreak);
-   const reward=1500*d;state.coins+=reward;
-   if(state.winStreak===2) state.coins+=500;
-   if(state.winStreak===5) setTimeout(()=>openPack("Uncommon","reward"),900);
-   if(state.winStreak===10) setTimeout(()=>openPack("Rare","reward"),900);
-   if(state.normalWinsSinceBoss>=10) state.bossUnlocked=true;
-   if(state.normalWinsSinceBoss>=20) state.moreBulletsBossUnlocked=true;
-   const now=Date.now();
-   team.forEach(c=>{
-     if((state.cardCooldown[c.id]||0)>now)return;
-     const cur=tierFor(c);
-     if(cur==="Exotic"){state.cardXP[c.id]=50;return;}
-     state.cardXP[c.id]=(state.cardXP[c.id]||0)+1;
-     const needed=winsNeeded(c);
-     if(state.cardXP[c.id]>=needed){
-       const ti=TIERS.indexOf(cur);
-       if(ti<TIERS.length-1){
-         state.cardTier[c.id]=TIERS[ti+1];
-         state.cardXP[c.id]=(TIERS[ti+1]==="Exotic")?50:0;
-         state.cardCooldown[c.id]=now+24*60*60*1000;
-       }
-     }
-   });
-   save();showResult(true,`You won ${fmt(reward)} coins. Each eligible card used gained +1 upgrade progress.`);
- }else{state.battleLosses++;state.winStreak=0;save();showResult(false,`Bot won ${bw}-${pw}. Your win streak reset.`)}
+   state.moreBulletsProgress=(state.moreBulletsProgress||0)+1;
+   if(state.normalWinsSinceBoss>=10)state.bossUnlocked=true;
+   if(state.moreBulletsProgress>=20)state.moreBulletsBossUnlocked=true;
+   state.winStreak=(state.winStreak||0)+1;state.bestWinStreak=Math.max(state.bestWinStreak||0,state.winStreak);
+   let bonus=500;
+   if(state.winStreak===2)bonus+=500;
+   if(state.winStreak===5)openRewardPackAfterResult="Uncommon";
+   if(state.winStreak===10)openRewardPackAfterResult="Rare";
+   state.coins+=bonus;
+   for(const c of team)gainCardWin(c);
+   save();
+   showResult(true,`Enemy team eliminated! +${fmt(bonus)} coins · ${difficulty}★ bot`);
+ }else{
+   state.battleLosses=(state.battleLosses||0)+1;state.winStreak=0;save();
+   showResult(false,`Your team was eliminated by a ${difficulty}★ bot.`);
+ }
 }
-function wait(ms){return new Promise(r=>setTimeout(r,ms))}
-function showResult(win,text){const r=$("#resultScreen");r.className="result-screen show "+(win?"win":"lose");$("#resultTitle").textContent=win?"VICTORY":"DEFEAT";$("#resultText").textContent=text}
-function closeResult(){$("#resultScreen").className="result-screen"}
+
 function renderUpgrades(){
  if(!$("#upgradeList"))return;
  const now=Date.now(),owned=CARDS.filter(c=>(state.owned[c.id]||0)>0).sort((a,b)=>{
@@ -629,7 +696,7 @@ function renderBoss(){
  if(!$("#bossContent"))return;
  const normalWins=state.normalWinsSinceBoss||0;
  const iceWins=Math.min(10,normalWins);
- const bulletWins=Math.min(20,normalWins);
+ const bulletWins=Math.min(20,state.moreBulletsProgress||0);
  const iceOwned=(state.owned[ICE_AGENTS_ID]||0)>0;
  const bulletOwned=(state.owned[MORE_BULLETS_ID]||0)>0;
 
@@ -713,11 +780,11 @@ async function startMoreBulletsBoss(){
      state.moreBulletsUnlocked=true;
      state.owned[MORE_BULLETS_ID]=(state.owned[MORE_BULLETS_ID]||0)+1;
    }else state.coins+=40000;
-   state.moreBulletsBossUnlocked=false;
+   state.moreBulletsBossUnlocked=false;state.moreBulletsProgress=0;
    save();
    showResult(true,state.moreBulletsBossWins===1?"BOSS DEFEATED! I Need More Bullets was added to your Collection.":"Boss defeated! You earned 40,000 coins.");
  }else{
-   state.moreBulletsBossUnlocked=false;save();
+   state.moreBulletsBossUnlocked=false;state.moreBulletsProgress=0;save();
    showResult(false,"I Need More Bullets defeated your team.");
  }
 }
@@ -744,6 +811,54 @@ async function registerSW(){
    });
  }catch(e){console.log(e)}
 }
+async 
+function openDanger(action){
+ dangerAction=action;
+ $("#dangerTitle").textContent=action==="sell"?"SELL ALL CARDS?":"RESET EVERYTHING?";
+ $("#dangerText").textContent=action==="sell"
+   ?"This sells every card in your collection for its CURRENT upgraded rarity value. Hold YES for 3 seconds."
+   :"This permanently resets coins, cards, wins, upgrades, rewards, and all progress. Hold YES for 3 seconds.";
+ $("#holdYes").style.setProperty("--hold","0%");
+ $("#dangerOverlay").classList.add("show");
+}
+function closeDanger(){
+ stopHold();
+ dangerAction=null;$("#dangerOverlay").classList.remove("show");
+}
+function startHold(e){
+ e.preventDefault();stopHold();holdStart=Date.now();
+ const btn=$("#holdYes");
+ holdTimer=setInterval(()=>{
+   const p=Math.min(100,(Date.now()-holdStart)/3000*100);
+   btn.style.setProperty("--hold",p+"%");
+   btn.querySelector("span").textContent=p>=100?"CONFIRMED":"HOLD YES FOR 3 SECONDS";
+   if(p>=100){const action=dangerAction;stopHold();executeDanger(action)}
+ },40);
+}
+function stopHold(){
+ if(holdTimer){clearInterval(holdTimer);holdTimer=null}
+ if($("#holdYes")){
+   $("#holdYes").style.setProperty("--hold","0%");
+   $("#holdYes").querySelector("span").textContent="HOLD YES FOR 3 SECONDS";
+ }
+}
+function executeDanger(action){
+ if(action==="sell"){
+   let total=0;
+   for(const c of CARDS){
+     const q=Number(state.owned[c.id]||0);
+     for(let copy=1;copy<=q;copy++)total+=cardSellValue(c,copy);
+     state.owned[c.id]=0;
+   }
+   state.team=[];state.coins=(state.coins||0)+total;save();closeDanger();toast(`All cards sold for ${fmt(total)} coins`);
+ }else if(action==="reset"){
+   const fresh={coins:0,owned:{},welcome:3,freeUncommonAt:0,wheelSpins:0,wheelRotation:0,cardXP:{},cardTier:{},cardCooldown:{},battleWins:0,battleLosses:0,team:[],winStreak:0,bestWinStreak:0,bossWins:0,normalWinsSinceBoss:0,bossUnlocked:false,goldenKingUnlocked:false,moreBulletsBossUnlocked:false,moreBulletsUnlocked:false,moreBulletsBossWins:0,moreBulletsProgress:0,moreBulletsProgressMigrationDone:true};
+   state=fresh;save();closeDanger();toast("Account reset");
+ }
+}
+$("#holdYes").addEventListener("pointerdown",startHold);
+["pointerup","pointercancel","pointerleave"].forEach(ev=>$("#holdYes").addEventListener(ev,stopHold));
+
 async function checkForUpdate(){
  const b=$("#updateBtn");b.textContent="CHECKING...";
  try{
