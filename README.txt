@@ -136,3 +136,16 @@ V8 BOSS BALANCE FIX
 - Boss progression order is unchanged: Ice Agents < I Need More Bullets < Artlander.
 - Boss reward cards and normal matchmaking are unchanged.
 - Six-star/all-Exotic normal matchmaking remains all Exotic vs all Exotic.
+
+V8 SIX-STAR FAIRNESS FIX
+- 6-star / all-Exotic player teams now face 3 distinct Exotic bot cards.
+- No duplicate cards are allowed on the bot team.
+- Exotic-vs-Exotic normal battles no longer receive a hidden bot difficulty damage bonus.
+- Boss battles are unchanged.
+
+V8 BOSS DIFFICULTY UPDATE
+- Boss HP lowered substantially so top Exotic teams can realistically win.
+- Boss attack damage lowered again.
+- Ice Agents remains easiest, I Need More Bullets harder, Artlander hardest.
+- Bosses remain challenging and are not guaranteed wins.
+- Six-star Exotic normal matchmaking fairness and no-duplicate bot teams remain unchanged.

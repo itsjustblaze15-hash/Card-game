@@ -694,10 +694,11 @@ function teamRating(cards){if(!cards.length)return 1;const r=cards.map(rarityRan
 function updateTeamRatingUI(){if(!$("#teamRatingBox"))return;const cs=(state.team||[]).map(id=>CARDS.find(c=>c.id===id)).filter(Boolean),m=ratingMeta(teamRating(cs));$("#teamRatingBox").style.setProperty("--team-color",m[2]);$("#teamRatingName").textContent=m[0];$("#teamRatingStars").textContent=m[1];$("#teamRatingStars").style.color=m[2]}
 function botCardForRating(n){const t={1:"Common",2:"Uncommon",3:"Rare",4:"Epic",5:"Legendary",6:"Exotic"}[n];let pool=CARDS.filter(c=>tierFor(c)===t&&c.id!==ICE_AGENTS_ID&&c.id!==MORE_BULLETS_ID);if(!pool.length)pool=CARDS.filter(c=>tierFor(c)===t);return pool[Math.floor(Math.random()*pool.length)]||pickCard(t)}
 function fairBotDeck(level){
- // A true 6-star player team means all three selected cards are Exotic.
- // Match it against a full Exotic bot team so 6-star games are fair.
  if(level>=6){
-   return {level:6,cards:[botCardForRating(6),botCardForRating(6),botCardForRating(6)]};
+   let pool=CARDS.filter(c=>tierFor(c)==="Exotic" && c.id!==ICE_AGENTS_ID && c.id!==MORE_BULLETS_ID && c.id!==ARTLANDER_ID);
+   if(pool.length<3)pool=CARDS.filter(c=>tierFor(c)==="Exotic");
+   const shuffled=pool.slice().sort(()=>Math.random()-.5);
+   return {level:6,cards:shuffled.slice(0,3)};
  }
 
  let n=Math.min(5,level);
@@ -714,7 +715,18 @@ function fairBotDeck(level){
   5:[[5,5,5],[4,5,5]]
  };
  const p=patterns[n][Math.floor(Math.random()*patterns[n].length)];
- return {level:n,cards:p.map(botCardForRating)};
+
+ const used=new Set();
+ const cards=p.map(rank=>{
+   const tier={1:"Common",2:"Uncommon",3:"Rare",4:"Epic",5:"Legendary"}[rank];
+   let pool=CARDS.filter(c=>tierFor(c)===tier && !used.has(c.id) && !c.bossExclusive);
+   if(!pool.length)pool=CARDS.filter(c=>tierFor(c)===tier && !used.has(c.id));
+   const c=pool[Math.floor(Math.random()*pool.length)]||botCardForRating(rank);
+   if(c)used.add(c.id);
+   return c;
+ }).filter(Boolean);
+
+ return {level:n,cards};
 }
 function starColor(d){return ["#9b9b9b","#27c45b","#2587ff","#a34cff","#f0ad16"][d-1]}
 function starClass(d){return "s"+d}
@@ -725,7 +737,9 @@ function maxHP(c,difficulty=0){
 }
 function damage(attacker,defender,difficulty=0){
  const a=stats(attacker),d=stats(defender);
- const raw=a.atk*1.16+a.spd*.22-d.def*.56+difficulty*6;
+ const bothExotic=tierFor(attacker)==="Exotic" && tierFor(defender)==="Exotic";
+ const diffBonus=bothExotic?0:difficulty*6;
+ const raw=a.atk*1.16+a.spd*.22-d.def*.56+diffBonus;
  return Math.max(7,Math.round(raw*(.9+Math.random()*.2)));
 }
 function arenaCard(c,hp,max,active=false){
@@ -980,7 +994,7 @@ async function runBossHealthBattle(boss,bossName,bossDifficulty,playerDamageBonu
  const pmax=team.map(c=>maxHP(c));
  const bossBase=maxHP(boss,bossDifficulty);
  const tierScale=1+Math.max(0,bossDifficulty-7)*0.18;
- const emax=[Math.round(bossBase*2.58*tierScale)];
+ const emax=[Math.round(bossBase*1.80*tierScale)];
  const php=pmax.slice(),ehp=emax.slice();
 
  battleBusy=true;
@@ -1024,7 +1038,7 @@ async function runBossHealthBattle(boss,bossName,bossDifficulty,playerDamageBonu
        $("#arenaLog").textContent=`${bossName} hits ${team[ti].name} for ${dmg}`;
        const cards=[...document.querySelectorAll("#playerArena .arena-card")];
        if(cards[ti])popDamage(cards[ti],dmg);
-       php[ti]=Math.max(0,php[ti]-Math.max(1,Math.round(dmg*.84)));
+       php[ti]=Math.max(0,php[ti]-Math.max(1,Math.round(dmg*.63)));
        await wait(260);
        drawBossArena(team,boss,php,ehp,pmax,emax,ti,true);
        await wait(390);
