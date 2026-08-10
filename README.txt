@@ -124,3 +124,15 @@ V8 BOSS PROGRESSION FIX
 - If I Need More Bullets is already owned, Tier 2 is automatically marked CLEARED and Tier 3 starts at 0/30.
 - Cleared bosses no longer offer duplicate reward cards.
 - Duplicate boss rewards are blocked even if an old save reaches the fight again.
+
+V8 SIX-STAR MATCHMAKING FIX
+- If your selected team is 6 stars / all Exotic, the normal-match bot team is guaranteed to be all Exotic too.
+- Other team ratings keep the existing balanced matchmaking.
+- Boss difficulty and boss progression are unchanged.
+
+V8 BOSS BALANCE FIX
+- Boss HP reduced by about 18%.
+- Boss damage against player cards reduced by about 16%.
+- Boss progression order is unchanged: Ice Agents < I Need More Bullets < Artlander.
+- Boss reward cards and normal matchmaking are unchanged.
+- Six-star/all-Exotic normal matchmaking remains all Exotic vs all Exotic.
