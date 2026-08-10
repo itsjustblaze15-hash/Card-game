@@ -65,3 +65,19 @@ V7 SWEEP BATTLE UPDATE
 - Then one card from the other team steps in and attacks every surviving card.
 - Active cards rotate one by one on each side.
 - The fight continues until one entire team reaches 0 HP.
+
+V7 BOSS BATTLE FIX
+- Ice Agents and I Need More Bullets no longer use the old round-based battle code.
+- Boss fights now use the animated HP battle arena.
+- Boss appears as the enemy at the top with one large boss HP bar.
+- Player cards rotate into the middle one at a time and attack the boss.
+- Boss steps into the middle and attacks every surviving player card before returning.
+- Fight continues until the boss reaches 0 HP or all three player cards reach 0 HP.
+- Victory/Defeat result screens are shown at the end.
+
+V7 RESULT SCREEN FIX
+- Restored the missing showResult() and closeResult() functions.
+- Victory now always opens the green VICTORY screen.
+- Loss now always opens the red DEFEAT screen.
+- Result screen is forced above normal and boss battle overlays.
+- Fix applies to normal battles, Ice Agents, and I Need More Bullets.
