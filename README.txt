@@ -102,3 +102,10 @@ V8 ARTLANDER + BOSS PROGRESSION UPDATE
 - All Exotic cards, including upgraded-to-Exotic cards, are normalized to the same regular Exotic stat/HP band.
 - Regular matchmaking now leans equal-or-harder more often to reduce near-automatic win streaks.
 - This update package intentionally includes ONLY the new Artlander photo inside assets/.
+
+GOLDEN PULLS V8.1
+- Fixed Records page: games played, wins, losses, win rate, streaks, boss wins/losses.
+- Index now always displays each card's ORIGINAL rarity and original OVR.
+- Collection still displays your upgraded rarity/version.
+- Fixed Victory and Defeat result overlays for normal battles and bosses.
+- Battle overlay is hidden before the result screen appears.

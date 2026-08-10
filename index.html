@@ -86,7 +86,7 @@ button{font:inherit;cursor:pointer}
 .battle-stage{width:min(430px,100%);text-align:center}.fighters{display:grid;grid-template-columns:1fr 60px 1fr;align-items:center;gap:7px;margin:18px 0}
 .fighter{background:#fff1ba;color:#201700;border-radius:18px;padding:8px;transition:.35s}.fighter img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:11px}
 .fighter.hit{animation:hit .35s}.fighter.attack{animation:attack .35s}.versus{font-size:20px;font-weight:1000;color:#ffd84d}
-.result-screen{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;text-align:center;color:white;padding:20px}.result-screen.show{display:flex}
+.result-screen{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;text-align:center;color:white;padding:20px}.result-screen.show{display:flex}
 .result-screen.win{background:radial-gradient(circle,#20c95b,#063d18);box-shadow:inset 0 0 60px #8cffaa}.result-screen.lose{background:radial-gradient(circle,#e32929,#490606);box-shadow:inset 0 0 60px #ff8b8b}
 .result-screen h1{font-size:55px;margin:0}.result-screen button{border:0;border-radius:14px;padding:13px 18px;font-weight:1000;margin:6px}
 .upgrade-card{background:#fff7d6;border:3px solid var(--rarity);border-radius:18px;padding:10px;margin-bottom:10px}.upgrade-row{display:grid;grid-template-columns:76px 1fr;gap:10px}.upgrade-row img{width:76px;height:100px;object-fit:cover;border-radius:10px}
@@ -174,7 +174,7 @@ button{font:inherit;cursor:pointer}
 <body>
 <div class="app">
 <div class="top">
-  <div class="brand">GOLDEN PULLS <span class="vbadge">V8</span></div>
+  <div class="brand">GOLDEN PULLS <span class="vbadge">V8.1</span></div>
   <button id="updateBtn" class="update" onclick="checkForUpdate()">UPDATE</button>
   <div class="wallet">● <span id="coins">0</span></div>
 </div>
@@ -354,16 +354,21 @@ function toast(t){$("#toast").textContent=t;$("#toast").classList.add("show");se
 function showResult(win,text){
  const screen=$("#resultScreen");
  if(!screen)return;
- $("#resultTitle").textContent=win?"VICTORY":"DEFEAT";
- $("#resultText").textContent=text||"";
- screen.className="result-screen show "+(win?"win":"lose");
+ const title=$("#resultTitle"),body=$("#resultText");
+ if(title)title.textContent=win?"VICTORY":"DEFEAT";
+ if(body)body.textContent=text||"";
+ screen.className="result-screen "+(win?"win":"lose")+" show";
  screen.style.display="flex";
+ screen.style.zIndex="99999";
+ document.body.style.overflow="hidden";
 }
 function closeResult(){
  const screen=$("#resultScreen");
  if(!screen)return;
  screen.className="result-screen";
  screen.style.display="none";
+ document.body.style.overflow="";
+ render();
 }
 
 function fmt(n){return Math.round(n).toLocaleString()}
@@ -375,6 +380,24 @@ function cardSellValue(c,q=1){
  const tier=tierFor(c);
  return Math.round(R[tier].value*(1+Math.max(0,q-1)*.15));
 }
+
+function renderRecords(){
+ const wins=Number(state.battleWins||0);
+ const losses=Number(state.battleLosses||0);
+ const played=wins+losses;
+ const bossWins=Number(state.bossWins||0)+Number(state.moreBulletsBossWins||0)+Number(state.artlanderBossWins||0);
+ const bossLosses=Number(state.bossLosses||0);
+ const set=(sel,val)=>{const el=$(sel);if(el)el.textContent=val};
+ set("#recPlayed",played);
+ set("#recWins",wins);
+ set("#recLosses",losses);
+ set("#recRate",played?Math.round(wins/played*100)+"%":"0%");
+ set("#recStreak",Number(state.winStreak||0));
+ set("#recBest",Number(state.bestWinStreak||0));
+ set("#recBossWins",bossWins);
+ set("#recBossLosses",bossLosses);
+}
+
 function render(){
  $("#coins").textContent=fmt(state.coins);
  $("#gift").innerHTML=state.welcome>0?`<div class="gift"><b>WELCOME GIFT</b><div style="font-size:24px;font-weight:1000;margin:5px 0">3 FREE RARE PACKS</div><div style="margin-bottom:12px">${state.welcome} remaining</div><button onclick="openPack('Rare','welcome')">OPEN FREE RARE PACK</button></div>`:"";
@@ -417,12 +440,12 @@ function render(){
  $("#indexFilters").innerHTML=chars.map(x=>`<button class="chip ${indexFilter===x?"on":""}" onclick="setIndexFilter('${x.replaceAll("'","\\'")}')">${x}</button>`).join("");
  let idxList=(indexFilter==="ALL"?CARDS:CARDS.filter(c=>c.character===indexFilter)).filter(c=>!indexSearch||((c.character+" "+c.name).toLowerCase().includes(indexSearch.toLowerCase()))).slice().sort((a,b)=>{
    const order={Exotic:6,Legendary:5,Epic:4,Rare:3,Uncommon:2,Common:1};
-   const ra=order[tierFor(a)]||0, rb=order[tierFor(b)]||0;
+   const ra=order[a.rarity]||0, rb=order[b.rarity]||0;
    if(rb!==ra) return rb-ra;
    const ca=(a.character||"").localeCompare(b.character||"");
    return ca!==0?ca:(a.name||"").localeCompare(b.name||"");
  });
- $("#indexCards").innerHTML=idxList.map(c=>{let q=state.owned[c.id]||0,t=tierFor(c);return `<div class="card ${q?"":"locked"}" style="--rarity:${R[t].color}"><img src="${c.image}"><div class="nm">${q?c.name+" · OVR "+overall(c):"NOT COLLECTED"}</div><div class="meta"><span style="color:${R[t].color}">${t}</span><span>${q?"x"+q:"LOCKED"}</span></div></div>`}).join("");
+ $("#indexCards").innerHTML=idxList.map(c=>{let q=state.owned[c.id]||0,t=c.rarity;return `<div class="card ${q?"":"locked"}" style="--rarity:${R[t].color}"><img src="${c.image}"><div class="nm">${q?c.name+" · OVR "+originalOverall(c):"NOT COLLECTED"}</div><div class="meta"><span style="color:${R[t].color}">${t}</span><span>${q?"x"+q:"LOCKED"}</span></div></div>`}).join("");
  renderBattle();
  renderUpgrades();
 
@@ -582,6 +605,17 @@ function stats(c){
 }
 function overall(c){
  const s=stats(c);
+ return Math.round((s.atk+s.def+s.spd)/3);
+}
+function originalOverall(c){
+ const ti=Math.max(0,TIERS.indexOf(c.rarity));
+ const seed=(c.id*37)%23;
+ let s;
+ if(c.rarity==="Exotic"){
+   s={atk:126+(seed%9),def:122+(seed%8),spd:108+(seed%10)};
+ }else{
+   s={atk:40+ti*18+seed,def:38+ti*17+(seed%11),spd:35+ti*13+(seed%17)};
+ }
  return Math.round((s.atk+s.def+s.spd)/3);
 }
 function abilityFor(c){
@@ -765,7 +799,7 @@ async function startBattle(){
  const php=pmax.slice(),ehp=emax.slice();
 
  battleBusy=true;
- $("#battleModal").classList.add("show");
+ $("#battleModal").style.display="flex";$("#battleModal").classList.add("show");
  $("#arenaLog").textContent="";
  drawArena(team,enemy,php,ehp,pmax,emax,-1,-1,difficulty);
  await wait(650);
@@ -792,6 +826,7 @@ async function startBattle(){
 
  const won=allDead(ehp)&&!allDead(php);
  $("#battleModal").classList.remove("show");
+ $("#battleModal").style.display="none";
  hideCenter();
  battleBusy=false;
 
@@ -919,7 +954,7 @@ async function runBossHealthBattle(boss,bossName,bossDifficulty,playerDamageBonu
  const php=pmax.slice(),ehp=emax.slice();
 
  battleBusy=true;
- $("#battleModal").classList.add("show");
+ $("#battleModal").style.display="flex";$("#battleModal").classList.add("show");
  $("#arenaLog").textContent="";
  $("#arenaStars").style.display="none";
  drawBossArena(team,boss,php,ehp,pmax,emax,-1,false);
@@ -973,6 +1008,7 @@ async function runBossHealthBattle(boss,bossName,bossDifficulty,playerDamageBonu
  }
 
  $("#battleModal").classList.remove("show");
+ $("#battleModal").style.display="none";
  $("#arenaStars").style.display="";
  hideCenter();
  battleBusy=false;
