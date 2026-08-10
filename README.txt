@@ -81,3 +81,11 @@ V7 RESULT SCREEN FIX
 - Loss now always opens the red DEFEAT screen.
 - Result screen is forced above normal and boss battle overlays.
 - Fix applies to normal battles, Ice Agents, and I Need More Bullets.
+
+GOLDEN PULLS V8
+- Boss difficulty unchanged; boss card centered top.
+- Records page added.
+- Live rarity-colored player team rating added; all Exotic = cyan 6-star.
+- Selected Play cards use rarity colors.
+- Regular matchmaking scales around player team strength and star labels match actual bot rarity composition.
+- Ultra-rare 6-star Exotic bot chance: about 1 in 5,000 normal games.

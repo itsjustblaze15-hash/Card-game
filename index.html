@@ -167,12 +167,14 @@ button{font:inherit;cursor:pointer}
 .boss-list{display:grid;gap:10px}.boss-card.compact{display:grid;grid-template-columns:86px 1fr;gap:10px;align-items:center;padding:10px}.boss-card.compact img{width:86px;height:112px;object-fit:cover}.boss-card.compact h2{margin:0 0 4px;font-size:18px}.boss-card.compact p{margin:0 0 6px;font-size:11px}.boss-card.compact .primary{margin-top:7px!important;padding:10px}
 .collection-topline{display:flex;align-items:center;justify-content:space-between;gap:8px}.mini-actions{display:flex;gap:6px}.mini-actions button{border:0;border-radius:999px;padding:7px 9px;font-size:9px;font-weight:1000}.mini-sell{background:#f2c536;color:#241900}.mini-reset{background:#9b2100;color:white}
 
+
+.team-rating-box{margin:10px 0 12px;padding:11px 13px;border:3px solid var(--team-color,#999);background:color-mix(in srgb,var(--team-color,#999) 22%,white);border-radius:15px;display:flex;justify-content:space-between;align-items:center;font-weight:1000}.team-rating-stars{font-size:18px}.records-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.record-stat{background:#fff3bd;border:2px solid #9a7000;border-radius:15px;padding:14px;text-align:center}.record-stat b{display:block;font-size:24px}.record-stat span{font-size:10px;font-weight:1000}.boss-single-center{display:flex!important;justify-content:center!important}.boss-single-center .arena-card{width:31%;min-width:92px;max-width:145px}
 </style>
 </head>
 <body>
 <div class="app">
 <div class="top">
-  <div class="brand">GOLDEN PULLS <span class="vbadge">V7</span></div>
+  <div class="brand">GOLDEN PULLS <span class="vbadge">V8</span></div>
   <button id="updateBtn" class="update" onclick="checkForUpdate()">UPDATE</button>
   <div class="wallet">● <span id="coins">0</span></div>
 </div>
@@ -197,8 +199,8 @@ button{font:inherit;cursor:pointer}
 
 <section id="battle" class="screen">
 <div class="hero"><h1>BATTLE</h1><p>Pick 3 owned cards and fight a random bot. Wins power up the cards you used.</p></div><div class="streak-box"><div><b>WIN STREAK</b><div style="font-size:11px">2 wins: +500 · 5 wins: Uncommon pack · 10 wins: Rare pack</div></div><div class="streak-num" id="streakNum">0</div></div>
-<div class="panel"><b>BOT DIFFICULTY</b><div class="bot-stars" id="stars">RANDOM ★–★★★★★</div><div style="font-size:12px;font-weight:900;text-align:center;margin-top:8px">A random 1–5 star bot is chosen when you press PLAY.</div></div>
-<div class="battle-grid" id="teamSlots"></div>
+<div class="panel"><b>BOT DIFFICULTY</b><div class="bot-stars" id="stars">TEAM-BASED MATCHMAKING</div><div style="font-size:12px;font-weight:900;text-align:center;margin-top:8px">Bot strength is matched around your team rating, with some easier and harder opponents.</div></div>
+<div id="teamRatingBox" class="team-rating-box" style="--team-color:#9b9b9b"><span>YOUR TEAM: <b id="teamRatingName">GRAY</b></span><span id="teamRatingStars" class="team-rating-stars">★</span></div><div class="battle-grid" id="teamSlots"></div>
 <button class="primary" onclick="startBattle()">PLAY</button>
 </section>
 
@@ -207,7 +209,7 @@ button{font:inherit;cursor:pointer}
 <div id="upgradeList"></div>
 </section>
 
-<section id="boss" class="screen">
+<section id="records" class="screen"><div class="hero"><h1>RECORDS</h1><p>Your complete battle record.</p></div><div class="records-grid"><div class="record-stat"><b id="recPlayed">0</b><span>GAMES PLAYED</span></div><div class="record-stat"><b id="recWins">0</b><span>WINS</span></div><div class="record-stat"><b id="recLosses">0</b><span>LOSSES</span></div><div class="record-stat"><b id="recRate">0%</b><span>WIN RATE</span></div><div class="record-stat"><b id="recStreak">0</b><span>CURRENT STREAK</span></div><div class="record-stat"><b id="recBest">0</b><span>BEST STREAK</span></div><div class="record-stat"><b id="recBossWins">0</b><span>BOSS WINS</span></div><div class="record-stat"><b id="recBossLosses">0</b><span>BOSS LOSSES</span></div></div></section><section id="boss" class="screen">
 <div class="hero"><h1>BOSS BATTLE</h1><p>Beat normal bots to unlock the boss. Boss rewards cannot come from normal packs.</p></div>
 <div id="bossContent" class="boss-list"></div>
 </section>
@@ -228,7 +230,7 @@ button{font:inherit;cursor:pointer}
   <button class="on" data-screen="shop">PACKS</button>
   <button data-screen="rewards">REWARDS</button>
   <button data-screen="battle">PLAY</button>
-  <button data-screen="boss">BOSS</button>
+  <button data-screen="records">RECORDS</button><button data-screen="boss">BOSS</button>
   <button data-screen="upgrade">UPGRADE</button>
   <button data-screen="collection">COLLECTION</button>
   <button data-screen="cardindex">INDEX</button>
@@ -306,6 +308,7 @@ if(state.moreBulletsBossUnlocked===undefined) state.moreBulletsBossUnlocked=fals
 if(state.moreBulletsUnlocked===undefined) state.moreBulletsUnlocked=false;
 if(state.moreBulletsBossWins===undefined) state.moreBulletsBossWins=0;
 if(state.moreBulletsProgress===undefined) state.moreBulletsProgress=0;
+if(state.bossLosses===undefined)state.bossLosses=0;
 if(!state.moreBulletsProgressMigrationDone){
   state.moreBulletsProgress=0;
   state.moreBulletsBossUnlocked=false;
@@ -415,6 +418,8 @@ function render(){
  if($("#streakNum")) $("#streakNum").textContent=state.winStreak||0;
  renderBoss();
 
+
+ renderRecords();
 }
 function setOwnedFilter(x){ownedFilter=x;render()} function setIndexFilter(x){indexFilter=x;render()}
 
@@ -585,13 +590,15 @@ function abilityPower(c,roundIndex,teamScore,enemyScore){
 }
 function renderBattle(){
  cleanTeam();
- if($("#stars")) $("#stars").textContent="RANDOM ★–★★★★★";
+ if($("#stars")) $("#stars").textContent="TEAM-BASED MATCHMAKING";
  if(!$("#teamSlots"))return;
  $("#teamSlots").innerHTML=[0,1,2].map(i=>{
    const id=state.team[i],c=CARDS.find(x=>x.id===id);
    if(!c)return `<div class="slot" onclick="openPicker(${i})"><b>+ CHOOSE CARD</b></div>`;
-   const s=stats(c);return `<div class="slot" onclick="openPicker(${i})"><img src="${c.image}"><b>${c.name} · OVR ${overall(c)}</b><div class="statline"><span>A ${s.atk}</span><span>D ${s.def}</span><span>S ${s.spd}</span></div><div class="ability">${abilityFor(c).name}</div></div>`;
+   const s=stats(c);return `<div class="slot" style="border-color:${R[tierFor(c)].color};background:color-mix(in srgb,${R[tierFor(c)].color} 25%,white)" onclick="openPicker(${i})"><img src="${c.image}"><b>${c.name} · OVR ${overall(c)}</b><div class="statline"><span>A ${s.atk}</span><span>D ${s.def}</span><span>S ${s.spd}</span></div><div class="ability">${abilityFor(c).name}</div></div>`;
  }).join("");
+
+ updateTeamRatingUI();
 }
 function openPicker(i){
  pickSlot=i;
@@ -608,6 +615,13 @@ function chooseTeamCard(id){
  state.team.splice(pickSlot,0,id);state.team=state.team.slice(0,3);
  save();closePicker();renderBattle();
 }
+function rarityRank(c){return {Common:1,Uncommon:2,Rare:3,Epic:4,Legendary:5,Exotic:6}[tierFor(c)]||1}
+function ratingMeta(n){return {1:["GRAY","★","#9b9b9b"],2:["GREEN","★★","#27c45b"],3:["BLUE","★★★","#2587ff"],4:["PURPLE","★★★★","#a34cff"],5:["GOLD","★★★★★","#f0ad16"],6:["EXOTIC","★★★★★★","#55eaff"]}[n]||["GRAY","★","#9b9b9b"]}
+function teamRating(cards){if(!cards.length)return 1;const r=cards.map(rarityRank).sort((a,b)=>a-b);if(r.length===3){if(r.every(x=>x===6))return 6;if(r[0]===r[1])return r[0];if(r[1]===r[2])return r[1];return r[1]}return Math.round(r.reduce((a,b)=>a+b,0)/r.length)}
+function updateTeamRatingUI(){if(!$("#teamRatingBox"))return;const cs=(state.team||[]).map(id=>CARDS.find(c=>c.id===id)).filter(Boolean),m=ratingMeta(teamRating(cs));$("#teamRatingBox").style.setProperty("--team-color",m[2]);$("#teamRatingName").textContent=m[0];$("#teamRatingStars").textContent=m[1];$("#teamRatingStars").style.color=m[2]}
+function botCardForRating(n){const t={1:"Common",2:"Uncommon",3:"Rare",4:"Epic",5:"Legendary",6:"Exotic"}[n];let pool=CARDS.filter(c=>tierFor(c)===t&&c.id!==ICE_AGENTS_ID&&c.id!==MORE_BULLETS_ID);if(!pool.length)pool=CARDS.filter(c=>tierFor(c)===t);return pool[Math.floor(Math.random()*pool.length)]||pickCard(t)}
+function fairBotDeck(level){if(Math.random()<.0002)return {level:6,cards:[botCardForRating(6),botCardForRating(6),botCardForRating(6)]};let n=Math.min(5,level),r=Math.random();if(r<.18)n=Math.max(1,n-1);else if(r>.62)n=Math.min(5,n+1);const patterns={1:[[1,1,1],[1,1,2]],2:[[2,2,2],[1,2,2],[2,2,3]],3:[[3,3,3],[2,3,3],[3,3,4]],4:[[4,4,4],[3,4,4],[4,4,5]],5:[[5,5,5],[4,5,5]]};const p=patterns[n][Math.floor(Math.random()*patterns[n].length)];return {level:n,cards:p.map(botCardForRating)}}
+function renderRecords(){const w=state.battleWins||0,l=state.battleLosses||0,p=w+l;if($("#recPlayed"))$("#recPlayed").textContent=p;if($("#recWins"))$("#recWins").textContent=w;if($("#recLosses"))$("#recLosses").textContent=l;if($("#recRate"))$("#recRate").textContent=p?Math.round(w/p*100)+"%":"0%";if($("#recStreak"))$("#recStreak").textContent=state.winStreak||0;if($("#recBest"))$("#recBest").textContent=state.bestWinStreak||0;if($("#recBossWins"))$("#recBossWins").textContent=(state.bossWins||0)+(state.moreBulletsBossWins||0);if($("#recBossLosses"))$("#recBossLosses").textContent=state.bossLosses||0}
 function botDeck(d){
  const weights=[
   {Common:86,Uncommon:12,Rare:2,Epic:0,Legendary:0},
@@ -626,7 +640,7 @@ function maxHP(c,difficulty=0){
 }
 function damage(attacker,defender,difficulty=0){
  const a=stats(attacker),d=stats(defender);
- const raw=a.atk*1.18+a.spd*.24-d.def*.58+difficulty*3;
+ const raw=a.atk*1.18+a.spd*.24-d.def*.58+difficulty*7;
  return Math.max(7,Math.round(raw*(.9+Math.random()*.2)));
 }
 function arenaCard(c,hp,max,active=false){
@@ -640,7 +654,7 @@ function drawArena(team,enemy,php,ehp,pmax,emax,pa=-1,ea=-1,d=1){
  $("#arenaStars").style.color=starColor(d);
  $("#arenaStars").textContent="★".repeat(d);
  $("#playerArena").innerHTML=team.map((c,i)=>arenaCard(c,php[i],pmax[i],i===pa)).join("");
- $("#enemyArena").innerHTML=enemy.map((c,i)=>arenaCard(c,ehp[i],emax[i],i===ea)).join("");
+ $("#enemyArena").classList.remove("boss-single-center");$("#enemyArena").innerHTML=enemy.map((c,i)=>arenaCard(c,ehp[i],emax[i],i===ea)).join("");
 }
 function aliveIndexes(hp){return hp.map((x,i)=>x>0?i:-1).filter(i=>i>=0)}
 function nextAliveFrom(hp,start){
@@ -717,8 +731,10 @@ async function startBattle(){
  const team=state.team.map(id=>CARDS.find(c=>c.id===id)).filter(Boolean);
  if(team.length<3){toast("Choose 3 owned cards first");return}
 
- const difficulty=1+Math.floor(Math.random()*5);
- const enemy=botDeck(difficulty);
+ const playerLevel=teamRating(team);
+ const match=fairBotDeck(playerLevel);
+ const difficulty=match.level;
+ const enemy=match.cards;
  const pmax=team.map(c=>maxHP(c));
  const emax=enemy.map(c=>maxHP(c,difficulty));
  const php=pmax.slice(),ehp=emax.slice();
@@ -915,7 +931,7 @@ async function runBossHealthBattle(boss,bossName,bossDifficulty,playerDamageBonu
 
 function drawBossArena(team,boss,php,ehp,pmax,emax,pa=-1,bossActive=false){
  $("#playerArena").innerHTML=team.map((c,i)=>arenaCard(c,php[i],pmax[i],i===pa)).join("");
- $("#enemyArena").innerHTML=arenaCard(boss,ehp[0],emax[0],bossActive);
+ $("#enemyArena").classList.add("boss-single-center");$("#enemyArena").innerHTML=arenaCard(boss,ehp[0],emax[0],bossActive);
 }
 
 async function startBossBattle(){
@@ -942,7 +958,7 @@ async function startBossBattle(){
    state.normalWinsSinceBoss=0;
    state.bossUnlocked=false;
    save();
-   showResult(false,"Ice Agents eliminated your entire team.");
+   state.bossLosses=(state.bossLosses||0)+1;save();showResult(false,"Ice Agents eliminated your entire team.");
  }
 }
 
@@ -970,7 +986,7 @@ async function startMoreBulletsBoss(){
    state.moreBulletsBossUnlocked=false;
    state.moreBulletsProgress=0;
    save();
-   showResult(false,"I Need More Bullets eliminated your entire team.");
+   state.bossLosses=(state.bossLosses||0)+1;save();showResult(false,"I Need More Bullets eliminated your entire team.");
  }
 }
 
