@@ -13,16 +13,28 @@ button{font:inherit}.app{max-width:520px;margin:auto;min-height:100dvh;padding:e
 .gift{background:#201700;color:#fff7d6;border:2px solid #ffe57a;border-radius:20px;padding:16px;margin:10px 0 16px;box-shadow:0 10px 25px #6b4b0044}.gift b{color:#ffd84d}.gift button,.primary{width:100%;border:0;border-radius:14px;background:linear-gradient(#ffe36d,#e6aa0c);padding:13px;font-weight:1000;color:#261900;box-shadow:0 5px 0 #8b6200}
 .pack-grid{display:grid;gap:12px}.pack{border:2px solid #ffffff88;border-radius:22px;padding:14px;background:#fff7d6cc;box-shadow:0 10px 22px #6d4b0033}.pack-head{display:flex;justify-content:space-between;align-items:center}.pack-name{font-size:21px;font-weight:1000}.pack-price{font-weight:1000}.odds{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin:12px 0 10px}.odd{font-size:10px;text-align:center;padding:6px 2px;border-radius:8px;color:white;font-weight:900}.pack button{width:100%;border:0;border-radius:13px;padding:12px;font-weight:1000;background:#241a00;color:#ffe26a}
 .collection-head{display:flex;gap:8px;overflow:auto;padding:8px 0 12px}.chip{white-space:nowrap;border:0;border-radius:999px;padding:9px 12px;background:#fff3c0;font-weight:900}.chip.on{background:#241a00;color:#ffd84d}.cards{display:grid;grid-template-columns:1fr 1fr;gap:11px}.card{position:relative;background:#fff;border-radius:17px;padding:7px;box-shadow:0 8px 18px #61430044;border:4px solid var(--rarity);overflow:hidden}.card img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:10px;background:#ddd}.card .nm{font-size:12px;font-weight:1000;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card .meta{display:flex;justify-content:space-between;font-size:11px;font-weight:900;margin-top:4px}.card .sell{width:100%;margin-top:7px;border:0;border-radius:9px;padding:8px;background:#251a00;color:#ffe16b;font-weight:900}.locked img{filter:grayscale(1) brightness(.25)}.locked .sell{display:none}
-.nav{position:fixed;z-index:10;left:50%;transform:translateX(-50%);bottom:0;width:min(520px,100%);display:grid;grid-template-columns:1fr 1fr;background:#211800f2;padding:8px 10px calc(8px + env(safe-area-inset-bottom));gap:8px}.nav button{border:0;border-radius:13px;padding:12px;background:transparent;color:#fff2b5;font-weight:1000}.nav button.on{background:#f2c536;color:#241900}
+.nav{position:fixed;z-index:10;left:50%;transform:translateX(-50%);bottom:0;width:min(520px,100%);display:grid;grid-template-columns:repeat(3,1fr);background:#211800f2;padding:8px 10px calc(8px + env(safe-area-inset-bottom));gap:8px}.nav button{border:0;border-radius:13px;padding:12px;background:transparent;color:#fff2b5;font-weight:1000}.nav button.on{background:#f2c536;color:#241900}
 .modal{position:fixed;inset:0;z-index:30;background:radial-gradient(circle,#f8da58,#9a6700);display:none;align-items:center;justify-content:center;padding:18px}.modal.show{display:flex}.opening{width:min(390px,100%);text-align:center}.packbag{height:410px;border-radius:30px;background:linear-gradient(145deg,var(--packcolor),#211500);border:5px solid #ffe98c;display:flex;align-items:center;justify-content:center;color:white;font-size:30px;font-weight:1000;box-shadow:0 25px 50px #0006;position:relative;overflow:hidden;animation:float 1.6s ease-in-out infinite}.packbag:before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 25%,#ffffff55 45%,transparent 62%);transform:translateX(-120%);animation:shine 2s infinite}.packbag small{display:block;font-size:13px;margin-top:10px}.reveal{display:none}.reveal-card{border:6px solid var(--rarity);border-radius:25px;background:white;padding:10px;box-shadow:0 25px 55px #0008;animation:pop .35s ease-out}.reveal-card img{width:100%;height:55dvh;max-height:520px;object-fit:cover;border-radius:16px}.reveal-card h2{margin:8px 0 2px}.reveal-card p{margin:0 0 7px;font-weight:1000}.tap{margin-top:14px;font-weight:1000}.close{margin-top:12px;width:100%;border:0;border-radius:13px;padding:12px;background:#211800;color:#ffe16b;font-weight:1000}
 @keyframes float{50%{transform:translateY(-8px) rotate(-1deg)}}@keyframes shine{to{transform:translateX(120%)}}@keyframes pop{from{transform:scale(.72) rotateY(60deg);opacity:.2}}
 .toast{position:fixed;z-index:50;left:50%;top:75px;transform:translateX(-50%) translateY(-20px);background:#201700;color:#ffe67d;border-radius:999px;padding:10px 16px;font-weight:900;opacity:0;transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style></head><body><div class="app">
-<div class="top"><div class="brand">GOLDEN PULLS</div><div class="wallet">● <span id="coins">0</span></div></div>
+<div class="top"><div class="brand">GOLDEN PULLS <span style="font-size:11px;background:#241a00;color:#ffd84d;padding:4px 7px;border-radius:999px;vertical-align:middle">V2</span></div><div class="wallet">● <span id="coins">0</span></div></div>
 <section id="shop" class="screen active"><div class="hero"><h1>PACK SHOP</h1><p>Five cards in every pack. Tap a pack to rip it open.</p></div><div id="gift"></div><div class="pack-grid" id="packs"></div></section>
+<section id="rewards" class="screen">
+<div class="hero"><h1>REWARDS</h1><p>Come back for free packs and try the prize wheel.</p></div>
+<div class="gift" id="freePackBox"></div>
+<div class="pack" style="margin-top:12px">
+  <div class="pack-head"><div class="pack-name">PRIZE WHEEL</div><div class="pack-price">● 5,000</div></div>
+  <div id="wheel" style="width:260px;height:260px;margin:18px auto;border-radius:50%;border:8px solid #fff0a8;background:conic-gradient(#8b8b8b 0 15%,#35a853 15% 30%,#3182ce 30% 40%,#8b5cf6 40% 48%,#f3c933 48% 56%,#8b8b8b 56% 70%,#35a853 70% 82%,#3182ce 82% 90%,#8b8b8b 90% 100%);display:grid;place-items:center;box-shadow:0 12px 28px #5c3d0055;transition:transform 2.6s cubic-bezier(.15,.7,.1,1)">
+    <div style="width:72px;height:72px;border-radius:50%;background:#241a00;color:#ffd84d;display:grid;place-items:center;font-weight:1000">SPIN</div>
+  </div>
+  <div style="font-size:12px;font-weight:900;text-align:center;margin-bottom:10px">12 slots: 5 Common · 3 Uncommon · 2 Rare · 1 Epic · 1 × 5,000 points</div>
+  <button onclick="spinWheel()">SPIN FOR 5,000</button>
+</div>
+</section>
 <section id="collection" class="screen"><div class="hero"><h1>COLLECTION</h1><p><span id="ownedCount">0</span> unique cards unlocked.</p></div><div class="collection-head" id="filters"></div><div class="cards" id="cards"></div></section>
 </div>
-<div class="nav"><button class="on" data-screen="shop">PACKS</button><button data-screen="collection">COLLECTION</button></div>
+<div class="nav"><button class="on" data-screen="shop">PACKS</button><button data-screen="rewards">REWARDS</button><button data-screen="collection">COLLECTION</button></div>
 <div class="modal" id="modal"><div class="opening"><div id="packStage"><div class="packbag" id="packbag"><div><div id="bagName">RARE PACK</div><small>TAP TO TEAR OPEN</small></div></div></div><div class="reveal" id="reveal"><div class="reveal-card" id="revealCard"><img id="revealImg"><h2 id="revealName"></h2><p id="revealRarity"></p></div><div class="tap" id="revealTap">SWIPE LEFT OR TAP FOR NEXT</div><button class="close" id="doneBtn" style="display:none">ADD TO COLLECTION</button></div></div></div>
 <div class="toast" id="toast"></div>
 <script>
@@ -36,16 +48,24 @@ const PACKS=[
 {name:"Epic",price:14000,odds:{Common:30,Uncommon:25,Rare:23,Epic:17,Legendary:5}},
 {name:"Legendary",price:24000,odds:{Common:27,Uncommon:24,Rare:22,Epic:17,Legendary:10}}
 ];
-let state=JSON.parse(localStorage.getItem("goldenPullsV1")||"null")||{coins:0,owned:{},welcome:3};
+let state=JSON.parse(localStorage.getItem("goldenPullsV2")||localStorage.getItem("goldenPullsV1")||"null")||{coins:0,owned:{},welcome:3};
+if(state.freeUncommonAt===undefined) state.freeUncommonAt=0;
+if(state.wheelSpins===undefined) state.wheelSpins=0;
 let current=[],idx=0,filter="ALL";
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-function save(){localStorage.setItem("goldenPullsV1",JSON.stringify(state));render()}
+function save(){localStorage.setItem("goldenPullsV2",JSON.stringify(state));render()}
 function toast(t){$("#toast").textContent=t;$("#toast").classList.add("show");setTimeout(()=>$("#toast").classList.remove("show"),1300)}
 function fmt(n){return Math.round(n).toLocaleString()}
 function pickRarity(odds){let x=Math.random()*100,a=0;for(const k of Object.keys(odds)){a+=odds[k];if(x<a)return k}return "Common"}
 function pickCard(r){let pool=CARDS.filter(c=>c.rarity===r); if(!pool.length)pool=CARDS; return pool[Math.floor(Math.random()*pool.length)]}
 function render(){
  $("#coins").textContent=fmt(state.coins);
+ let now=Date.now(), left=Math.max(0,(state.freeUncommonAt||0)-now);
+ let fp=$("#freePackBox");
+ if(fp){
+   if(left<=0) fp.innerHTML=`<b>FREE PACK READY</b><div style="font-size:24px;font-weight:1000;margin:5px 0">UNCOMMON PACK</div><div style="margin-bottom:12px">Available every 2 hours</div><button onclick="claimFreeUncommon()">OPEN FREE PACK</button>`;
+   else { let s=Math.ceil(left/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60; fp.innerHTML=`<b>NEXT FREE UNCOMMON PACK</b><div style="font-size:30px;font-weight:1000;margin:8px 0">${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(ss).padStart(2,"0")}</div><div>Timer keeps running while you are away.</div>`; }
+ }
  $("#gift").innerHTML=state.welcome?`<div class="gift"><b>WELCOME GIFT</b><div style="font-size:24px;font-weight:1000;margin:5px 0">3 FREE RARE PACKS</div><div style="margin-bottom:12px">${state.welcome} remaining</div><button onclick="openPack('Rare',true)">OPEN FREE RARE PACK</button></div>`:"";
  $("#packs").innerHTML=PACKS.map(p=>`<div class="pack"><div class="pack-head"><div class="pack-name" style="color:${R[p.name].color}">${p.name.toUpperCase()} PACK</div><div class="pack-price">● ${fmt(p.price)}</div></div><div class="odds">${Object.entries(p.odds).map(([r,o])=>`<div class="odd" style="background:${R[r].color}">${r[0]}<br>${o}%</div>`).join("")}</div><button onclick="openPack('${p.name}',false)">BUY + OPEN</button></div>`).join("");
  let ownedUnique=Object.keys(state.owned).filter(k=>state.owned[k]>0).length; $("#ownedCount").textContent=ownedUnique;
@@ -66,6 +86,50 @@ function showCard(){let c=current[idx];$("#revealCard").style.setProperty("--rar
 function nextCard(){if(idx<4){idx++;showCard()}}
 $("#revealCard").onclick=nextCard; let sx=0;$("#revealCard").addEventListener("touchstart",e=>sx=e.touches[0].clientX);$("#revealCard").addEventListener("touchend",e=>{if(sx-e.changedTouches[0].clientX>35)nextCard()});
 $("#doneBtn").onclick=()=>{current.forEach(c=>state.owned[c.id]=(state.owned[c.id]||0)+1);save();$("#modal").classList.remove("show");toast("5 cards added")}
-$$(".nav button").forEach(b=>b.onclick=()=>{$$(".nav button").forEach(x=>x.classList.remove("on"));b.classList.add("on");$$(".screen").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.screen).classList.add("active");render()});
+
+function claimFreeUncommon(){
+ if(Date.now() < (state.freeUncommonAt||0)){toast("Free pack is not ready yet");return}
+ state.freeUncommonAt=Date.now()+2*60*60*1000;
+ save(); openPack("Uncommon",true);
+}
+const WHEEL=["Common","Common","Common","Common","Common","Uncommon","Uncommon","Uncommon","Rare","Rare","Epic","Coins"];
+let spinning=false;
+function spinWheel(){
+ if(spinning)return;
+ if(state.coins<5000){toast("You need 5,000 points");return}
+ state.coins-=5000; spinning=true; save();
+ let prize=WHEEL[Math.floor(Math.random()*WHEEL.length)];
+ let wheel=$("#wheel"); state.wheelSpins=(state.wheelSpins||0)+1;
+ wheel.style.transform=`rotate(${state.wheelSpins*1440 + Math.floor(Math.random()*360)}deg)`;
+ setTimeout(()=>{
+   spinning=false;
+   if(prize==="Coins"){state.coins+=5000;save();toast("Wheel prize: 5,000 points!")}
+   else {toast(`Wheel prize: ${prize} Pack!`); setTimeout(()=>openPack(prize,true),500)}
+ },2700);
+}
+setInterval(()=>{if($("#rewards").classList.contains("active"))render()},1000);
+$$(".nav button").forEach(b=>b.onclick=()=>{
+function claimFreeUncommon(){
+ if(Date.now() < (state.freeUncommonAt||0)){toast("Free pack is not ready yet");return}
+ state.freeUncommonAt=Date.now()+2*60*60*1000;
+ save(); openPack("Uncommon",true);
+}
+const WHEEL=["Common","Common","Common","Common","Common","Uncommon","Uncommon","Uncommon","Rare","Rare","Epic","Coins"];
+let spinning=false;
+function spinWheel(){
+ if(spinning)return;
+ if(state.coins<5000){toast("You need 5,000 points");return}
+ state.coins-=5000; spinning=true; save();
+ let prize=WHEEL[Math.floor(Math.random()*WHEEL.length)];
+ let wheel=$("#wheel"); state.wheelSpins=(state.wheelSpins||0)+1;
+ wheel.style.transform=`rotate(${state.wheelSpins*1440 + Math.floor(Math.random()*360)}deg)`;
+ setTimeout(()=>{
+   spinning=false;
+   if(prize==="Coins"){state.coins+=5000;save();toast("Wheel prize: 5,000 points!")}
+   else {toast(`Wheel prize: ${prize} Pack!`); setTimeout(()=>openPack(prize,true),500)}
+ },2700);
+}
+setInterval(()=>{if($("#rewards").classList.contains("active"))render()},1000);
+$$(".nav button").forEach(x=>x.classList.remove("on"));b.classList.add("on");$$(".screen").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.screen).classList.add("active");render()});
 render();
 </script></body></html>
