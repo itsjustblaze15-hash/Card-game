@@ -1,4 +1,4 @@
 {
-  "version": "6",
-  "build": "mobile-scrollable-bottom-nav"
+  "version": "7",
+  "build": "clean-v7-from-working-v6"
 }
