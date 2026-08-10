@@ -1,46 +1,118 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#d9a514">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#f3c933">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Golden Pulls">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
+<link rel="manifest" href="./manifest.webmanifest">
 <title>Golden Pulls</title>
 <style>
-:root{--gold:#f3c933;--deep:#8d6500;--cream:#fff7d6;--ink:#201700;--common:#8b8b8b;--uncommon:#35a853;--rare:#3182ce;--epic:#8b5cf6;--legendary:#f28c28}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent} body{margin:0;font-family:ui-rounded,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 50% -10%,#fff3a3 0,#f3c933 38%,#c48b09 100%);color:var(--ink);min-height:100dvh;overflow-x:hidden}
-button{font:inherit}.app{max-width:520px;margin:auto;min-height:100dvh;padding:env(safe-area-inset-top) 14px calc(82px + env(safe-area-inset-bottom))}
-.top{position:sticky;top:0;z-index:5;padding:12px 2px 10px;background:linear-gradient(#f3c933ee,#f3c933bb,transparent);display:flex;align-items:center;justify-content:space-between}.brand{font-weight:1000;letter-spacing:.5px;font-size:22px}.wallet{background:#241a00;color:#ffd84d;border:2px solid #ffe888;border-radius:999px;padding:9px 13px;font-weight:900;box-shadow:0 4px 0 #6d4b00}
-.screen{display:none}.screen.active{display:block}.hero{padding:12px 0 6px}.hero h1{font-size:32px;line-height:1;margin:8px 0}.hero p{margin:0 0 14px;font-weight:700;color:#5d4300}
-.gift{background:#201700;color:#fff7d6;border:2px solid #ffe57a;border-radius:20px;padding:16px;margin:10px 0 16px;box-shadow:0 10px 25px #6b4b0044}.gift b{color:#ffd84d}.gift button,.primary{width:100%;border:0;border-radius:14px;background:linear-gradient(#ffe36d,#e6aa0c);padding:13px;font-weight:1000;color:#261900;box-shadow:0 5px 0 #8b6200}
-.pack-grid{display:grid;gap:12px}.pack{border:2px solid #ffffff88;border-radius:22px;padding:14px;background:#fff7d6cc;box-shadow:0 10px 22px #6d4b0033}.pack-head{display:flex;justify-content:space-between;align-items:center}.pack-name{font-size:21px;font-weight:1000}.pack-price{font-weight:1000}.odds{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin:12px 0 10px}.odd{font-size:10px;text-align:center;padding:6px 2px;border-radius:8px;color:white;font-weight:900}.pack button{width:100%;border:0;border-radius:13px;padding:12px;font-weight:1000;background:#241a00;color:#ffe26a}
-.collection-head{display:flex;gap:8px;overflow:auto;padding:8px 0 12px}.chip{white-space:nowrap;border:0;border-radius:999px;padding:9px 12px;background:#fff3c0;font-weight:900}.chip.on{background:#241a00;color:#ffd84d}.cards{display:grid;grid-template-columns:1fr 1fr;gap:11px}.card{position:relative;background:#fff;border-radius:17px;padding:7px;box-shadow:0 8px 18px #61430044;border:4px solid var(--rarity);overflow:hidden}.card img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:10px;background:#ddd}.card .nm{font-size:12px;font-weight:1000;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card .meta{display:flex;justify-content:space-between;font-size:11px;font-weight:900;margin-top:4px}.card .sell{width:100%;margin-top:7px;border:0;border-radius:9px;padding:8px;background:#251a00;color:#ffe16b;font-weight:900}.locked img{filter:grayscale(1) brightness(.25)}.locked .sell{display:none}
-.nav{position:fixed;z-index:10;left:50%;transform:translateX(-50%);bottom:0;width:min(520px,100%);display:grid;grid-template-columns:repeat(3,1fr);background:#211800f2;padding:8px 10px calc(8px + env(safe-area-inset-bottom));gap:8px}.nav button{border:0;border-radius:13px;padding:12px;background:transparent;color:#fff2b5;font-weight:1000}.nav button.on{background:#f2c536;color:#241900}
-.modal{position:fixed;inset:0;z-index:30;background:radial-gradient(circle,#f8da58,#9a6700);display:none;align-items:center;justify-content:center;padding:18px}.modal.show{display:flex}.opening{width:min(390px,100%);text-align:center}.packbag{height:410px;border-radius:30px;background:linear-gradient(145deg,var(--packcolor),#211500);border:5px solid #ffe98c;display:flex;align-items:center;justify-content:center;color:white;font-size:30px;font-weight:1000;box-shadow:0 25px 50px #0006;position:relative;overflow:hidden;animation:float 1.6s ease-in-out infinite}.packbag:before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 25%,#ffffff55 45%,transparent 62%);transform:translateX(-120%);animation:shine 2s infinite}.packbag small{display:block;font-size:13px;margin-top:10px}.reveal{display:none}.reveal-card{border:6px solid var(--rarity);border-radius:25px;background:white;padding:10px;box-shadow:0 25px 55px #0008;animation:pop .35s ease-out}.reveal-card img{width:100%;height:55dvh;max-height:520px;object-fit:cover;border-radius:16px}.reveal-card h2{margin:8px 0 2px}.reveal-card p{margin:0 0 7px;font-weight:1000}.tap{margin-top:14px;font-weight:1000}.close{margin-top:12px;width:100%;border:0;border-radius:13px;padding:12px;background:#211800;color:#ffe16b;font-weight:1000}
-@keyframes float{50%{transform:translateY(-8px) rotate(-1deg)}}@keyframes shine{to{transform:translateX(120%)}}@keyframes pop{from{transform:scale(.72) rotateY(60deg);opacity:.2}}
-.toast{position:fixed;z-index:50;left:50%;top:75px;transform:translateX(-50%) translateY(-20px);background:#201700;color:#ffe67d;border-radius:999px;padding:10px 16px;font-weight:900;opacity:0;transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-</style></head><body><div class="app">
-<div class="top"><div class="brand">GOLDEN PULLS <span style="font-size:11px;background:#241a00;color:#ffd84d;padding:4px 7px;border-radius:999px;vertical-align:middle">V2</span></div><div class="wallet">● <span id="coins">0</span></div></div>
-<section id="shop" class="screen active"><div class="hero"><h1>PACK SHOP</h1><p>Five cards in every pack. Tap a pack to rip it open.</p></div><div id="gift"></div><div class="pack-grid" id="packs"></div></section>
-<section id="rewards" class="screen">
-<div class="hero"><h1>REWARDS</h1><p>Come back for free packs and try the prize wheel.</p></div>
-<div class="gift" id="freePackBox"></div>
-<div class="pack" style="margin-top:12px">
-  <div class="pack-head"><div class="pack-name">PRIZE WHEEL</div><div class="pack-price">● 5,000</div></div>
-  <div id="wheel" style="width:260px;height:260px;margin:18px auto;border-radius:50%;border:8px solid #fff0a8;background:conic-gradient(#8b8b8b 0 15%,#35a853 15% 30%,#3182ce 30% 40%,#8b5cf6 40% 48%,#f3c933 48% 56%,#8b8b8b 56% 70%,#35a853 70% 82%,#3182ce 82% 90%,#8b8b8b 90% 100%);display:grid;place-items:center;box-shadow:0 12px 28px #5c3d0055;transition:transform 2.6s cubic-bezier(.15,.7,.1,1)">
-    <div style="width:72px;height:72px;border-radius:50%;background:#241a00;color:#ffd84d;display:grid;place-items:center;font-weight:1000">SPIN</div>
-  </div>
-  <div style="font-size:12px;font-weight:900;text-align:center;margin-bottom:10px">12 slots: 5 Common · 3 Uncommon · 2 Rare · 1 Epic · 1 × 5,000 points</div>
-  <button onclick="spinWheel()">SPIN FOR 5,000</button>
+:root{--gold:#f3c933;--deep:#8d6500;--cream:#fff7d6;--ink:#201700;--common:#9b9b9b;--uncommon:#27c45b;--rare:#2587ff;--epic:#a34cff;--legendary:#ff8a1f}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:ui-rounded,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 50% -10%,#fff4a8 0,#f3c933 38%,#c58d08 100%);color:var(--ink);min-height:100dvh;overflow-x:hidden}
+button{font:inherit;cursor:pointer}
+.app{max-width:520px;margin:auto;min-height:100dvh;padding:env(safe-area-inset-top) 14px calc(84px + env(safe-area-inset-bottom))}
+.top{position:sticky;top:0;z-index:8;padding:12px 2px 10px;background:linear-gradient(#f3c933f5,#f3c933c7,transparent);display:flex;align-items:center;gap:8px}
+.brand{font-weight:1000;letter-spacing:.4px;font-size:20px;white-space:nowrap}
+.vbadge{font-size:11px;background:#241a00;color:#ffd84d;padding:4px 7px;border-radius:999px;vertical-align:middle}
+.update{margin-left:auto;border:1px solid #ffe888;border-radius:999px;background:#fff1a5;color:#241a00;padding:7px 9px;font-weight:1000;font-size:10px}
+.wallet{background:#241a00;color:#ffd84d;border:2px solid #ffe888;border-radius:999px;padding:8px 11px;font-weight:900;box-shadow:0 4px 0 #6d4b00;white-space:nowrap}
+.screen{display:none} .screen.active{display:block}
+.hero{padding:12px 0 6px} .hero h1{font-size:31px;line-height:1;margin:8px 0} .hero p{margin:0 0 14px;font-weight:700;color:#5d4300}
+.gift,.panel{background:#201700;color:#fff7d6;border:2px solid #ffe57a;border-radius:20px;padding:16px;margin:10px 0 16px;box-shadow:0 10px 25px #6b4b0044}
+.gift b,.panel b{color:#ffd84d}
+.primary,.gift button,.panel button{width:100%;border:0;border-radius:14px;background:linear-gradient(#ffe36d,#e6aa0c);padding:13px;font-weight:1000;color:#261900;box-shadow:0 5px 0 #8b6200}
+.pack-grid{display:grid;gap:12px} .pack{border:2px solid #ffffff88;border-radius:22px;padding:14px;background:#fff7d6dc;box-shadow:0 10px 22px #6d4b0033}
+.pack-head{display:flex;justify-content:space-between;align-items:center} .pack-name{font-size:21px;font-weight:1000} .pack-price{font-weight:1000}
+.odds{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin:12px 0 10px} .odd{font-size:10px;text-align:center;padding:6px 2px;border-radius:8px;color:white;font-weight:900}
+.pack button{width:100%;border:0;border-radius:13px;padding:12px;font-weight:1000;background:#241a00;color:#ffe26a}
+.collection-head{display:flex;gap:8px;overflow:auto;padding:8px 0 12px} .chip{white-space:nowrap;border:0;border-radius:999px;padding:9px 12px;background:#fff3c0;font-weight:900} .chip.on{background:#241a00;color:#ffd84d}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:11px} .card{position:relative;background:#fff;border-radius:17px;padding:7px;box-shadow:0 8px 18px #61430044;border:4px solid var(--rarity);overflow:hidden}
+.card img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:10px;background:#ddd} .card .nm{font-size:12px;font-weight:1000;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .meta{display:flex;justify-content:space-between;font-size:11px;font-weight:900;margin-top:4px} .card .sell{width:100%;margin-top:7px;border:0;border-radius:9px;padding:8px;background:#251a00;color:#ffe16b;font-weight:900}
+.locked img{filter:grayscale(1) brightness(.28)} .locked .sell{display:none}
+.nav{position:fixed;z-index:10;left:50%;transform:translateX(-50%);bottom:0;width:min(520px,100%);display:grid;grid-template-columns:repeat(4,1fr);background:#211800f2;padding:8px 8px calc(8px + env(safe-area-inset-bottom));gap:5px}
+.nav button{border:0;border-radius:12px;padding:10px 3px;background:transparent;color:#fff2b5;font-weight:1000;font-size:10px} .nav button.on{background:#f2c536;color:#241900}
+.modal{position:fixed;inset:0;z-index:30;background:radial-gradient(circle,#f8da58,#9a6700);display:none;align-items:center;justify-content:center;padding:18px} .modal.show{display:flex}
+.opening{width:min(390px,100%);text-align:center} .packbag{height:410px;border-radius:30px;background:linear-gradient(145deg,var(--packcolor),#211500);border:5px solid #ffe98c;display:flex;align-items:center;justify-content:center;color:white;font-size:30px;font-weight:1000;box-shadow:0 25px 50px #0006;position:relative;overflow:hidden;animation:float 1.6s ease-in-out infinite}
+.packbag:before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 25%,#ffffff55 45%,transparent 62%);transform:translateX(-120%);animation:shine 2s infinite} .packbag small{display:block;font-size:13px;margin-top:10px}
+.reveal{display:none} .reveal-card{border:6px solid var(--rarity);border-radius:25px;background:white;padding:10px;box-shadow:0 25px 55px #0008;animation:pop .35s ease-out}
+.reveal-card img{width:100%;height:55dvh;max-height:520px;object-fit:cover;border-radius:16px} .reveal-card h2{margin:8px 0 2px} .reveal-card p{margin:0 0 7px;font-weight:1000}
+.tap{margin-top:14px;font-weight:1000} .close{margin-top:12px;width:100%;border:0;border-radius:13px;padding:12px;background:#211800;color:#ffe16b;font-weight:1000}
+.toast{position:fixed;z-index:50;left:50%;top:75px;transform:translateX(-50%) translateY(-20px);background:#201700;color:#ffe67d;border-radius:999px;padding:10px 16px;font-weight:900;opacity:0;transition:.2s;pointer-events:none;max-width:90%;text-align:center} .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.wheel-wrap{position:relative;width:288px;height:308px;margin:8px auto 14px} .pointer{position:absolute;z-index:5;top:0;left:50%;transform:translateX(-50%);width:0;height:0;border-left:18px solid transparent;border-right:18px solid transparent;border-top:34px solid #e21b23;filter:drop-shadow(0 3px 2px #0005)}
+.wheel{position:absolute;left:14px;top:22px;width:260px;height:260px;border-radius:50%;border:8px solid #fff4bd;box-shadow:0 14px 30px #5d3e0050;transition:transform 3.5s cubic-bezier(.12,.72,.06,1);overflow:hidden}
+.wheel-center{position:absolute;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);width:78px;height:78px;border-radius:50%;background:#241a00;color:#ffd84d;border:5px solid #fff0a4;display:grid;place-items:center;font-weight:1000}
+.wheel-label{position:absolute;left:50%;top:50%;width:95px;margin-left:-47.5px;margin-top:-9px;text-align:right;transform-origin:47.5px 9px;font-size:9px;font-weight:1000;color:white;text-shadow:0 1px 2px #000;pointer-events:none}
+.resultbox{display:none;background:#fff2aa;border:2px solid #e5a900;border-radius:15px;padding:12px;margin:12px 0;font-weight:1000;text-align:center}
+@keyframes float{50%{transform:translateY(-8px) rotate(-1deg)}} @keyframes shine{to{transform:translateX(120%)}} @keyframes pop{from{transform:scale(.72) rotateY(60deg);opacity:.2}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="top">
+  <div class="brand">GOLDEN PULLS <span class="vbadge">V3</span></div>
+  <button id="updateBtn" class="update" onclick="checkForUpdate()">UPDATE</button>
+  <div class="wallet">● <span id="coins">0</span></div>
 </div>
+
+<section id="shop" class="screen active">
+  <div class="hero"><h1>PACK SHOP</h1><p>Five cards in every pack. Odds are shown before you buy.</p></div>
+  <div id="gift"></div>
+  <div class="pack-grid" id="packs"></div>
 </section>
-<section id="collection" class="screen"><div class="hero"><h1>COLLECTION</h1><p><span id="ownedCount">0</span> unique cards unlocked.</p></div><div class="collection-head" id="filters"></div><div class="cards" id="cards"></div></section>
+
+<section id="rewards" class="screen">
+  <div class="hero"><h1>REWARDS</h1><p>Free packs, timers, and the prize wheel.</p></div>
+  <div id="freePackBox"></div>
+  <div class="pack">
+    <div class="pack-head"><div class="pack-name">PRIZE WHEEL</div><div class="pack-price">● 5,000</div></div>
+    <div class="wheel-wrap"><div class="pointer"></div><div id="wheel" class="wheel"></div><div class="wheel-center">SPIN</div></div>
+    <div id="wheelResult" class="resultbox"></div>
+    <button id="spinBtn" onclick="spinWheel()">SPIN FOR 5,000</button>
+    <div style="font-size:11px;font-weight:900;text-align:center;margin-top:12px">12 slots: 5 Common · 3 Uncommon · 2 Rare · 1 Epic · 1 × 5,000 points</div>
+  </div>
+</section>
+
+<section id="collection" class="screen">
+  <div class="hero"><h1>COLLECTION</h1><p><span id="ownedCount">0</span> unique cards owned.</p></div>
+  <div class="collection-head" id="ownedFilters"></div>
+  <div class="cards" id="ownedCards"></div>
+</section>
+
+<section id="cardindex" class="screen">
+  <div class="hero"><h1>CARD INDEX</h1><p>Every card currently in the game.</p></div>
+  <div class="collection-head" id="indexFilters"></div>
+  <div class="cards" id="indexCards"></div>
+</section>
 </div>
-<div class="nav"><button class="on" data-screen="shop">PACKS</button><button data-screen="rewards">REWARDS</button><button data-screen="collection">COLLECTION</button></div>
-<div class="modal" id="modal"><div class="opening"><div id="packStage"><div class="packbag" id="packbag"><div><div id="bagName">RARE PACK</div><small>TAP TO TEAR OPEN</small></div></div></div><div class="reveal" id="reveal"><div class="reveal-card" id="revealCard"><img id="revealImg"><h2 id="revealName"></h2><p id="revealRarity"></p></div><div class="tap" id="revealTap">SWIPE LEFT OR TAP FOR NEXT</div><button class="close" id="doneBtn" style="display:none">ADD TO COLLECTION</button></div></div></div>
+
+<div class="nav">
+  <button class="on" data-screen="shop">PACKS</button>
+  <button data-screen="rewards">REWARDS</button>
+  <button data-screen="collection">COLLECTION</button>
+  <button data-screen="cardindex">CARD INDEX</button>
+</div>
+
+<div class="modal" id="modal">
+  <div class="opening">
+    <div id="packStage"><div class="packbag" id="packbag"><div><div id="bagName">RARE PACK</div><small>TAP TO TEAR OPEN</small></div></div></div>
+    <div class="reveal" id="reveal">
+      <div class="reveal-card" id="revealCard"><img id="revealImg"><h2 id="revealName"></h2><p id="revealRarity"></p></div>
+      <div class="tap" id="revealTap">SWIPE LEFT OR TAP FOR NEXT</div>
+      <button class="close" id="doneBtn" style="display:none">ADD TO COLLECTION</button>
+    </div>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
+
 <script>
 const CARDS = [{"id": 1, "character": "TIGGY", "name": "TIGGY #01", "rarity": "Common", "image": "assets/card_001.jpeg"}, {"id": 2, "character": "TIGGY", "name": "TIGGY #02", "rarity": "Common", "image": "assets/card_002.jpeg"}, {"id": 3, "character": "TIGGY", "name": "TIGGY #03", "rarity": "Common", "image": "assets/card_003.jpg"}, {"id": 4, "character": "TIGGY", "name": "TIGGY #04", "rarity": "Common", "image": "assets/card_004.jpg"}, {"id": 5, "character": "TIGGY", "name": "TIGGY #05", "rarity": "Common", "image": "assets/card_005.jpeg"}, {"id": 6, "character": "TIGGY", "name": "TIGGY #06", "rarity": "Common", "image": "assets/card_006.jpg"}, {"id": 7, "character": "TIGGY", "name": "TIGGY #07", "rarity": "Common", "image": "assets/card_007.jpg"}, {"id": 8, "character": "TIGGY", "name": "TIGGY #08", "rarity": "Common", "image": "assets/card_008.jpg"}, {"id": 9, "character": "TIGGY", "name": "TIGGY #09", "rarity": "Common", "image": "assets/card_009.jpg"}, {"id": 10, "character": "TIGGY", "name": "TIGGY #10", "rarity": "Common", "image": "assets/card_010.jpg"}, {"id": 11, "character": "TIGGY", "name": "TIGGY #11", "rarity": "Common", "image": "assets/card_011.jpg"}, {"id": 12, "character": "TIGGY", "name": "TIGGY #12", "rarity": "Common", "image": "assets/card_012.jpg"}, {"id": 13, "character": "TIGGY", "name": "TIGGY #13", "rarity": "Common", "image": "assets/card_013.jpg"}, {"id": 14, "character": "TIGGY", "name": "TIGGY #14", "rarity": "Common", "image": "assets/card_014.jpg"}, {"id": 15, "character": "TIGGY", "name": "TIGGY #15", "rarity": "Uncommon", "image": "assets/card_015.jpg"}, {"id": 16, "character": "TIGGY", "name": "TIGGY #16", "rarity": "Uncommon", "image": "assets/card_016.jpg"}, {"id": 17, "character": "TIGGY", "name": "TIGGY #17", "rarity": "Uncommon", "image": "assets/card_017.jpeg"}, {"id": 18, "character": "TIGGY", "name": "TIGGY #18", "rarity": "Uncommon", "image": "assets/card_018.jpeg"}, {"id": 19, "character": "TIGGY", "name": "TIGGY #19", "rarity": "Uncommon", "image": "assets/card_019.jpeg"}, {"id": 20, "character": "TIGGY", "name": "TIGGY #20", "rarity": "Uncommon", "image": "assets/card_020.jpeg"}, {"id": 21, "character": "TIGGY", "name": "TIGGY #21", "rarity": "Uncommon", "image": "assets/card_021.jpeg"}, {"id": 22, "character": "TIGGY", "name": "TIGGY #22", "rarity": "Uncommon", "image": "assets/card_022.jpg"}, {"id": 23, "character": "TIGGY", "name": "TIGGY #23", "rarity": "Uncommon", "image": "assets/card_023.jpg"}, {"id": 24, "character": "TIGGY", "name": "TIGGY #24", "rarity": "Uncommon", "image": "assets/card_024.jpg"}, {"id": 25, "character": "TIGGY", "name": "TIGGY #25", "rarity": "Rare", "image": "assets/card_025.jpg"}, {"id": 26, "character": "TIGGY", "name": "TIGGY #26", "rarity": "Rare", "image": "assets/card_026.jpeg"}, {"id": 27, "character": "TIGGY", "name": "TIGGY #27", "rarity": "Rare", "image": "assets/card_027.jpeg"}, {"id": 28, "character": "TIGGY", "name": "TIGGY #28", "rarity": "Rare", "image": "assets/card_028.jpeg"}, {"id": 29, "character": "TIGGY", "name": "TIGGY #29", "rarity": "Rare", "image": "assets/card_029.jpeg"}, {"id": 30, "character": "TIGGY", "name": "TIGGY #30", "rarity": "Rare", "image": "assets/card_030.jpeg"}, {"id": 31, "character": "TIGGY", "name": "TIGGY #31", "rarity": "Rare", "image": "assets/card_031.jpeg"}, {"id": 32, "character": "TIGGY", "name": "TIGGY #32", "rarity": "Epic", "image": "assets/card_032.jpeg"}, {"id": 33, "character": "TIGGY", "name": "TIGGY #33", "rarity": "Epic", "image": "assets/card_033.jpeg"}, {"id": 34, "character": "TIGGY", "name": "TIGGY #34", "rarity": "Epic", "image": "assets/card_034.jpeg"}, {"id": 35, "character": "TIGGY", "name": "TIGGY #35", "rarity": "Epic", "image": "assets/card_035.jpeg"}, {"id": 36, "character": "TIGGY", "name": "TIGGY #36", "rarity": "Legendary", "image": "assets/card_036.jpeg"}, {"id": 37, "character": "TIGGY", "name": "TIGGY #37", "rarity": "Legendary", "image": "assets/card_037.jpeg"}, {"id": 38, "character": "VGO", "name": "VGO #01", "rarity": "Common", "image": "assets/card_038.jpeg"}, {"id": 39, "character": "VGO", "name": "VGO #02", "rarity": "Common", "image": "assets/card_039.jpg"}, {"id": 40, "character": "VGO", "name": "VGO #03", "rarity": "Common", "image": "assets/card_040.jpg"}, {"id": 41, "character": "VGO", "name": "VGO #04", "rarity": "Common", "image": "assets/card_041.jpg"}, {"id": 42, "character": "VGO", "name": "VGO #05", "rarity": "Common", "image": "assets/card_042.jpg"}, {"id": 43, "character": "VGO", "name": "VGO #06", "rarity": "Uncommon", "image": "assets/card_043.jpg"}, {"id": 44, "character": "VGO", "name": "VGO #07", "rarity": "Uncommon", "image": "assets/card_044.jpg"}, {"id": 45, "character": "VGO", "name": "VGO #08", "rarity": "Uncommon", "image": "assets/card_045.jpeg"}, {"id": 46, "character": "VGO", "name": "VGO #09", "rarity": "Uncommon", "image": "assets/card_046.jpeg"}, {"id": 47, "character": "VGO", "name": "VGO #10", "rarity": "Rare", "image": "assets/card_047.jpg"}, {"id": 48, "character": "VGO", "name": "VGO #11", "rarity": "Rare", "image": "assets/card_048.jpeg"}, {"id": 49, "character": "VGO", "name": "VGO #12", "rarity": "Rare", "image": "assets/card_049.jpeg"}, {"id": 50, "character": "VGO", "name": "VGO #13", "rarity": "Epic", "image": "assets/card_050.jpeg"}, {"id": 51, "character": "VGO", "name": "VGO #14", "rarity": "Legendary", "image": "assets/card_051.jpeg"}, {"id": 52, "character": "HAYK THE THUG", "name": "HAYK THE THUG #01", "rarity": "Common", "image": "assets/card_052.jpeg"}, {"id": 53, "character": "HAYK THE THUG", "name": "HAYK THE THUG #02", "rarity": "Common", "image": "assets/card_053.jpg"}, {"id": 54, "character": "HAYK THE THUG", "name": "HAYK THE THUG #03", "rarity": "Common", "image": "assets/card_054.jpg"}, {"id": 55, "character": "HAYK THE THUG", "name": "HAYK THE THUG #04", "rarity": "Common", "image": "assets/card_055.jpg"}, {"id": 56, "character": "HAYK THE THUG", "name": "HAYK THE THUG #05", "rarity": "Common", "image": "assets/card_056.jpg"}, {"id": 57, "character": "HAYK THE THUG", "name": "HAYK THE THUG #06", "rarity": "Common", "image": "assets/card_057.jpeg"}, {"id": 58, "character": "HAYK THE THUG", "name": "HAYK THE THUG #07", "rarity": "Common", "image": "assets/card_058.jpg"}, {"id": 59, "character": "HAYK THE THUG", "name": "HAYK THE THUG #08", "rarity": "Uncommon", "image": "assets/card_059.jpg"}, {"id": 60, "character": "HAYK THE THUG", "name": "HAYK THE THUG #09", "rarity": "Uncommon", "image": "assets/card_060.jpg"}, {"id": 61, "character": "HAYK THE THUG", "name": "HAYK THE THUG #10", "rarity": "Uncommon", "image": "assets/card_061.jpg"}, {"id": 62, "character": "HAYK THE THUG", "name": "HAYK THE THUG #11", "rarity": "Uncommon", "image": "assets/card_062.jpg"}, {"id": 63, "character": "HAYK THE THUG", "name": "HAYK THE THUG #12", "rarity": "Uncommon", "image": "assets/card_063.jpg"}, {"id": 64, "character": "HAYK THE THUG", "name": "HAYK THE THUG #13", "rarity": "Rare", "image": "assets/card_064.jpg"}, {"id": 65, "character": "HAYK THE THUG", "name": "HAYK THE THUG #14", "rarity": "Rare", "image": "assets/card_065.jpeg"}, {"id": 66, "character": "HAYK THE THUG", "name": "HAYK THE THUG #15", "rarity": "Rare", "image": "assets/card_066.jpeg"}, {"id": 67, "character": "HAYK THE THUG", "name": "HAYK THE THUG #16", "rarity": "Epic", "image": "assets/card_067.jpeg"}, {"id": 68, "character": "HAYK THE THUG", "name": "HAYK THE THUG #17", "rarity": "Epic", "image": "assets/card_068.jpeg"}, {"id": 69, "character": "HAYK THE THUG", "name": "HAYK THE THUG #18", "rarity": "Legendary", "image": "assets/card_069.jpg"}, {"id": 70, "character": "THE GOOF", "name": "THE GOOF #01", "rarity": "Epic", "image": "assets/card_070.jpeg"}, {"id": 71, "character": "THE GOOF", "name": "THE GOOF #02", "rarity": "Legendary", "image": "assets/card_071.jpeg"}, {"id": 72, "character": "THE GOOF", "name": "THE GOOF #03", "rarity": "Legendary", "image": "assets/card_072.jpeg"}, {"id": 73, "character": "THE 3 NERDS", "name": "THE 3 NERDS #01", "rarity": "Rare", "image": "assets/card_073.jpg"}, {"id": 74, "character": "THE 3 NERDS", "name": "THE 3 NERDS #02", "rarity": "Rare", "image": "assets/card_074.jpeg"}, {"id": 75, "character": "THE 3 NERDS", "name": "THE 3 NERDS #03", "rarity": "Epic", "image": "assets/card_075.jpeg"}, {"id": 76, "character": "THE 3 NERDS", "name": "THE 3 NERDS #04", "rarity": "Epic", "image": "assets/card_076.jpeg"}, {"id": 77, "character": "THE 3 NERDS", "name": "THE 3 NERDS #05", "rarity": "Legendary", "image": "assets/card_077.jpeg"}, {"id": 78, "character": "THE 3 NERDS", "name": "THE 3 NERDS #06", "rarity": "Rare", "image": "assets/card_078.jpeg"}, {"id": 79, "character": "THE 3 NERDS", "name": "THE 3 NERDS #07", "rarity": "Epic", "image": "assets/card_079.jpeg"}, {"id": 80, "character": "THE 3 NERDS", "name": "THE 3 NERDS #08", "rarity": "Legendary", "image": "assets/card_080.jpeg"}];
-
-const R={Common:{color:"#8b8b8b",value:250},Uncommon:{color:"#35a853",value:700},Rare:{color:"#3182ce",value:1800},Epic:{color:"#8b5cf6",value:5000},Legendary:{color:"#f28c28",value:15000}};
+const R={Common:{color:"#9b9b9b",value:250},Uncommon:{color:"#27c45b",value:700},Rare:{color:"#2587ff",value:1800},Epic:{color:"#a34cff",value:5000},Legendary:{color:"#ff8a1f",value:15000}};
 const PACKS=[
 {name:"Common",price:1000,odds:{Common:70,Uncommon:20,Rare:7,Epic:2.5,Legendary:.5}},
 {name:"Uncommon",price:3000,odds:{Common:48,Uncommon:32,Rare:14,Epic:5,Legendary:1}},
@@ -48,88 +120,189 @@ const PACKS=[
 {name:"Epic",price:14000,odds:{Common:30,Uncommon:25,Rare:23,Epic:17,Legendary:5}},
 {name:"Legendary",price:24000,odds:{Common:27,Uncommon:24,Rare:22,Epic:17,Legendary:10}}
 ];
-let state=JSON.parse(localStorage.getItem("goldenPullsV2")||localStorage.getItem("goldenPullsV1")||"null")||{coins:0,owned:{},welcome:3};
+
+const SAVE_KEY="goldenPullsSave";
+function safeParse(s){try{return JSON.parse(s)}catch(e){return null}}
+function saveScore(s){
+ if(!s) return -1;
+ const owned=Object.values(s.owned||{}).reduce((a,b)=>a+(Number(b)||0),0);
+ return (Number(s.coins)||0)+owned*10000+(3-Math.min(3,Number(s.welcome??3)))*5000;
+}
+let candidates=[
+ safeParse(localStorage.getItem(SAVE_KEY)),
+ safeParse(localStorage.getItem("goldenPullsV2")),
+ safeParse(localStorage.getItem("goldenPullsV1"))
+].filter(Boolean);
+let state=candidates.sort((a,b)=>saveScore(b)-saveScore(a))[0]||{coins:0,owned:{},welcome:3};
+if(!state.owned) state.owned={};
+if(state.coins===undefined) state.coins=0;
+if(state.welcome===undefined) state.welcome=3;
 if(state.freeUncommonAt===undefined) state.freeUncommonAt=0;
 if(state.wheelSpins===undefined) state.wheelSpins=0;
-let current=[],idx=0,filter="ALL";
+
+let current=[],idx=0,packSource="paid",ownedFilter="ALL",indexFilter="ALL",spinning=false,pendingWheelPrize=null;
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-function save(){localStorage.setItem("goldenPullsV2",JSON.stringify(state));render()}
-function toast(t){$("#toast").textContent=t;$("#toast").classList.add("show");setTimeout(()=>$("#toast").classList.remove("show"),1300)}
+
+function save(){
+ const payload=JSON.stringify(state);
+ localStorage.setItem(SAVE_KEY,payload);
+ localStorage.setItem("goldenPullsV2",payload);
+ localStorage.setItem("goldenPullsV1",payload);
+ render();
+}
+function toast(t){$("#toast").textContent=t;$("#toast").classList.add("show");setTimeout(()=>$("#toast").classList.remove("show"),1700)}
 function fmt(n){return Math.round(n).toLocaleString()}
 function pickRarity(odds){let x=Math.random()*100,a=0;for(const k of Object.keys(odds)){a+=odds[k];if(x<a)return k}return "Common"}
-function pickCard(r){let pool=CARDS.filter(c=>c.rarity===r); if(!pool.length)pool=CARDS; return pool[Math.floor(Math.random()*pool.length)]}
+function pickCard(r){let pool=CARDS.filter(c=>c.rarity===r);if(!pool.length)pool=CARDS;return pool[Math.floor(Math.random()*pool.length)]}
+
 function render(){
  $("#coins").textContent=fmt(state.coins);
- let now=Date.now(), left=Math.max(0,(state.freeUncommonAt||0)-now);
- let fp=$("#freePackBox");
- if(fp){
-   if(left<=0) fp.innerHTML=`<b>FREE PACK READY</b><div style="font-size:24px;font-weight:1000;margin:5px 0">UNCOMMON PACK</div><div style="margin-bottom:12px">Available every 2 hours</div><button onclick="claimFreeUncommon()">OPEN FREE PACK</button>`;
-   else { let s=Math.ceil(left/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60; fp.innerHTML=`<b>NEXT FREE UNCOMMON PACK</b><div style="font-size:30px;font-weight:1000;margin:8px 0">${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(ss).padStart(2,"0")}</div><div>Timer keeps running while you are away.</div>`; }
+ $("#gift").innerHTML=state.welcome>0?`<div class="gift"><b>WELCOME GIFT</b><div style="font-size:24px;font-weight:1000;margin:5px 0">3 FREE RARE PACKS</div><div style="margin-bottom:12px">${state.welcome} remaining</div><button onclick="openPack('Rare','welcome')">OPEN FREE RARE PACK</button></div>`:"";
+ $("#packs").innerHTML=PACKS.map(p=>`<div class="pack"><div class="pack-head"><div class="pack-name" style="color:${R[p.name].color}">${p.name.toUpperCase()} PACK</div><div class="pack-price">● ${fmt(p.price)}</div></div><div class="odds">${Object.entries(p.odds).map(([r,o])=>`<div class="odd" style="background:${R[r].color}">${r[0]}<br>${o}%</div>`).join("")}</div><button onclick="openPack('${p.name}','paid')">BUY + OPEN</button></div>`).join("");
+
+ const now=Date.now(), left=Math.max(0,state.freeUncommonAt-now);
+ if(left<=0){
+   $("#freePackBox").innerHTML=`<div class="gift"><b>FREE PACK READY</b><div style="font-size:24px;font-weight:1000;margin:5px 0">UNCOMMON PACK</div><div style="margin-bottom:12px">Available every 2 hours</div><button onclick="claimFreeUncommon()">OPEN FREE PACK</button></div>`;
+ } else {
+   let s=Math.ceil(left/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;
+   $("#freePackBox").innerHTML=`<div class="gift"><b>NEXT FREE UNCOMMON PACK</b><div style="font-size:30px;font-weight:1000;margin:8px 0">${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(ss).padStart(2,"0")}</div><div>Timer keeps running while you are away.</div></div>`;
  }
- $("#gift").innerHTML=state.welcome?`<div class="gift"><b>WELCOME GIFT</b><div style="font-size:24px;font-weight:1000;margin:5px 0">3 FREE RARE PACKS</div><div style="margin-bottom:12px">${state.welcome} remaining</div><button onclick="openPack('Rare',true)">OPEN FREE RARE PACK</button></div>`:"";
- $("#packs").innerHTML=PACKS.map(p=>`<div class="pack"><div class="pack-head"><div class="pack-name" style="color:${R[p.name].color}">${p.name.toUpperCase()} PACK</div><div class="pack-price">● ${fmt(p.price)}</div></div><div class="odds">${Object.entries(p.odds).map(([r,o])=>`<div class="odd" style="background:${R[r].color}">${r[0]}<br>${o}%</div>`).join("")}</div><button onclick="openPack('${p.name}',false)">BUY + OPEN</button></div>`).join("");
- let ownedUnique=Object.keys(state.owned).filter(k=>state.owned[k]>0).length; $("#ownedCount").textContent=ownedUnique;
- let chars=["ALL",...new Set(CARDS.map(c=>c.character))]; $("#filters").innerHTML=chars.map(x=>`<button class="chip ${filter===x?"on":""}" onclick="setFilter('${x.replaceAll("'","\\'")}')">${x}</button>`).join("");
- let show=filter==="ALL"?CARDS:CARDS.filter(c=>c.character===filter);
- $("#cards").innerHTML=show.map(c=>{let q=state.owned[c.id]||0, val=Math.round(R[c.rarity].value*(1+Math.max(0,q-1)*.15));return `<div class="card ${q?"":"locked"}" style="--rarity:${R[c.rarity].color}"><img src="${c.image}"><div class="nm">${q?c.name:"LOCKED CARD"}</div><div class="meta"><span style="color:${R[c.rarity].color}">${c.rarity}</span><span>x${q}</span></div>${q?`<button class="sell" onclick="sell(${c.id})">SELL 1 · ● ${fmt(val)}</button>`:""}</div>`}).join("");
+
+ const ownedUnique=Object.values(state.owned).filter(q=>q>0).length;
+ $("#ownedCount").textContent=ownedUnique;
+ const chars=["ALL",...new Set(CARDS.map(c=>c.character))];
+ $("#ownedFilters").innerHTML=chars.map(x=>`<button class="chip ${ownedFilter===x?"on":""}" onclick="setOwnedFilter('${x.replaceAll("'","\\'")}')">${x}</button>`).join("");
+ let ownList=CARDS.filter(c=>(state.owned[c.id]||0)>0 && (ownedFilter==="ALL"||c.character===ownedFilter));
+ $("#ownedCards").innerHTML=ownList.length?ownList.map(c=>{let q=state.owned[c.id]||0,val=Math.round(R[c.rarity].value*(1+Math.max(0,q-1)*.15));return `<div class="card" style="--rarity:${R[c.rarity].color}"><img src="${c.image}"><div class="nm">${c.name}</div><div class="meta"><span style="color:${R[c.rarity].color}">${c.rarity}</span><span>x${q}</span></div><button class="sell" onclick="sell(${c.id})">SELL 1 · ● ${fmt(val)}</button></div>`}).join(""):`<div style="grid-column:1/-1;text-align:center;padding:28px 12px;font-weight:900">No cards owned in this category yet.</div>`;
+
+ $("#indexFilters").innerHTML=chars.map(x=>`<button class="chip ${indexFilter===x?"on":""}" onclick="setIndexFilter('${x.replaceAll("'","\\'")}')">${x}</button>`).join("");
+ let idxList=indexFilter==="ALL"?CARDS:CARDS.filter(c=>c.character===indexFilter);
+ $("#indexCards").innerHTML=idxList.map(c=>{let q=state.owned[c.id]||0;return `<div class="card ${q?"":"locked"}" style="--rarity:${R[c.rarity].color}"><img src="${c.image}"><div class="nm">${q?c.name:"NOT COLLECTED"}</div><div class="meta"><span style="color:${R[c.rarity].color}">${c.rarity}</span><span>${q?"x"+q:"LOCKED"}</span></div></div>`}).join("");
 }
-function setFilter(x){filter=x;render()}
-function sell(id){let q=state.owned[id]||0;if(!q)return;let c=CARDS.find(x=>x.id===id);let val=Math.round(R[c.rarity].value*(1+Math.max(0,q-1)*.15));state.owned[id]=q-1;state.coins+=val;save();toast(`Sold for ${fmt(val)} points`)}
-function openPack(name,free){
- let p=PACKS.find(x=>x.name===name); if(!free&&state.coins<p.price){toast("Not enough points");return}
- if(free){if(!state.welcome)return;state.welcome--}else state.coins-=p.price;
- current=Array.from({length:5},()=>pickCard(pickRarity(p.odds))); idx=0;
- $("#modal").classList.add("show");$("#packStage").style.display="block";$("#reveal").style.display="none";$("#packbag").style.setProperty("--packcolor",R[name].color);$("#bagName").textContent=name.toUpperCase()+" PACK";save();
+function setOwnedFilter(x){ownedFilter=x;render()} function setIndexFilter(x){indexFilter=x;render()}
+
+function sell(id){
+ let q=state.owned[id]||0;if(!q)return;
+ let c=CARDS.find(x=>x.id===id),val=Math.round(R[c.rarity].value*(1+Math.max(0,q-1)*.15));
+ state.owned[id]=q-1;state.coins+=val;save();toast(`Sold for ${fmt(val)} points`);
 }
-$("#packbag").onclick=()=>{$("#packStage").style.display="none";$("#reveal").style.display="block";showCard()}
-function showCard(){let c=current[idx];$("#revealCard").style.setProperty("--rarity",R[c.rarity].color);$("#revealImg").src=c.image;$("#revealName").textContent=c.name;$("#revealRarity").textContent=c.rarity.toUpperCase()+" · "+(idx+1)+" / 5";$("#revealTap").style.display=idx===4?"none":"block";$("#doneBtn").style.display=idx===4?"block":"none"}
-function nextCard(){if(idx<4){idx++;showCard()}}
-$("#revealCard").onclick=nextCard; let sx=0;$("#revealCard").addEventListener("touchstart",e=>sx=e.touches[0].clientX);$("#revealCard").addEventListener("touchend",e=>{if(sx-e.changedTouches[0].clientX>35)nextCard()});
-$("#doneBtn").onclick=()=>{current.forEach(c=>state.owned[c.id]=(state.owned[c.id]||0)+1);save();$("#modal").classList.remove("show");toast("5 cards added")}
+
+function openPack(name,source="paid"){
+ let p=PACKS.find(x=>x.name===name);
+ if(source==="paid"){
+   if(state.coins<p.price){toast("Not enough points");return}
+   state.coins-=p.price;
+ } else if(source==="welcome"){
+   if(state.welcome<=0){toast("No welcome packs left");return}
+   state.welcome--;
+ }
+ // reward/free source never touches welcome packs.
+ current=Array.from({length:5},()=>pickCard(pickRarity(p.odds)));idx=0;packSource=source;
+ save();
+ $("#modal").classList.add("show");$("#packStage").style.display="block";$("#reveal").style.display="none";
+ $("#packbag").style.setProperty("--packcolor",R[name].color);$("#bagName").textContent=name.toUpperCase()+" PACK";
+}
 
 function claimFreeUncommon(){
- if(Date.now() < (state.freeUncommonAt||0)){toast("Free pack is not ready yet");return}
+ if(Date.now()<state.freeUncommonAt){toast("Free pack is not ready yet");return}
  state.freeUncommonAt=Date.now()+2*60*60*1000;
- save(); openPack("Uncommon",true);
+ save();
+ openPack("Uncommon","reward");
 }
-const WHEEL=["Common","Common","Common","Common","Common","Uncommon","Uncommon","Uncommon","Rare","Rare","Epic","Coins"];
-let spinning=false;
+
+$("#packbag").onclick=()=>{$("#packStage").style.display="none";$("#reveal").style.display="block";showCard()}
+function showCard(){
+ let c=current[idx];$("#revealCard").style.setProperty("--rarity",R[c.rarity].color);$("#revealImg").src=c.image;$("#revealName").textContent=c.name;$("#revealRarity").textContent=c.rarity.toUpperCase()+" · "+(idx+1)+" / 5";$("#revealTap").style.display=idx===4?"none":"block";$("#doneBtn").style.display=idx===4?"block":"none";
+}
+function nextCard(){if(idx<4){idx++;showCard()}}
+$("#revealCard").onclick=nextCard;
+let sx=0;$("#revealCard").addEventListener("touchstart",e=>sx=e.touches[0].clientX);$("#revealCard").addEventListener("touchend",e=>{if(sx-e.changedTouches[0].clientX>35)nextCard()});
+$("#doneBtn").onclick=()=>{
+ current.forEach(c=>state.owned[c.id]=(state.owned[c.id]||0)+1);
+ save();$("#modal").classList.remove("show");toast("5 cards added to collection");
+}
+
+const WHEEL_SLOTS=["Common","Uncommon","Rare","Common","Epic","Uncommon","Common","Coins","Rare","Common","Uncommon","Common"];
+const wheelColors={Common:"#b8b8b8",Uncommon:"#24d86a",Rare:"#238cff",Epic:"#b44cff",Coins:"#ffd21f"};
+function buildWheel(){
+ const deg=360/WHEEL_SLOTS.length;
+ let stops=[];
+ WHEEL_SLOTS.forEach((s,i)=>{stops.push(`${wheelColors[s]} ${i*deg}deg ${(i+1)*deg}deg`)});
+ $("#wheel").style.background=`conic-gradient(${stops.join(",")})`;
+ WHEEL_SLOTS.forEach((s,i)=>{
+   let d=document.createElement("div");d.className="wheel-label";d.textContent=s==="Coins"?"5K":s[0];
+   d.style.transform=`rotate(${i*deg+deg/2}deg) translateX(88px) rotate(90deg)`;
+   $("#wheel").appendChild(d);
+ });
+}
+buildWheel();
+
 function spinWheel(){
  if(spinning)return;
  if(state.coins<5000){toast("You need 5,000 points");return}
- state.coins-=5000; spinning=true; save();
- let prize=WHEEL[Math.floor(Math.random()*WHEEL.length)];
- let wheel=$("#wheel"); state.wheelSpins=(state.wheelSpins||0)+1;
- wheel.style.transform=`rotate(${state.wheelSpins*1440 + Math.floor(Math.random()*360)}deg)`;
+ state.coins-=5000;save();spinning=true;pendingWheelPrize=null;
+ $("#spinBtn").disabled=true;$("#wheelResult").style.display="none";
+ const slot=Math.floor(Math.random()*WHEEL_SLOTS.length);
+ const deg=360/WHEEL_SLOTS.length;
+ const center=slot*deg+deg/2;
+ state.wheelSpins=(state.wheelSpins||0)+1;
+ const turns=5+state.wheelSpins%2;
+ const rotation=turns*360-center;
+ $("#wheel").style.transform=`rotate(${rotation}deg)`;
  setTimeout(()=>{
-   spinning=false;
-   if(prize==="Coins"){state.coins+=5000;save();toast("Wheel prize: 5,000 points!")}
-   else {toast(`Wheel prize: ${prize} Pack!`); setTimeout(()=>openPack(prize,true),500)}
- },2700);
+   spinning=false;$("#spinBtn").disabled=false;
+   const prize=WHEEL_SLOTS[slot];pendingWheelPrize=prize;
+   if(prize==="Coins"){
+     state.coins+=5000;save();
+     $("#wheelResult").style.display="block";$("#wheelResult").innerHTML=`YOU WON <b>5,000 POINTS</b><br><small>Added automatically.</small>`;
+     toast("Wheel reward added: 5,000 points");
+   } else {
+     $("#wheelResult").style.display="block";$("#wheelResult").innerHTML=`YOU WON A <b>${prize.toUpperCase()} PACK</b><br><button style="margin-top:10px" onclick="claimWheelPack()">OPEN PRIZE PACK</button>`;
+     toast(`You won a ${prize} Pack`);
+   }
+ },3600);
 }
-setInterval(()=>{if($("#rewards").classList.contains("active"))render()},1000);
+function claimWheelPack(){
+ if(!pendingWheelPrize||pendingWheelPrize==="Coins")return;
+ const prize=pendingWheelPrize;pendingWheelPrize=null;
+ $("#wheelResult").style.display="none";
+ openPack(prize,"reward");
+}
+
 $$(".nav button").forEach(b=>b.onclick=()=>{
-function claimFreeUncommon(){
- if(Date.now() < (state.freeUncommonAt||0)){toast("Free pack is not ready yet");return}
- state.freeUncommonAt=Date.now()+2*60*60*1000;
- save(); openPack("Uncommon",true);
-}
-const WHEEL=["Common","Common","Common","Common","Common","Uncommon","Uncommon","Uncommon","Rare","Rare","Epic","Coins"];
-let spinning=false;
-function spinWheel(){
- if(spinning)return;
- if(state.coins<5000){toast("You need 5,000 points");return}
- state.coins-=5000; spinning=true; save();
- let prize=WHEEL[Math.floor(Math.random()*WHEEL.length)];
- let wheel=$("#wheel"); state.wheelSpins=(state.wheelSpins||0)+1;
- wheel.style.transform=`rotate(${state.wheelSpins*1440 + Math.floor(Math.random()*360)}deg)`;
- setTimeout(()=>{
-   spinning=false;
-   if(prize==="Coins"){state.coins+=5000;save();toast("Wheel prize: 5,000 points!")}
-   else {toast(`Wheel prize: ${prize} Pack!`); setTimeout(()=>openPack(prize,true),500)}
- },2700);
-}
+ $$(".nav button").forEach(x=>x.classList.remove("on"));b.classList.add("on");
+ $$(".screen").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.screen).classList.add("active");render();
+});
 setInterval(()=>{if($("#rewards").classList.contains("active"))render()},1000);
-$$(".nav button").forEach(x=>x.classList.remove("on"));b.classList.add("on");$$(".screen").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.screen).classList.add("active");render()});
-render();
-</script></body></html>
+
+// PWA update support
+let swReg=null;
+async function registerSW(){
+ if(!("serviceWorker" in navigator))return;
+ try{
+   swReg=await navigator.serviceWorker.register("./service-worker.js",{scope:"./"});
+   navigator.serviceWorker.addEventListener("controllerchange",()=>location.reload());
+   swReg.addEventListener("updatefound",()=>{
+     const w=swReg.installing;if(!w)return;
+     w.addEventListener("statechange",()=>{
+       if(w.state==="installed"&&navigator.serviceWorker.controller){
+         $("#updateBtn").textContent="UPDATE READY";$("#updateBtn").style.background="#241a00";$("#updateBtn").style.color="#ffd84d";
+       }
+     });
+   });
+ }catch(e){console.log(e)}
+}
+async function checkForUpdate(){
+ const b=$("#updateBtn");b.textContent="CHECKING...";
+ try{
+   if(!swReg)await registerSW();
+   if(swReg)await swReg.update();
+   if(swReg&&swReg.waiting){b.textContent="UPDATING...";swReg.waiting.postMessage({type:"SKIP_WAITING"});return}
+   const r=await fetch("./version.json?t="+Date.now(),{cache:"no-store"});
+   await r.json();b.textContent="UP TO DATE";setTimeout(()=>b.textContent="UPDATE",1500);
+ }catch(e){b.textContent="TRY AGAIN";setTimeout(()=>b.textContent="UPDATE",1500)}
+}
+registerSW();
+save();
+</script>
+</body></html>
