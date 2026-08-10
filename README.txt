@@ -1,12 +1,39 @@
-GOLDEN PULLS V5 - AUTO WHEEL REWARDS
+GOLDEN PULLS V6
 
-Visible version remains V5.
+NEW IN V6
 
-CHANGE
-- Wheel rewards are now automatic.
-- If the wheel lands on coins, the coins are added instantly.
-- If the wheel lands on a pack, the prize pack automatically opens after the wheel lands.
-- No extra CLAIM or OPEN PRIZE button is required.
-- A short result message still appears so the player can see what they won.
+UPDATE ALERT
+- The Update button automatically checks for a newer deployed version.
+- If a newer version exists, the button glows and bounces so the player notices it.
+- If the player is current, it stays normal.
 
-All previous V5 progression, battle, upgrade, saving, rarity, sorting, and squad fixes remain.
+BOSS BATTLES
+- Every 10 normal battle wins unlocks The Golden King boss.
+- Boss has an intentionally stronger Exotic team.
+- First boss victory awards THE GOLDEN KING, an exclusive Exotic card.
+- The Golden King cannot appear in packs or on the wheel.
+- Later boss victories pay 25,000 coins.
+
+CARD ABILITIES
+Cards now receive simple abilities:
+- First Strike
+- Tank
+- Speed Demon
+- Clutch
+- The Golden King: King's Rage
+Abilities affect battle power.
+
+WIN STREAKS
+- 2 wins: +500 coins
+- 5 wins: automatic Uncommon Pack
+- 10 wins: automatic Rare Pack
+- Losing resets the streak.
+
+EXISTING SYSTEMS KEPT
+- Correct upgrade requirements: 10 / 20 / 30 / 40 / 50.
+- Exotic max rarity.
+- OVR ratings.
+- Automatic wheel rewards.
+- Random AI difficulty.
+- Account Value.
+- Mobile animations and PWA save/update behavior.

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#111111"/><stop offset="1" stop-color="#3b2b00"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#fff09b"/><stop offset=".45" stop-color="#ffd43b"/><stop offset="1" stop-color="#b97700"/>
+  </linearGradient>
+</defs>
+<rect width="600" height="800" rx="48" fill="url(#bg)"/>
+<circle cx="300" cy="290" r="150" fill="#0b0b0b" stroke="#00e5ff" stroke-width="18"/>
+<path d="M170 245 L215 120 L295 220 L380 105 L430 250 Z" fill="url(#gold)" stroke="#fff3a2" stroke-width="10"/>
+<circle cx="235" cy="282" r="18" fill="#00e5ff"/><circle cx="365" cy="282" r="18" fill="#00e5ff"/>
+<path d="M225 350 Q300 405 375 350" fill="none" stroke="#ffd43b" stroke-width="16" stroke-linecap="round"/>
+<path d="M105 615 Q300 455 495 615 L545 800 H55 Z" fill="#171717" stroke="#00e5ff" stroke-width="18"/>
+<text x="300" y="700" font-family="Arial Black,Arial" font-size="66" text-anchor="middle" fill="url(#gold)">GOLDEN KING</text>
+<text x="300" y="752" font-family="Arial,Helvetica" font-size="28" text-anchor="middle" fill="#00e5ff">BOSS EXCLUSIVE</text>
+</svg>
