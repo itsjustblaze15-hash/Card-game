@@ -139,7 +139,7 @@ button{font:inherit;cursor:pointer}
 </section>
 
 <section id="upgrade" class="screen">
-<div class="hero"><h1>UPGRADE CENTER</h1><p>Battle wins build evolution progress. Every 10 wins advances a card one tier. Legendary requires 30 wins to become Exotic. Exotic is the permanent maximum.</p></div>
+<div class="hero"><h1>UPGRADE CENTER</h1><p>Battle wins build evolution progress. Win requirements increase by tier: Common 10, Uncommon 20, Rare 30, Epic 40, Legendary 50. Exotic is the permanent maximum.</p></div>
 <div id="upgradeList"></div>
 </section>
 
@@ -216,17 +216,14 @@ if(!state.cardCooldown) state.cardCooldown={};
 if(!state.battleWins) state.battleWins=0;
 if(!state.battleLosses) state.battleLosses=0;
 if(!state.team) state.team=[];
-if(!state.exotic30MigrationDone){
+if(!state.progressionMigrationV2Done){
   for(const c of CARDS){
     const tier=state.cardTier[c.id]||c.rarity;
     const xp=Number(state.cardXP[c.id]||0);
-    if(tier==="Legendary" && xp>=10){
-      state.cardTier[c.id]="Exotic";
-      state.cardXP[c.id]=30;
-      state.cardCooldown[c.id]=0;
-    }
+    if(tier==="Legendary" && xp>50) state.cardXP[c.id]=50;
+    if(tier==="Exotic") state.cardXP[c.id]=50;
   }
-  state.exotic30MigrationDone=true;
+  state.progressionMigrationV2Done=true;
 }
 
 let current=[],idx=0,packSource="paid",ownedFilter="ALL",indexFilter="ALL",spinning=false,pendingWheelPrize=null;
@@ -238,6 +235,9 @@ function save(){
  localStorage.setItem("goldenPullsV2",payload);
  localStorage.setItem("goldenPullsV1",payload);
  render();
+}
+function cleanTeam(){
+ state.team=(state.team||[]).filter(id=>(state.owned[id]||0)>0);
 }
 function toast(t){$("#toast").textContent=t;$("#toast").classList.add("show");setTimeout(()=>$("#toast").classList.remove("show"),1700)}
 function fmt(n){return Math.round(n).toLocaleString()}
@@ -299,7 +299,12 @@ function setOwnedFilter(x){ownedFilter=x;render()} function setIndexFilter(x){in
 function sell(id){
  let q=state.owned[id]||0;if(!q)return;
  let c=CARDS.find(x=>x.id===id),t=tierFor(c),val=Math.round(R[t].value*(1+Math.max(0,q-1)*.15));
- state.owned[id]=q-1;state.coins+=val;save();toast(`Sold for ${fmt(val)} points`);
+ state.owned[id]=q-1;
+ if(state.owned[id]<=0){
+   state.owned[id]=0;
+   state.team=(state.team||[]).filter(x=>x!==id);
+ }
+ state.coins+=val;save();toast(`Sold for ${fmt(val)} points`);
 }
 
 function openPack(name,source="paid"){
@@ -394,19 +399,21 @@ function spinWheel(){
    const prize=WHEEL_SLOTS[slot];pendingWheelPrize=prize;
    if(prize==="Coins"){
      state.coins+=5000;save();
-     $("#wheelResult").style.display="block";$("#wheelResult").innerHTML=`YOU WON <b>5,000 POINTS</b><br><small>Added automatically.</small>`;
+     $("#wheelResult").style.display="block";
+     $("#wheelResult").innerHTML=`YOU WON <b>5,000 POINTS</b><br><small>Added automatically.</small>`;
      toast("Wheel reward added: 5,000 points");
+     setTimeout(()=>{$("#wheelResult").style.display="none"},1400);
    } else {
-     $("#wheelResult").style.display="block";$("#wheelResult").innerHTML=`YOU WON A <b>${prize.toUpperCase()} PACK</b><br><button style="margin-top:10px" onclick="claimWheelPack()">OPEN PRIZE PACK</button>`;
+     $("#wheelResult").style.display="block";
+     $("#wheelResult").innerHTML=`YOU WON A <b>${prize.toUpperCase()} PACK</b><br><small>Opening automatically...</small>`;
      toast(`You won a ${prize} Pack`);
+     pendingWheelPrize=null;
+     setTimeout(()=>{
+       $("#wheelResult").style.display="none";
+       openPack(prize,"reward");
+     },700);
    }
  },2500);
-}
-function claimWheelPack(){
- if(!pendingWheelPrize||pendingWheelPrize==="Coins")return;
- const prize=pendingWheelPrize;pendingWheelPrize=null;
- $("#wheelResult").style.display="none";
- openPack(prize,"reward");
 }
 
 
@@ -415,8 +422,12 @@ let pickSlot=0,battleBusy=false;
 function tierFor(c){return state.cardTier[c.id]||c.rarity}
 function winsNeeded(c){
  const tier=tierFor(c);
- if(tier==="Legendary") return 30;
- if(tier==="Exotic") return 30;
+ if(tier==="Common") return 10;
+ if(tier==="Uncommon") return 20;
+ if(tier==="Rare") return 30;
+ if(tier==="Epic") return 40;
+ if(tier==="Legendary") return 50;
+ if(tier==="Exotic") return 50;
  return 10;
 }
 function stats(c){
@@ -429,6 +440,7 @@ function overall(c){
  return Math.round((s.atk+s.def+s.spd)/3);
 }
 function renderBattle(){
+ cleanTeam();
  if($("#stars")) $("#stars").textContent="RANDOM ★–★★★★★";
  if(!$("#teamSlots"))return;
  $("#teamSlots").innerHTML=[0,1,2].map(i=>{
@@ -462,6 +474,7 @@ function cardPower(c,botBonus=0){
  const s=stats(c);return s.atk*1.05+s.def*.85+s.spd*.55+Math.random()*30+botBonus;
 }
 async function startBattle(){
+ cleanTeam();
  if(battleBusy)return;
  if(state.team.length<3){toast("Choose 3 cards first");return}
  const team=state.team.map(id=>CARDS.find(c=>c.id===id)).filter(Boolean);
@@ -501,14 +514,14 @@ async function startBattle(){
    team.forEach(c=>{
      if((state.cardCooldown[c.id]||0)>now)return;
      const cur=tierFor(c);
-     if(cur==="Exotic"){state.cardXP[c.id]=30;return;}
+     if(cur==="Exotic"){state.cardXP[c.id]=50;return;}
      state.cardXP[c.id]=(state.cardXP[c.id]||0)+1;
      const needed=winsNeeded(c);
      if(state.cardXP[c.id]>=needed){
        const ti=TIERS.indexOf(cur);
        if(ti<TIERS.length-1){
          state.cardTier[c.id]=TIERS[ti+1];
-         state.cardXP[c.id]=(TIERS[ti+1]==="Exotic")?30:0;
+         state.cardXP[c.id]=(TIERS[ti+1]==="Exotic")?50:0;
          state.cardCooldown[c.id]=now+24*60*60*1000;
        }
      }
@@ -554,6 +567,7 @@ function stats(c){
  return {atk:40+ti*18+seed+xp,def:38+ti*17+(seed%11)+xp,spd:35+ti*13+(seed%17)+Math.floor(xp/2)};
 }
 function renderBattle(){
+ cleanTeam();
  if($("#stars")) $("#stars").textContent="RANDOM ★–★★★★★";
  if(!$("#teamSlots"))return;
  $("#teamSlots").innerHTML=[0,1,2].map(i=>{
@@ -587,6 +601,7 @@ function cardPower(c,botBonus=0){
  const s=stats(c);return s.atk*1.05+s.def*.85+s.spd*.55+Math.random()*30+botBonus;
 }
 async function startBattle(){
+ cleanTeam();
  if(battleBusy)return;
  if(state.team.length<3){toast("Choose 3 cards first");return}
  const team=state.team.map(id=>CARDS.find(c=>c.id===id)).filter(Boolean);
@@ -626,14 +641,14 @@ async function startBattle(){
    team.forEach(c=>{
      if((state.cardCooldown[c.id]||0)>now)return;
      const cur=tierFor(c);
-     if(cur==="Exotic"){state.cardXP[c.id]=30;return;}
+     if(cur==="Exotic"){state.cardXP[c.id]=50;return;}
      state.cardXP[c.id]=(state.cardXP[c.id]||0)+1;
      const needed=winsNeeded(c);
      if(state.cardXP[c.id]>=needed){
        const ti=TIERS.indexOf(cur);
        if(ti<TIERS.length-1){
          state.cardTier[c.id]=TIERS[ti+1];
-         state.cardXP[c.id]=(TIERS[ti+1]==="Exotic")?30:0;
+         state.cardXP[c.id]=(TIERS[ti+1]==="Exotic")?50:0;
          state.cardCooldown[c.id]=now+24*60*60*1000;
        }
      }
@@ -695,6 +710,7 @@ async function checkForUpdate(){
  }catch(e){b.textContent="TRY AGAIN";setTimeout(()=>b.textContent="UPDATE",1500)}
 }
 registerSW();
+cleanTeam();
 save();
 </script>
 </body></html>
