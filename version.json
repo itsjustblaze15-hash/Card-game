@@ -1,4 +1,4 @@
 {
-  "version": "7",
-  "build": "rebuilt-from-exact-v6-mobile-nav-fix"
+  "version": "6",
+  "build": "mobile-scrollable-bottom-nav"
 }
