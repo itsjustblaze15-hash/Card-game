@@ -89,3 +89,16 @@ GOLDEN PULLS V8
 - Selected Play cards use rarity colors.
 - Regular matchmaking scales around player team strength and star labels match actual bot rarity composition.
 - Ultra-rare 6-star Exotic bot chance: about 1 in 5,000 normal games.
+
+V8 ARTLANDER + BOSS PROGRESSION UPDATE
+- Added Artlander as Tier 3 Exotic Boss.
+- Boss progression is sequential:
+  Tier 1 Ice Agents: 10 wins -> defeat boss.
+  Tier 2 I Need More Bullets: starts fresh at 0/20 wins after Tier 1 is defeated.
+  Tier 3 Artlander: starts fresh at 0/30 wins after Tier 2 is defeated.
+- Later bosses stay locked until the previous boss has been cleared.
+- Tier 2 is harder than Tier 1; Tier 3 is harder than Tier 2.
+- Boss reward cards are NORMAL Exotic power in the player's collection.
+- All Exotic cards, including upgraded-to-Exotic cards, are normalized to the same regular Exotic stat/HP band.
+- Regular matchmaking now leans equal-or-harder more often to reduce near-automatic win streaks.
+- This update package intentionally includes ONLY the new Artlander photo inside assets/.
