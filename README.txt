@@ -49,3 +49,12 @@ V7 BATTLE FIX
 - Removed extra 'enemy team / your team / one star battle' clutter; only colored stars remain.
 - Collection Sell All / Reset buttons moved to small controls beside COLLECTION.
 - Boss cards are now compact instead of huge.
+
+V7 BATTLE RUNTIME FIX
+- Fixed missing wait() helper that caused battle animation to freeze after opening.
+- Fixed missing upgrade-win helper used when a battle ends.
+- Removed the idle '2-star bot' style message from the center.
+- One card now steps into the middle, attacks one opposing card, then returns.
+- The other team then sends one card forward.
+- Turns alternate continuously and rotate through all surviving cards.
+- Battle ends only when every card on one team reaches 0 HP.

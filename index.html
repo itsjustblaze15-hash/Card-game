@@ -139,7 +139,7 @@ button{font:inherit;cursor:pointer}
 .arena-card.dead{filter:grayscale(1) brightness(.42);opacity:.65}
 .arena-card.active{transform:translateY(-9px) scale(1.04);box-shadow:0 0 0 3px #fff,0 0 25px var(--rarity)}
 .hp{height:10px;background:#3c2700;border-radius:999px;overflow:hidden;margin:5px 0 2px;border:1px solid #0005}.hp i{display:block;height:100%;background:linear-gradient(90deg,#22c95b,#d7ef43);transition:width .45s}.hp-txt{font-size:9px;font-weight:1000}
-.arena-log{background:#fff2b5;color:#211800;border-radius:12px;padding:9px;font-weight:1000;min-height:38px;margin:8px 0}
+.arena-log{color:#fff7d6;padding:4px;font-weight:1000;min-height:28px;margin:4px 0;text-shadow:0 2px 3px #000}
 .danger-zone{margin:18px 0 8px;padding:14px;border:2px solid #9b2300;border-radius:18px;background:#3a1008;color:#fff1d1}
 .danger-zone h3{margin:0 0 8px;color:#ff9d79}.danger-zone button{width:100%;border:0;border-radius:12px;padding:12px;margin-top:8px;font-weight:1000}
 .sell-all-btn{background:#f2c536;color:#241900}.reset-btn{background:#a92020;color:white}
@@ -337,6 +337,7 @@ function cleanTeam(){
 }
 function toast(t){$("#toast").textContent=t;$("#toast").classList.add("show");setTimeout(()=>$("#toast").classList.remove("show"),1700)}
 function fmt(n){return Math.round(n).toLocaleString()}
+function wait(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
 function pickRarity(odds){let x=Math.random()*100,a=0;for(const k of Object.keys(odds)){a+=odds[k];if(x<a)return k}return "Common"}
 function pickCard(r){let pool=CARDS.filter(c=>c.rarity===r&&!c.bossExclusive);if(!pool.length)pool=CARDS.filter(c=>!c.bossExclusive);return pool[Math.floor(Math.random()*pool.length)]}
 
@@ -604,7 +605,8 @@ function botDeck(d){
 function starColor(d){return ["#9b9b9b","#27c45b","#2587ff","#a34cff","#f0ad16"][d-1]}
 function starClass(d){return "s"+d}
 function maxHP(c,difficulty=0){
- const s=stats(c);return Math.round(110+s.def*1.7+s.spd*.2+difficulty*8);
+ const s=stats(c);
+ return Math.round(110+s.def*1.7+s.spd*.2+difficulty*8);
 }
 function damage(attacker,defender,difficulty=0){
  const a=stats(attacker),d=stats(defender);
@@ -625,6 +627,13 @@ function drawArena(team,enemy,php,ehp,pmax,emax,pa=-1,ea=-1,d=1){
  $("#enemyArena").innerHTML=enemy.map((c,i)=>arenaCard(c,ehp[i],emax[i],i===ea)).join("");
 }
 function aliveIndexes(hp){return hp.map((x,i)=>x>0?i:-1).filter(i=>i>=0)}
+function nextAliveFrom(hp,start){
+ for(let step=0;step<hp.length;step++){
+   const i=(start+step)%hp.length;
+   if(hp[i]>0)return i;
+ }
+ return -1;
+}
 function allDead(hp){return hp.every(x=>x<=0)}
 function showCenter(c,side){
  const t=tierFor(c),el=$("#centerFighter");
@@ -632,79 +641,97 @@ function showCenter(c,side){
  el.style.setProperty("--rarity",R[t].color);
  el.innerHTML=`<img src="${c.image}"><b>${c.name}<br>${t} · OVR ${overall(c)}</b>`;
 }
-function hideCenter(){$("#centerFighter").className="center-fighter";$("#centerFighter").innerHTML=""}
+function hideCenter(){
+ $("#centerFighter").className="center-fighter";
+ $("#centerFighter").innerHTML="";
+}
 function popDamage(targetEl,amount){
  const r=targetEl.getBoundingClientRect(),d=document.createElement("div");
  d.className="damage-pop";d.textContent="-"+amount;
- d.style.left=(r.left+r.width/2-18)+"px";d.style.top=(r.top+r.height/2-12)+"px";
- document.body.appendChild(d);setTimeout(()=>d.remove(),720);
+ d.style.left=(r.left+r.width/2-18)+"px";
+ d.style.top=(r.top+r.height/2-12)+"px";
+ document.body.appendChild(d);
+ setTimeout(()=>d.remove(),720);
 }
-async function sweepAttack(attacker,attackerSide,team,enemy,php,ehp,pmax,emax,difficulty,attackerIndex){
- showCenter(attacker,attackerSide);
- $("#arenaLog").textContent=`${attacker.name} steps in!`;
- await wait(500);
+async function singleAttack(attacker,side,attackerIndex,targetIndex,team,enemy,php,ehp,pmax,emax,difficulty){
+ showCenter(attacker,side);
+ drawArena(
+   team,enemy,php,ehp,pmax,emax,
+   side==="player"?attackerIndex:targetIndex,
+   side==="enemy"?attackerIndex:targetIndex,
+   difficulty
+ );
+ await wait(430);
 
- const targets = attackerSide==="player" ? aliveIndexes(ehp) : aliveIndexes(php);
- for(const ti of targets){
-   if(attackerSide==="player"){
-     drawArena(team,enemy,php,ehp,pmax,emax,attackerIndex,ti,difficulty);
-     const dmg=damage(attacker,enemy[ti],0);
-     $("#arenaLog").textContent=`${attacker.name} hits ${enemy[ti].name} for ${dmg}`;
-     await wait(340);
-     const cards=[...document.querySelectorAll("#enemyArena .arena-card")];
-     if(cards[ti])popDamage(cards[ti],dmg);
-     ehp[ti]=Math.max(0,ehp[ti]-dmg);
-     drawArena(team,enemy,php,ehp,pmax,emax,attackerIndex,ti,difficulty);
-   }else{
-     drawArena(team,enemy,php,ehp,pmax,emax,ti,attackerIndex,difficulty);
-     const dmg=damage(attacker,team[ti],difficulty);
-     $("#arenaLog").textContent=`${attacker.name} hits ${team[ti].name} for ${dmg}`;
-     await wait(340);
-     const cards=[...document.querySelectorAll("#playerArena .arena-card")];
-     if(cards[ti])popDamage(cards[ti],dmg);
-     php[ti]=Math.max(0,php[ti]-dmg);
-     drawArena(team,enemy,php,ehp,pmax,emax,ti,attackerIndex,difficulty);
-   }
-   await wait(520);
-   if(allDead(attackerSide==="player"?ehp:php))break;
+ if(side==="player"){
+   const dmg=damage(attacker,enemy[targetIndex],0);
+   $("#arenaLog").textContent=`${attacker.name} hits ${enemy[targetIndex].name} for ${dmg}`;
+   const targets=[...document.querySelectorAll("#enemyArena .arena-card")];
+   if(targets[targetIndex])popDamage(targets[targetIndex],dmg);
+   ehp[targetIndex]=Math.max(0,ehp[targetIndex]-dmg);
+ }else{
+   const dmg=damage(attacker,team[targetIndex],difficulty);
+   $("#arenaLog").textContent=`${attacker.name} hits ${team[targetIndex].name} for ${dmg}`;
+   const targets=[...document.querySelectorAll("#playerArena .arena-card")];
+   if(targets[targetIndex])popDamage(targets[targetIndex],dmg);
+   php[targetIndex]=Math.max(0,php[targetIndex]-dmg);
  }
+
+ await wait(260);
+ drawArena(team,enemy,php,ehp,pmax,emax,-1,-1,difficulty);
+ await wait(430);
  hideCenter();
- await wait(300);
+ await wait(240);
 }
 async function startBattle(){
  cleanTeam();
  if(battleBusy)return;
  if(state.team.length<3){toast("Choose 3 cards first");return}
+
  const team=state.team.map(id=>CARDS.find(c=>c.id===id)).filter(Boolean);
  if(team.length<3){toast("Choose 3 owned cards first");return}
 
  const difficulty=1+Math.floor(Math.random()*5);
  const enemy=botDeck(difficulty);
- const pmax=team.map(c=>maxHP(c)),emax=enemy.map(c=>maxHP(c,difficulty));
+ const pmax=team.map(c=>maxHP(c));
+ const emax=enemy.map(c=>maxHP(c,difficulty));
  const php=pmax.slice(),ehp=emax.slice();
- battleBusy=true;$("#battleModal").classList.add("show");
+
+ battleBusy=true;
+ $("#battleModal").classList.add("show");
+ $("#arenaLog").textContent="";
  drawArena(team,enemy,php,ehp,pmax,emax,-1,-1,difficulty);
- $("#arenaLog").textContent=`${difficulty}★ BOT`;
- await wait(850);
+ await wait(650);
 
- let round=1;
- while(!allDead(php)&&!allDead(ehp)&&round<=40){
-   for(let i=0;i<3;i++){
-     if(php[i]<=0)continue;
-     await sweepAttack(team[i],"player",team,enemy,php,ehp,pmax,emax,difficulty,i);
-     if(allDead(ehp))break;
+ // Randomly decide who attacks first.
+ let playerTurn=Math.random()<.5;
+ let pAttacker=0,eAttacker=0,pTarget=0,eTarget=0;
+ let safety=0;
 
-     const ei=i<3&&ehp[i]>0?i:aliveIndexes(ehp)[0];
-     if(ei!==undefined&&ei>=0){
-       await sweepAttack(enemy[ei],"enemy",team,enemy,php,ehp,pmax,emax,difficulty,ei);
-     }
-     if(allDead(php))break;
+ while(!allDead(php)&&!allDead(ehp)&&safety<250){
+   if(playerTurn){
+     const ai=nextAliveFrom(php,pAttacker);
+     const ti=nextAliveFrom(ehp,eTarget);
+     if(ai<0||ti<0)break;
+     await singleAttack(team[ai],"player",ai,ti,team,enemy,php,ehp,pmax,emax,difficulty);
+     pAttacker=(ai+1)%3;
+     eTarget=(ti+1)%3;
+   }else{
+     const ai=nextAliveFrom(ehp,eAttacker);
+     const ti=nextAliveFrom(php,pTarget);
+     if(ai<0||ti<0)break;
+     await singleAttack(enemy[ai],"enemy",ai,ti,team,enemy,php,ehp,pmax,emax,difficulty);
+     eAttacker=(ai+1)%3;
+     pTarget=(ti+1)%3;
    }
-   round++;
+   playerTurn=!playerTurn;
+   safety++;
  }
 
  const won=allDead(ehp)&&!allDead(php);
- $("#battleModal").classList.remove("show");hideCenter();battleBusy=false;
+ $("#battleModal").classList.remove("show");
+ hideCenter();
+ battleBusy=false;
 
  if(won){
    state.battleWins=(state.battleWins||0)+1;
@@ -714,15 +741,37 @@ async function startBattle(){
    if(state.moreBulletsProgress>=20)state.moreBulletsBossUnlocked=true;
    state.winStreak=(state.winStreak||0)+1;
    state.bestWinStreak=Math.max(state.bestWinStreak||0,state.winStreak);
+
    let bonus=500;
    if(state.winStreak===2)bonus+=500;
    state.coins+=bonus;
-   for(const c of team)gainCardWin(c);
+   team.forEach(gainCardWin);
    save();
-   showResult(true,`Enemy team eliminated! +${fmt(bonus)} coins · ${difficulty}★ bot`);
+   showResult(true,`Enemy team eliminated! +${fmt(bonus)} coins`);
  }else{
-   state.battleLosses=(state.battleLosses||0)+1;state.winStreak=0;save();
-   showResult(false,`Your team was eliminated by a ${difficulty}★ bot.`);
+   state.battleLosses=(state.battleLosses||0)+1;
+   state.winStreak=0;
+   save();
+   showResult(false,"Your whole team was eliminated.");
+ }
+}
+
+function gainCardWin(c){
+ if(!c)return;
+ const now=Date.now();
+ const tier=tierFor(c);
+ if(tier==="Exotic"){state.cardXP[c.id]=winsNeeded(c);return}
+ if((state.cardCooldown[c.id]||0)>now)return;
+ state.cardXP[c.id]=(state.cardXP[c.id]||0)+1;
+ const needed=winsNeeded(c);
+ if(state.cardXP[c.id]>=needed){
+   const ti=TIERS.indexOf(tier);
+   if(ti>=0 && ti<TIERS.length-1){
+     const nextTier=TIERS[ti+1];
+     state.cardTier[c.id]=nextTier;
+     state.cardXP[c.id]=nextTier==="Exotic"?winsNeeded(c):0;
+     state.cardCooldown[c.id]=now+24*60*60*1000;
+   }
  }
 }
 
