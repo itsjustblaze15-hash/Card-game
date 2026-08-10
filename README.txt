@@ -58,3 +58,10 @@ V7 BATTLE RUNTIME FIX
 - The other team then sends one card forward.
 - Turns alternate continuously and rotate through all surviving cards.
 - Battle ends only when every card on one team reaches 0 HP.
+
+V7 SWEEP BATTLE UPDATE
+- Restored the full green Victory and red Defeat screens after battles.
+- One active card now attacks every surviving opposing card before returning.
+- Then one card from the other team steps in and attacks every surviving card.
+- Active cards rotate one by one on each side.
+- The fight continues until one entire team reaches 0 HP.
