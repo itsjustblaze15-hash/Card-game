@@ -13,6 +13,6 @@
 <circle cx="235" cy="282" r="18" fill="#00e5ff"/><circle cx="365" cy="282" r="18" fill="#00e5ff"/>
 <path d="M225 350 Q300 405 375 350" fill="none" stroke="#ffd43b" stroke-width="16" stroke-linecap="round"/>
 <path d="M105 615 Q300 455 495 615 L545 800 H55 Z" fill="#171717" stroke="#00e5ff" stroke-width="18"/>
-<text x="300" y="700" font-family="Arial Black,Arial" font-size="66" text-anchor="middle" fill="url(#gold)">GOLDEN KING</text>
+<text x="300" y="700" font-family="Arial Black,Arial" font-size="66" text-anchor="middle" fill="url(#gold)">ICE AGENTS</text>
 <text x="300" y="752" font-family="Arial,Helvetica" font-size="28" text-anchor="middle" fill="#00e5ff">BOSS EXCLUSIVE</text>
 </svg>
