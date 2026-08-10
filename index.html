@@ -45,7 +45,7 @@ button{font:inherit;cursor:pointer}
 .tap{margin-top:14px;font-weight:1000} .close{margin-top:12px;width:100%;border:0;border-radius:13px;padding:12px;background:#211800;color:#ffe16b;font-weight:1000}
 .toast{position:fixed;z-index:50;left:50%;top:75px;transform:translateX(-50%) translateY(-20px);background:#201700;color:#ffe67d;border-radius:999px;padding:10px 16px;font-weight:900;opacity:0;transition:.2s;pointer-events:none;max-width:90%;text-align:center} .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .wheel-wrap{position:relative;width:288px;height:308px;margin:8px auto 14px} .pointer{position:absolute;z-index:5;top:0;left:50%;transform:translateX(-50%);width:0;height:0;border-left:18px solid transparent;border-right:18px solid transparent;border-top:34px solid #e21b23;filter:drop-shadow(0 3px 2px #0005)}
-.wheel{position:absolute;left:14px;top:22px;width:260px;height:260px;border-radius:50%;border:8px solid #fff4bd;box-shadow:0 14px 30px #5d3e0050;transition:transform 3.5s cubic-bezier(.12,.72,.06,1);overflow:hidden}
+.wheel{position:absolute;left:14px;top:22px;width:260px;height:260px;border-radius:50%;border:8px solid #fff4bd;box-shadow:0 14px 30px #5d3e0050;transition:transform 2.4s cubic-bezier(.06,.78,.08,1);overflow:hidden}
 .wheel-center{position:absolute;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);width:78px;height:78px;border-radius:50%;background:#241a00;color:#ffd84d;border:5px solid #fff0a4;display:grid;place-items:center;font-weight:1000}
 .wheel-label{position:absolute;left:50%;top:50%;width:95px;margin-left:-47.5px;margin-top:-9px;text-align:right;transform-origin:47.5px 9px;font-size:9px;font-weight:1000;color:white;text-shadow:0 1px 2px #000;pointer-events:none}
 .resultbox{display:none;background:#fff2aa;border:2px solid #e5a900;border-radius:15px;padding:12px;margin:12px 0;font-weight:1000;text-align:center}
@@ -139,7 +139,7 @@ button{font:inherit;cursor:pointer}
 </section>
 
 <section id="upgrade" class="screen">
-<div class="hero"><h1>UPGRADE CENTER</h1><p>Battle wins build evolution progress. Every 10 wins advances a card one rarity tier, all the way to Exotic.</p></div>
+<div class="hero"><h1>UPGRADE CENTER</h1><p>Battle wins build evolution progress. Every 10 wins advances a card one tier. Legendary requires 30 wins to become Exotic. Exotic is the permanent maximum.</p></div>
 <div id="upgradeList"></div>
 </section>
 
@@ -182,7 +182,7 @@ button{font:inherit;cursor:pointer}
 
 <script>
 const CARDS = [{"id": 1, "character": "TIGGY", "name": "TIGGY #01", "rarity": "Common", "image": "assets/card_001.jpeg"}, {"id": 2, "character": "TIGGY", "name": "TIGGY #02", "rarity": "Common", "image": "assets/card_002.jpeg"}, {"id": 3, "character": "TIGGY", "name": "TIGGY #03", "rarity": "Common", "image": "assets/card_003.jpg"}, {"id": 4, "character": "TIGGY", "name": "TIGGY #04", "rarity": "Common", "image": "assets/card_004.jpg"}, {"id": 5, "character": "TIGGY", "name": "TIGGY #05", "rarity": "Common", "image": "assets/card_005.jpeg"}, {"id": 6, "character": "TIGGY", "name": "TIGGY #06", "rarity": "Common", "image": "assets/card_006.jpg"}, {"id": 7, "character": "TIGGY", "name": "TIGGY #07", "rarity": "Common", "image": "assets/card_007.jpg"}, {"id": 8, "character": "TIGGY", "name": "TIGGY #08", "rarity": "Common", "image": "assets/card_008.jpg"}, {"id": 9, "character": "TIGGY", "name": "TIGGY #09", "rarity": "Common", "image": "assets/card_009.jpg"}, {"id": 10, "character": "TIGGY", "name": "TIGGY #10", "rarity": "Common", "image": "assets/card_010.jpg"}, {"id": 11, "character": "TIGGY", "name": "TIGGY #11", "rarity": "Common", "image": "assets/card_011.jpg"}, {"id": 12, "character": "TIGGY", "name": "TIGGY #12", "rarity": "Common", "image": "assets/card_012.jpg"}, {"id": 13, "character": "TIGGY", "name": "TIGGY #13", "rarity": "Common", "image": "assets/card_013.jpg"}, {"id": 14, "character": "TIGGY", "name": "TIGGY #14", "rarity": "Common", "image": "assets/card_014.jpg"}, {"id": 15, "character": "TIGGY", "name": "TIGGY #15", "rarity": "Uncommon", "image": "assets/card_015.jpg"}, {"id": 16, "character": "TIGGY", "name": "TIGGY #16", "rarity": "Uncommon", "image": "assets/card_016.jpg"}, {"id": 17, "character": "TIGGY", "name": "TIGGY #17", "rarity": "Uncommon", "image": "assets/card_017.jpeg"}, {"id": 18, "character": "TIGGY", "name": "TIGGY #18", "rarity": "Uncommon", "image": "assets/card_018.jpeg"}, {"id": 19, "character": "TIGGY", "name": "TIGGY #19", "rarity": "Uncommon", "image": "assets/card_019.jpeg"}, {"id": 20, "character": "TIGGY", "name": "TIGGY #20", "rarity": "Uncommon", "image": "assets/card_020.jpeg"}, {"id": 21, "character": "TIGGY", "name": "TIGGY #21", "rarity": "Uncommon", "image": "assets/card_021.jpeg"}, {"id": 22, "character": "TIGGY", "name": "TIGGY #22", "rarity": "Uncommon", "image": "assets/card_022.jpg"}, {"id": 23, "character": "TIGGY", "name": "TIGGY #23", "rarity": "Uncommon", "image": "assets/card_023.jpg"}, {"id": 24, "character": "TIGGY", "name": "TIGGY #24", "rarity": "Uncommon", "image": "assets/card_024.jpg"}, {"id": 25, "character": "TIGGY", "name": "TIGGY #25", "rarity": "Rare", "image": "assets/card_025.jpg"}, {"id": 26, "character": "TIGGY", "name": "TIGGY #26", "rarity": "Rare", "image": "assets/card_026.jpeg"}, {"id": 27, "character": "TIGGY", "name": "TIGGY #27", "rarity": "Rare", "image": "assets/card_027.jpeg"}, {"id": 28, "character": "TIGGY", "name": "TIGGY #28", "rarity": "Rare", "image": "assets/card_028.jpeg"}, {"id": 29, "character": "TIGGY", "name": "TIGGY #29", "rarity": "Rare", "image": "assets/card_029.jpeg"}, {"id": 30, "character": "TIGGY", "name": "TIGGY #30", "rarity": "Rare", "image": "assets/card_030.jpeg"}, {"id": 31, "character": "TIGGY", "name": "TIGGY #31", "rarity": "Rare", "image": "assets/card_031.jpeg"}, {"id": 32, "character": "TIGGY", "name": "TIGGY #32", "rarity": "Epic", "image": "assets/card_032.jpeg"}, {"id": 33, "character": "TIGGY", "name": "TIGGY #33", "rarity": "Epic", "image": "assets/card_033.jpeg"}, {"id": 34, "character": "TIGGY", "name": "TIGGY #34", "rarity": "Epic", "image": "assets/card_034.jpeg"}, {"id": 35, "character": "TIGGY", "name": "TIGGY #35", "rarity": "Epic", "image": "assets/card_035.jpeg"}, {"id": 36, "character": "TIGGY", "name": "TIGGY #36", "rarity": "Legendary", "image": "assets/card_036.jpeg"}, {"id": 37, "character": "TIGGY", "name": "TIGGY #37", "rarity": "Legendary", "image": "assets/card_037.jpeg"}, {"id": 38, "character": "VGO", "name": "VGO #01", "rarity": "Common", "image": "assets/card_038.jpeg"}, {"id": 39, "character": "VGO", "name": "VGO #02", "rarity": "Common", "image": "assets/card_039.jpg"}, {"id": 40, "character": "VGO", "name": "VGO #03", "rarity": "Common", "image": "assets/card_040.jpg"}, {"id": 41, "character": "VGO", "name": "VGO #04", "rarity": "Common", "image": "assets/card_041.jpg"}, {"id": 42, "character": "VGO", "name": "VGO #05", "rarity": "Common", "image": "assets/card_042.jpg"}, {"id": 43, "character": "VGO", "name": "VGO #06", "rarity": "Uncommon", "image": "assets/card_043.jpg"}, {"id": 44, "character": "VGO", "name": "VGO #07", "rarity": "Uncommon", "image": "assets/card_044.jpg"}, {"id": 45, "character": "VGO", "name": "VGO #08", "rarity": "Uncommon", "image": "assets/card_045.jpeg"}, {"id": 46, "character": "VGO", "name": "VGO #09", "rarity": "Uncommon", "image": "assets/card_046.jpeg"}, {"id": 47, "character": "VGO", "name": "VGO #10", "rarity": "Rare", "image": "assets/card_047.jpg"}, {"id": 48, "character": "VGO", "name": "VGO #11", "rarity": "Rare", "image": "assets/card_048.jpeg"}, {"id": 49, "character": "VGO", "name": "VGO #12", "rarity": "Rare", "image": "assets/card_049.jpeg"}, {"id": 50, "character": "VGO", "name": "VGO #13", "rarity": "Epic", "image": "assets/card_050.jpeg"}, {"id": 51, "character": "VGO", "name": "VGO #14", "rarity": "Legendary", "image": "assets/card_051.jpeg"}, {"id": 52, "character": "HAYK THE THUG", "name": "HAYK THE THUG #01", "rarity": "Common", "image": "assets/card_052.jpeg"}, {"id": 53, "character": "HAYK THE THUG", "name": "HAYK THE THUG #02", "rarity": "Common", "image": "assets/card_053.jpg"}, {"id": 54, "character": "HAYK THE THUG", "name": "HAYK THE THUG #03", "rarity": "Common", "image": "assets/card_054.jpg"}, {"id": 55, "character": "HAYK THE THUG", "name": "HAYK THE THUG #04", "rarity": "Common", "image": "assets/card_055.jpg"}, {"id": 56, "character": "HAYK THE THUG", "name": "HAYK THE THUG #05", "rarity": "Common", "image": "assets/card_056.jpg"}, {"id": 57, "character": "HAYK THE THUG", "name": "HAYK THE THUG #06", "rarity": "Common", "image": "assets/card_057.jpeg"}, {"id": 58, "character": "HAYK THE THUG", "name": "HAYK THE THUG #07", "rarity": "Common", "image": "assets/card_058.jpg"}, {"id": 59, "character": "HAYK THE THUG", "name": "HAYK THE THUG #08", "rarity": "Uncommon", "image": "assets/card_059.jpg"}, {"id": 60, "character": "HAYK THE THUG", "name": "HAYK THE THUG #09", "rarity": "Uncommon", "image": "assets/card_060.jpg"}, {"id": 61, "character": "HAYK THE THUG", "name": "HAYK THE THUG #10", "rarity": "Uncommon", "image": "assets/card_061.jpg"}, {"id": 62, "character": "HAYK THE THUG", "name": "HAYK THE THUG #11", "rarity": "Uncommon", "image": "assets/card_062.jpg"}, {"id": 63, "character": "HAYK THE THUG", "name": "HAYK THE THUG #12", "rarity": "Uncommon", "image": "assets/card_063.jpg"}, {"id": 64, "character": "HAYK THE THUG", "name": "HAYK THE THUG #13", "rarity": "Rare", "image": "assets/card_064.jpg"}, {"id": 65, "character": "HAYK THE THUG", "name": "HAYK THE THUG #14", "rarity": "Rare", "image": "assets/card_065.jpeg"}, {"id": 66, "character": "HAYK THE THUG", "name": "HAYK THE THUG #15", "rarity": "Rare", "image": "assets/card_066.jpeg"}, {"id": 67, "character": "HAYK THE THUG", "name": "HAYK THE THUG #16", "rarity": "Epic", "image": "assets/card_067.jpeg"}, {"id": 68, "character": "HAYK THE THUG", "name": "HAYK THE THUG #17", "rarity": "Epic", "image": "assets/card_068.jpeg"}, {"id": 69, "character": "HAYK THE THUG", "name": "HAYK THE THUG #18", "rarity": "Legendary", "image": "assets/card_069.jpg"}, {"id": 70, "character": "THE GOOF", "name": "THE GOOF #01", "rarity": "Epic", "image": "assets/card_070.jpeg"}, {"id": 71, "character": "THE GOOF", "name": "THE GOOF #02", "rarity": "Legendary", "image": "assets/card_071.jpeg"}, {"id": 72, "character": "THE GOOF", "name": "THE GOOF #03", "rarity": "Legendary", "image": "assets/card_072.jpeg"}, {"id": 73, "character": "THE 3 NERDS", "name": "THE 3 NERDS #01", "rarity": "Rare", "image": "assets/card_073.jpg"}, {"id": 74, "character": "THE 3 NERDS", "name": "THE 3 NERDS #02", "rarity": "Rare", "image": "assets/card_074.jpeg"}, {"id": 75, "character": "THE 3 NERDS", "name": "THE 3 NERDS #03", "rarity": "Epic", "image": "assets/card_075.jpeg"}, {"id": 76, "character": "THE 3 NERDS", "name": "THE 3 NERDS #04", "rarity": "Epic", "image": "assets/card_076.jpeg"}, {"id": 77, "character": "THE 3 NERDS", "name": "THE 3 NERDS #05", "rarity": "Legendary", "image": "assets/card_077.jpeg"}, {"id": 78, "character": "THE 3 NERDS", "name": "THE 3 NERDS #06", "rarity": "Rare", "image": "assets/card_078.jpeg"}, {"id": 79, "character": "THE 3 NERDS", "name": "THE 3 NERDS #07", "rarity": "Epic", "image": "assets/card_079.jpeg"}, {"id": 80, "character": "THE 3 NERDS", "name": "THE 3 NERDS #08", "rarity": "Legendary", "image": "assets/card_080.jpeg"}];
-const R={Common:{color:"#9b9b9b",value:250},Uncommon:{color:"#27c45b",value:700},Rare:{color:"#2587ff",value:1800},Epic:{color:"#a34cff",value:5000},Legendary:{color:"#ff8a1f",value:15000},Exotic:{color:"#00d9ff",value:35000}};
+const R={Common:{color:"#9b9b9b",value:250},Uncommon:{color:"#27c45b",value:700},Rare:{color:"#2587ff",value:1800},Epic:{color:"#a34cff",value:5000},Legendary:{color:"#ff8a1f",value:15000},Exotic:{color:"#00e5ff",value:35000}};
 const PACKS=[
 {name:"Common",price:4000,odds:{Common:82,Uncommon:14,Rare:3,Epic:.8,Legendary:.2}},
 {name:"Uncommon",price:12000,odds:{Common:64,Uncommon:27,Rare:7,Epic:1.7,Legendary:.3}},
@@ -209,12 +209,25 @@ if(state.coins===undefined) state.coins=0;
 if(state.welcome===undefined) state.welcome=3;
 if(state.freeUncommonAt===undefined) state.freeUncommonAt=0;
 if(state.wheelSpins===undefined) state.wheelSpins=0;
+if(state.wheelRotation===undefined) state.wheelRotation=0;
 if(!state.cardXP) state.cardXP={};
 if(!state.cardTier) state.cardTier={};
 if(!state.cardCooldown) state.cardCooldown={};
 if(!state.battleWins) state.battleWins=0;
 if(!state.battleLosses) state.battleLosses=0;
 if(!state.team) state.team=[];
+if(!state.exotic30MigrationDone){
+  for(const c of CARDS){
+    const tier=state.cardTier[c.id]||c.rarity;
+    const xp=Number(state.cardXP[c.id]||0);
+    if(tier==="Legendary" && xp>=10){
+      state.cardTier[c.id]="Exotic";
+      state.cardXP[c.id]=30;
+      state.cardCooldown[c.id]=0;
+    }
+  }
+  state.exotic30MigrationDone=true;
+}
 
 let current=[],idx=0,packSource="paid",ownedFilter="ALL",indexFilter="ALL",spinning=false,pendingWheelPrize=null;
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -252,7 +265,7 @@ function render(){
  for(const c of CARDS){
    const q=state.owned[c.id]||0;
    if(q>0){
-     for(let copy=1;copy<=q;copy++) cardValue+=Math.round(R[c.rarity].value*(1+Math.max(0,copy-1)*.15));
+     for(let copy=1;copy<=q;copy++) cardValue+=Math.round(R[tierFor(c)].value*(1+Math.max(0,copy-1)*.15));
    }
  }
  $("#accountValue").textContent=fmt((state.coins||0)+cardValue);
@@ -266,7 +279,7 @@ function render(){
    const ca=(a.character||"").localeCompare(b.character||"");
    return ca!==0?ca:(a.name||"").localeCompare(b.name||"");
  });
- $("#ownedCards").innerHTML=ownList.length?ownList.map(c=>{let q=state.owned[c.id]||0,val=Math.round(R[c.rarity].value*(1+Math.max(0,q-1)*.15));return `<div class="card" style="--rarity:${R[c.rarity].color}"><img src="${c.image}"><div class="nm">${c.name}</div><div class="meta"><span style="color:${R[c.rarity].color}">${c.rarity}</span><span>x${q}</span></div><button class="sell" onclick="sell(${c.id})">SELL 1 · ● ${fmt(val)}</button></div>`}).join(""):`<div style="grid-column:1/-1;text-align:center;padding:28px 12px;font-weight:900">No cards owned in this category yet.</div>`;
+ $("#ownedCards").innerHTML=ownList.length?ownList.map(c=>{let q=state.owned[c.id]||0,t=tierFor(c),val=Math.round(R[t].value*(1+Math.max(0,q-1)*.15));return `<div class="card" style="--rarity:${R[t].color}"><img src="${c.image}"><div class="nm">${c.name} · OVR ${overall(c)}</div><div class="meta"><span style="color:${R[t].color}">${t}</span><span>x${q}</span></div><button class="sell" onclick="sell(${c.id})">SELL 1 · ● ${fmt(val)}</button></div>`}).join(""):`<div style="grid-column:1/-1;text-align:center;padding:28px 12px;font-weight:900">No cards owned in this category yet.</div>`;
 
  $("#indexFilters").innerHTML=chars.map(x=>`<button class="chip ${indexFilter===x?"on":""}" onclick="setIndexFilter('${x.replaceAll("'","\\'")}')">${x}</button>`).join("");
  let idxList=(indexFilter==="ALL"?CARDS:CARDS.filter(c=>c.character===indexFilter)).slice().sort((a,b)=>{
@@ -276,7 +289,7 @@ function render(){
    const ca=(a.character||"").localeCompare(b.character||"");
    return ca!==0?ca:(a.name||"").localeCompare(b.name||"");
  });
- $("#indexCards").innerHTML=idxList.map(c=>{let q=state.owned[c.id]||0;return `<div class="card ${q?"":"locked"}" style="--rarity:${R[c.rarity].color}"><img src="${c.image}"><div class="nm">${q?c.name:"NOT COLLECTED"}</div><div class="meta"><span style="color:${R[c.rarity].color}">${c.rarity}</span><span>${q?"x"+q:"LOCKED"}</span></div></div>`}).join("");
+ $("#indexCards").innerHTML=idxList.map(c=>{let q=state.owned[c.id]||0,t=tierFor(c);return `<div class="card ${q?"":"locked"}" style="--rarity:${R[t].color}"><img src="${c.image}"><div class="nm">${q?c.name+" · OVR "+overall(c):"NOT COLLECTED"}</div><div class="meta"><span style="color:${R[t].color}">${t}</span><span>${q?"x"+q:"LOCKED"}</span></div></div>`}).join("");
  renderBattle();
  renderUpgrades();
 
@@ -285,7 +298,7 @@ function setOwnedFilter(x){ownedFilter=x;render()} function setIndexFilter(x){in
 
 function sell(id){
  let q=state.owned[id]||0;if(!q)return;
- let c=CARDS.find(x=>x.id===id),val=Math.round(R[c.rarity].value*(1+Math.max(0,q-1)*.15));
+ let c=CARDS.find(x=>x.id===id),t=tierFor(c),val=Math.round(R[t].value*(1+Math.max(0,q-1)*.15));
  state.owned[id]=q-1;state.coins+=val;save();toast(`Sold for ${fmt(val)} points`);
 }
 
@@ -354,15 +367,27 @@ buildWheel();
 
 function spinWheel(){
  if(spinning)return;
- if(state.coins<3000){toast("You need 5,000 points");return}
+ if(state.coins<3000){toast("You need 3,000 points");return}
  state.coins-=3000;save();spinning=true;pendingWheelPrize=null;
  $("#spinBtn").disabled=true;$("#wheelResult").style.display="none";
  const slot=Math.floor(Math.random()*WHEEL_SLOTS.length);
  const deg=360/WHEEL_SLOTS.length;
  const center=slot*deg+deg/2;
  state.wheelSpins=(state.wheelSpins||0)+1;
- const turns=5+state.wheelSpins%2;
- const rotation=turns*360-center;
+
+ // Always move forward clockwise from the wheel's current position.
+ const previous=Number(state.wheelRotation||0);
+ const currentAngle=((previous%360)+360)%360;
+ const targetAngle=((360-center)%360+360)%360;
+ const extraToTarget=(targetAngle-currentAngle+360)%360;
+
+ // At least 3 full turns, occasionally 4.
+ const fullTurns=3+(state.wheelSpins%2);
+ const rotation=previous+(fullTurns*360)+extraToTarget;
+ state.wheelRotation=rotation;
+ save();
+
+ $("#wheel").style.transition="transform 2.4s cubic-bezier(.06,.78,.08,1)";
  $("#wheel").style.transform=`rotate(${rotation}deg)`;
  setTimeout(()=>{
    spinning=false;$("#spinBtn").disabled=false;
@@ -375,7 +400,7 @@ function spinWheel(){
      $("#wheelResult").style.display="block";$("#wheelResult").innerHTML=`YOU WON A <b>${prize.toUpperCase()} PACK</b><br><button style="margin-top:10px" onclick="claimWheelPack()">OPEN PRIZE PACK</button>`;
      toast(`You won a ${prize} Pack`);
    }
- },3600);
+ },2500);
 }
 function claimWheelPack(){
  if(!pendingWheelPrize||pendingWheelPrize==="Coins")return;
@@ -388,10 +413,20 @@ function claimWheelPack(){
 const TIERS=["Common","Uncommon","Rare","Epic","Legendary","Exotic"];
 let pickSlot=0,battleBusy=false;
 function tierFor(c){return state.cardTier[c.id]||c.rarity}
+function winsNeeded(c){
+ const tier=tierFor(c);
+ if(tier==="Legendary") return 30;
+ if(tier==="Exotic") return 30;
+ return 10;
+}
 function stats(c){
- const tier=tierFor(c),ti=Math.max(0,TIERS.indexOf(tier)),xp=state.cardXP[c.id]||0;
+ const tier=tierFor(c),ti=Math.max(0,TIERS.indexOf(tier)),xp=Math.min(state.cardXP[c.id]||0,winsNeeded(c));
  const seed=(c.id*37)%23;
  return {atk:40+ti*18+seed+xp,def:38+ti*17+(seed%11)+xp,spd:35+ti*13+(seed%17)+Math.floor(xp/2)};
+}
+function overall(c){
+ const s=stats(c);
+ return Math.round((s.atk+s.def+s.spd)/3);
 }
 function renderBattle(){
  if($("#stars")) $("#stars").textContent="RANDOM ★–★★★★★";
@@ -399,7 +434,7 @@ function renderBattle(){
  $("#teamSlots").innerHTML=[0,1,2].map(i=>{
    const id=state.team[i],c=CARDS.find(x=>x.id===id);
    if(!c)return `<div class="slot" onclick="openPicker(${i})"><b>+ CHOOSE CARD</b></div>`;
-   const s=stats(c);return `<div class="slot" onclick="openPicker(${i})"><img src="${c.image}"><b>${c.name}</b><div class="statline"><span>A ${s.atk}</span><span>D ${s.def}</span><span>S ${s.spd}</span></div></div>`;
+   const s=stats(c);return `<div class="slot" onclick="openPicker(${i})"><img src="${c.image}"><b>${c.name} · OVR ${overall(c)}</b><div class="statline"><span>A ${s.atk}</span><span>D ${s.def}</span><span>S ${s.spd}</span></div></div>`;
  }).join("");
 }
 function openPicker(i){
@@ -408,7 +443,7 @@ function openPicker(i){
    const order={Exotic:6,Legendary:5,Epic:4,Rare:3,Uncommon:2,Common:1};
    return (order[tierFor(b)]||0)-(order[tierFor(a)]||0);
  });
- $("#pickCards").innerHTML=owned.map(c=>`<div class="card" style="--rarity:${R[tierFor(c)].color}" onclick="chooseTeamCard(${c.id})"><img src="${c.image}"><div class="nm">${c.name}</div><div class="meta"><span>${tierFor(c)}</span><span>+${state.cardXP[c.id]||0}/10</span></div></div>`).join("");
+ $("#pickCards").innerHTML=owned.map(c=>`<div class="card" style="--rarity:${R[tierFor(c)].color}" onclick="chooseTeamCard(${c.id})"><img src="${c.image}"><div class="nm">${c.name} · OVR ${overall(c)}</div><div class="meta"><span>${tierFor(c)}</span><span>+${Math.min(state.cardXP[c.id]||0,winsNeeded(c))}/${winsNeeded(c)}</span></div></div>`).join("");
  $("#pickOverlay").classList.add("show");
 }
 function closePicker(){$("#pickOverlay").classList.remove("show")}
@@ -436,8 +471,8 @@ async function startBattle(){
  for(let i=0;i<3;i++){
    $("#roundText").textContent=`${"★".repeat(d)}${"☆".repeat(5-d)} · ROUND ${i+1}`;
    const ps=stats(team[i]),bs=stats(bots[i]);
-   $("#playerFighter").innerHTML=`<img src="${team[i].image}"><b>${team[i].name}</b><div>A ${ps.atk} · D ${ps.def} · S ${ps.spd}</div>`;
-   $("#botFighter").innerHTML=`<img src="${bots[i].image}"><b>${bots[i].name}</b><div>${bots[i].rarity}</div>`;
+   $("#playerFighter").innerHTML=`<img src="${team[i].image}"><b>${team[i].name} · OVR ${overall(team[i])}</b><div>A ${ps.atk} · D ${ps.def} · S ${ps.spd}</div>`;
+   $("#botFighter").innerHTML=`<img src="${bots[i].image}"><b>${bots[i].name} · OVR ${overall(bots[i])}</b><div>${bots[i].rarity}</div>`;
    $("#battleLog").textContent="FIGHT!";
    const rr=$("#roundResult");rr.className="round-result";rr.textContent="";
    await wait(500);
@@ -465,11 +500,17 @@ async function startBattle(){
    const now=Date.now();
    team.forEach(c=>{
      if((state.cardCooldown[c.id]||0)>now)return;
+     const cur=tierFor(c);
+     if(cur==="Exotic"){state.cardXP[c.id]=30;return;}
      state.cardXP[c.id]=(state.cardXP[c.id]||0)+1;
-     if(state.cardXP[c.id]>=10){
-       const cur=tierFor(c),ti=TIERS.indexOf(cur);
-       if(ti<TIERS.length-1){state.cardTier[c.id]=TIERS[ti+1];state.cardXP[c.id]=0;state.cardCooldown[c.id]=now+24*60*60*1000;}
-       else state.cardXP[c.id]=10;
+     const needed=winsNeeded(c);
+     if(state.cardXP[c.id]>=needed){
+       const ti=TIERS.indexOf(cur);
+       if(ti<TIERS.length-1){
+         state.cardTier[c.id]=TIERS[ti+1];
+         state.cardXP[c.id]=(TIERS[ti+1]==="Exotic")?30:0;
+         state.cardCooldown[c.id]=now+24*60*60*1000;
+       }
      }
    });
    save();showResult(true,`You won ${fmt(reward)} coins. Each eligible card used gained +1 upgrade progress.`);
@@ -480,12 +521,19 @@ function showResult(win,text){const r=$("#resultScreen");r.className="result-scr
 function closeResult(){$("#resultScreen").className="result-screen"}
 function renderUpgrades(){
  if(!$("#upgradeList"))return;
- const now=Date.now(),owned=CARDS.filter(c=>(state.owned[c.id]||0)>0);
+ const now=Date.now(),owned=CARDS.filter(c=>(state.owned[c.id]||0)>0).sort((a,b)=>{
+   const order={Exotic:6,Legendary:5,Epic:4,Rare:3,Uncommon:2,Common:1};
+   const diff=(order[tierFor(b)]||0)-(order[tierFor(a)]||0);
+   if(diff!==0) return diff;
+   const xpDiff=(state.cardXP[b.id]||0)-(state.cardXP[a.id]||0);
+   if(xpDiff!==0) return xpDiff;
+   return (a.name||"").localeCompare(b.name||"");
+ });
  $("#upgradeList").innerHTML=owned.length?owned.map(c=>{
-   const tier=tierFor(c),xp=state.cardXP[c.id]||0,left=Math.max(0,(state.cardCooldown[c.id]||0)-now);
+   const tier=tierFor(c),xp=Math.min(state.cardXP[c.id]||0,winsNeeded(c)),needed=winsNeeded(c),left=Math.max(0,(state.cardCooldown[c.id]||0)-now);
    let cd="";if(left){let h=Math.ceil(left/3600000);cd=`<div class="cooldown">Evolution cooldown: about ${h}h remaining</div>`}
    const s=stats(c);
-   return `<div class="upgrade-card" style="--rarity:${R[tier].color}"><div class="upgrade-row"><img src="${c.image}"><div><b>${c.name}</b><div>${tier} · ${xp}/10 wins</div><div class="progress"><i style="width:${Math.min(100,xp*10)}%"></i></div>${cd}<div class="statline"><span>ATK ${s.atk}</span><span>DEF ${s.def}</span><span>SPD ${s.spd}</span></div></div></div></div>`
+   return `<div class="upgrade-card" style="--rarity:${R[tier].color}"><div class="upgrade-row"><img src="${c.image}"><div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>${c.name}</b><b style="font-size:20px;color:${R[tier].color}">OVR ${overall(c)}</b></div><div>${tier} · ${xp}/${needed} wins</div><div class="progress"><i style="width:${Math.min(100,xp/needed*100)}%"></i></div>${cd}<div class="statline"><span>ATK ${s.atk}</span><span>DEF ${s.def}</span><span>SPD ${s.spd}</span></div></div></div></div>`
  }).join(""):`<div class="panel">Collect some cards first.</div>`;
 }
 setInterval(()=>{if($("#upgrade").classList.contains("active"))renderUpgrades()},60000);
@@ -494,8 +542,14 @@ $$(".nav button").forEach(b=>b.onclick=()=>{
 const TIERS=["Common","Uncommon","Rare","Epic","Legendary","Exotic"];
 let pickSlot=0,battleBusy=false;
 function tierFor(c){return state.cardTier[c.id]||c.rarity}
+function winsNeeded(c){
+ const tier=tierFor(c);
+ if(tier==="Legendary") return 30;
+ if(tier==="Exotic") return 30;
+ return 10;
+}
 function stats(c){
- const tier=tierFor(c),ti=Math.max(0,TIERS.indexOf(tier)),xp=state.cardXP[c.id]||0;
+ const tier=tierFor(c),ti=Math.max(0,TIERS.indexOf(tier)),xp=Math.min(state.cardXP[c.id]||0,winsNeeded(c));
  const seed=(c.id*37)%23;
  return {atk:40+ti*18+seed+xp,def:38+ti*17+(seed%11)+xp,spd:35+ti*13+(seed%17)+Math.floor(xp/2)};
 }
@@ -505,7 +559,7 @@ function renderBattle(){
  $("#teamSlots").innerHTML=[0,1,2].map(i=>{
    const id=state.team[i],c=CARDS.find(x=>x.id===id);
    if(!c)return `<div class="slot" onclick="openPicker(${i})"><b>+ CHOOSE CARD</b></div>`;
-   const s=stats(c);return `<div class="slot" onclick="openPicker(${i})"><img src="${c.image}"><b>${c.name}</b><div class="statline"><span>A ${s.atk}</span><span>D ${s.def}</span><span>S ${s.spd}</span></div></div>`;
+   const s=stats(c);return `<div class="slot" onclick="openPicker(${i})"><img src="${c.image}"><b>${c.name} · OVR ${overall(c)}</b><div class="statline"><span>A ${s.atk}</span><span>D ${s.def}</span><span>S ${s.spd}</span></div></div>`;
  }).join("");
 }
 function openPicker(i){
@@ -514,7 +568,7 @@ function openPicker(i){
    const order={Exotic:6,Legendary:5,Epic:4,Rare:3,Uncommon:2,Common:1};
    return (order[tierFor(b)]||0)-(order[tierFor(a)]||0);
  });
- $("#pickCards").innerHTML=owned.map(c=>`<div class="card" style="--rarity:${R[tierFor(c)].color}" onclick="chooseTeamCard(${c.id})"><img src="${c.image}"><div class="nm">${c.name}</div><div class="meta"><span>${tierFor(c)}</span><span>+${state.cardXP[c.id]||0}/10</span></div></div>`).join("");
+ $("#pickCards").innerHTML=owned.map(c=>`<div class="card" style="--rarity:${R[tierFor(c)].color}" onclick="chooseTeamCard(${c.id})"><img src="${c.image}"><div class="nm">${c.name} · OVR ${overall(c)}</div><div class="meta"><span>${tierFor(c)}</span><span>+${Math.min(state.cardXP[c.id]||0,winsNeeded(c))}/${winsNeeded(c)}</span></div></div>`).join("");
  $("#pickOverlay").classList.add("show");
 }
 function closePicker(){$("#pickOverlay").classList.remove("show")}
@@ -542,8 +596,8 @@ async function startBattle(){
  for(let i=0;i<3;i++){
    $("#roundText").textContent=`${"★".repeat(d)}${"☆".repeat(5-d)} · ROUND ${i+1}`;
    const ps=stats(team[i]),bs=stats(bots[i]);
-   $("#playerFighter").innerHTML=`<img src="${team[i].image}"><b>${team[i].name}</b><div>A ${ps.atk} · D ${ps.def} · S ${ps.spd}</div>`;
-   $("#botFighter").innerHTML=`<img src="${bots[i].image}"><b>${bots[i].name}</b><div>${bots[i].rarity}</div>`;
+   $("#playerFighter").innerHTML=`<img src="${team[i].image}"><b>${team[i].name} · OVR ${overall(team[i])}</b><div>A ${ps.atk} · D ${ps.def} · S ${ps.spd}</div>`;
+   $("#botFighter").innerHTML=`<img src="${bots[i].image}"><b>${bots[i].name} · OVR ${overall(bots[i])}</b><div>${bots[i].rarity}</div>`;
    $("#battleLog").textContent="FIGHT!";
    const rr=$("#roundResult");rr.className="round-result";rr.textContent="";
    await wait(500);
@@ -571,11 +625,17 @@ async function startBattle(){
    const now=Date.now();
    team.forEach(c=>{
      if((state.cardCooldown[c.id]||0)>now)return;
+     const cur=tierFor(c);
+     if(cur==="Exotic"){state.cardXP[c.id]=30;return;}
      state.cardXP[c.id]=(state.cardXP[c.id]||0)+1;
-     if(state.cardXP[c.id]>=10){
-       const cur=tierFor(c),ti=TIERS.indexOf(cur);
-       if(ti<TIERS.length-1){state.cardTier[c.id]=TIERS[ti+1];state.cardXP[c.id]=0;state.cardCooldown[c.id]=now+24*60*60*1000;}
-       else state.cardXP[c.id]=10;
+     const needed=winsNeeded(c);
+     if(state.cardXP[c.id]>=needed){
+       const ti=TIERS.indexOf(cur);
+       if(ti<TIERS.length-1){
+         state.cardTier[c.id]=TIERS[ti+1];
+         state.cardXP[c.id]=(TIERS[ti+1]==="Exotic")?30:0;
+         state.cardCooldown[c.id]=now+24*60*60*1000;
+       }
      }
    });
    save();showResult(true,`You won ${fmt(reward)} coins. Each eligible card used gained +1 upgrade progress.`);
@@ -586,12 +646,19 @@ function showResult(win,text){const r=$("#resultScreen");r.className="result-scr
 function closeResult(){$("#resultScreen").className="result-screen"}
 function renderUpgrades(){
  if(!$("#upgradeList"))return;
- const now=Date.now(),owned=CARDS.filter(c=>(state.owned[c.id]||0)>0);
+ const now=Date.now(),owned=CARDS.filter(c=>(state.owned[c.id]||0)>0).sort((a,b)=>{
+   const order={Exotic:6,Legendary:5,Epic:4,Rare:3,Uncommon:2,Common:1};
+   const diff=(order[tierFor(b)]||0)-(order[tierFor(a)]||0);
+   if(diff!==0) return diff;
+   const xpDiff=(state.cardXP[b.id]||0)-(state.cardXP[a.id]||0);
+   if(xpDiff!==0) return xpDiff;
+   return (a.name||"").localeCompare(b.name||"");
+ });
  $("#upgradeList").innerHTML=owned.length?owned.map(c=>{
-   const tier=tierFor(c),xp=state.cardXP[c.id]||0,left=Math.max(0,(state.cardCooldown[c.id]||0)-now);
+   const tier=tierFor(c),xp=Math.min(state.cardXP[c.id]||0,winsNeeded(c)),needed=winsNeeded(c),left=Math.max(0,(state.cardCooldown[c.id]||0)-now);
    let cd="";if(left){let h=Math.ceil(left/3600000);cd=`<div class="cooldown">Evolution cooldown: about ${h}h remaining</div>`}
    const s=stats(c);
-   return `<div class="upgrade-card" style="--rarity:${R[tier].color}"><div class="upgrade-row"><img src="${c.image}"><div><b>${c.name}</b><div>${tier} · ${xp}/10 wins</div><div class="progress"><i style="width:${Math.min(100,xp*10)}%"></i></div>${cd}<div class="statline"><span>ATK ${s.atk}</span><span>DEF ${s.def}</span><span>SPD ${s.spd}</span></div></div></div></div>`
+   return `<div class="upgrade-card" style="--rarity:${R[tier].color}"><div class="upgrade-row"><img src="${c.image}"><div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>${c.name}</b><b style="font-size:20px;color:${R[tier].color}">OVR ${overall(c)}</b></div><div>${tier} · ${xp}/${needed} wins</div><div class="progress"><i style="width:${Math.min(100,xp/needed*100)}%"></i></div>${cd}<div class="statline"><span>ATK ${s.atk}</span><span>DEF ${s.def}</span><span>SPD ${s.spd}</span></div></div></div></div>`
  }).join(""):`<div class="panel">Collect some cards first.</div>`;
 }
 setInterval(()=>{if($("#upgrade").classList.contains("active"))renderUpgrades()},60000);

@@ -1,22 +1,18 @@
-GOLDEN PULLS V5 - POLISH + EXOTIC UPDATE
+GOLDEN PULLS V5 - OVERALL RATING UPDATE
 
 Visible version remains V5.
 
-CHANGES
-- Card picker scrolling is improved for iPhone/mobile.
-- Collection sorts strongest rarity first:
-  Exotic -> Legendary -> Epic -> Rare -> Uncommon -> Common.
-- Card Index is also sorted strongest rarity first.
-- Battle rounds are slower and clearer.
-- Each round now flashes:
-  YOU WON THIS ROUND in green, or
-  YOU LOST THIS ROUND in red.
-- Winning/losing fighters are highlighted so the result is obvious.
-- Exotic rarity added above Legendary.
-- Upgrade path is now:
-  Common -> Uncommon -> Rare -> Epic -> Legendary -> Exotic.
-- Exotic cards use a bright cyan border/color.
-- Existing random 1-5 star AI difficulty and harder pack odds stay unchanged.
+NEW
+- Every card now has an OVR (Overall) rating.
+- OVR is calculated from Attack, Defense, and Speed.
+- OVR increases automatically when the card's stats increase through upgrades.
+- OVR appears beside the card name in:
+  - Upgrade Center
+  - Collection
+  - Card selection before battle
+  - Battle screen
+  - Card Index for owned cards
 
-UPLOAD
-Upload the CONTENTS of this ZIP directly to the same GitHub Pages repository root.
+Higher rarity and upgraded cards naturally receive higher Overall ratings.
+
+All previous V5 features and save data remain intact.
