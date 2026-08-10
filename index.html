@@ -148,6 +148,25 @@ button{font:inherit;cursor:pointer}
 .hold-confirm{position:relative;overflow:hidden;background:#a92020;color:white}.hold-confirm:before{content:"";position:absolute;inset:0 auto 0 0;width:var(--hold,0%);background:#4fae3c;z-index:0}.hold-confirm span{position:relative;z-index:1}
 .searchbox{width:100%;border:2px solid #8d6500;border-radius:14px;padding:12px 13px;font:inherit;font-weight:800;background:#fff9df;color:#201700;margin:0 0 10px}
 
+
+/* V7 battle animation + compact UI fix */
+.battle-modal{overflow:hidden}
+.battle-arena{position:relative;min-height:92dvh;display:flex;flex-direction:column;justify-content:space-between;padding:10px 0}
+.arena-top{margin-top:2px}.arena-bottom{margin-bottom:2px}
+.arena-team{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.arena-card{min-height:0}
+.arena-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44%;max-width:170px;z-index:5;pointer-events:none}
+.center-fighter{background:#fff7d6;border:5px solid var(--rarity);border-radius:18px;padding:7px;box-shadow:0 12px 28px #0007;opacity:0;transform:translateY(0) scale(.8);transition:.25s}
+.center-fighter.show{opacity:1;transform:translateY(0) scale(1)}
+.center-fighter.player{animation:playerStep .45s ease-out}.center-fighter.enemy{animation:enemyStep .45s ease-out}
+.center-fighter img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:10px}
+.damage-pop{position:fixed;z-index:80;font-size:22px;font-weight:1000;color:#ffefb8;text-shadow:0 2px 4px #000;pointer-events:none;animation:dmgPop .7s ease-out forwards}
+@keyframes playerStep{from{transform:translateY(110px) scale(.72)}to{transform:translateY(0) scale(1)}}
+@keyframes enemyStep{from{transform:translateY(-110px) scale(.72)}to{transform:translateY(0) scale(1)}}
+@keyframes dmgPop{0%{opacity:0;transform:translateY(10px) scale(.7)}25%{opacity:1;transform:translateY(0) scale(1.1)}100%{opacity:0;transform:translateY(-35px) scale(1)}}
+.boss-list{display:grid;gap:10px}.boss-card.compact{display:grid;grid-template-columns:86px 1fr;gap:10px;align-items:center;padding:10px}.boss-card.compact img{width:86px;height:112px;object-fit:cover}.boss-card.compact h2{margin:0 0 4px;font-size:18px}.boss-card.compact p{margin:0 0 6px;font-size:11px}.boss-card.compact .primary{margin-top:7px!important;padding:10px}
+.collection-topline{display:flex;align-items:center;justify-content:space-between;gap:8px}.mini-actions{display:flex;gap:6px}.mini-actions button{border:0;border-radius:999px;padding:7px 9px;font-size:9px;font-weight:1000}.mini-sell{background:#f2c536;color:#241900}.mini-reset{background:#9b2100;color:white}
+
 </style>
 </head>
 <body>
@@ -190,14 +209,13 @@ button{font:inherit;cursor:pointer}
 
 <section id="boss" class="screen">
 <div class="hero"><h1>BOSS BATTLE</h1><p>Beat normal bots to unlock the boss. Boss rewards cannot come from normal packs.</p></div>
-<div id="bossContent"></div>
+<div id="bossContent" class="boss-list"></div>
 </section>
 
 <section id="collection" class="screen">
-  <div class="hero"><h1>COLLECTION</h1><p><span id="ownedCount">0</span> / <span id="totalCards">0</span> cards collected · <span id="collectionPct">0</span>%</p></div><div class="account-value"><b>ACCOUNT VALUE</b><div class="big">● <span id="accountValue">0</span></div><div class="sub">Coins + current sell value of every card you own</div></div>
+  <div class="hero"><div class="collection-topline"><h1>COLLECTION</h1><div class="mini-actions"><button class="mini-sell" onclick="openDanger('sell')">SELL ALL</button><button class="mini-reset" onclick="openDanger('reset')">RESET</button></div></div><p><span id="ownedCount">0</span> / <span id="totalCards">0</span> cards collected · <span id="collectionPct">0</span>%</p></div><div class="account-value"><b>ACCOUNT VALUE</b><div class="big">● <span id="accountValue">0</span></div><div class="sub">Coins + current sell value of every card you own</div></div>
   <input id="collectionSearch" class="searchbox" type="search" placeholder="Search your cards..." oninput="collectionSearch=this.value;render()"><div class="collection-head" id="ownedFilters"></div>
-  <div class="cards" id="ownedCards"></div><div class="danger-zone"><h3>ACCOUNT ACTIONS</h3><div style="font-size:11px;font-weight:800">These actions require holding YES for 3 seconds.</div><button class="sell-all-btn" onclick="openDanger('sell')">SELL ALL CARDS</button><button class="reset-btn" onclick="openDanger('reset')">RESET EVERYTHING</button></div>
-</section>
+  <div class="cards" id="ownedCards"></div></section>
 
 <section id="cardindex" class="screen">
   <div class="hero"><h1>CARD INDEX</h1><p>Every card currently in the game.</p></div>
@@ -228,10 +246,9 @@ button{font:inherit;cursor:pointer}
 </div>
 <div class="pick-overlay" id="pickOverlay"><div class="picker"><div class="picker-head"><h2>CHOOSE A CARD</h2><button class="picker-cancel" onclick="closePicker()">CANCEL</button></div><div class="cards" id="pickCards"></div></div></div>
 <div class="battle-modal" id="battleModal"><div class="battle-arena">
-<div id="arenaStars" class="arena-stars"></div>
-<div style="font-size:11px;font-weight:1000">ENEMY TEAM</div><div id="enemyArena" class="arena-team"></div>
-<div id="arenaLog" class="arena-log">FIGHT!</div>
-<div style="font-size:11px;font-weight:1000">YOUR TEAM</div><div id="playerArena" class="arena-team"></div>
+<div class="arena-top"><div id="arenaStars" class="arena-stars"></div><div id="enemyArena" class="arena-team"></div></div>
+<div class="arena-center"><div id="centerFighter" class="center-fighter"></div><div id="arenaLog" class="arena-log">FIGHT!</div></div>
+<div class="arena-bottom"><div id="playerArena" class="arena-team"></div></div>
 </div></div>
 <div class="result-screen" id="resultScreen"><div><h1 id="resultTitle">WIN</h1><p id="resultText"></p><button onclick="closeResult()">BACK</button><button onclick="closeResult();startBattle()">PLAY AGAIN</button></div></div>
 <div class="toast" id="toast"></div>
@@ -587,14 +604,12 @@ function botDeck(d){
 function starColor(d){return ["#9b9b9b","#27c45b","#2587ff","#a34cff","#f0ad16"][d-1]}
 function starClass(d){return "s"+d}
 function maxHP(c,difficulty=0){
- const s=stats(c);
- return Math.round(105+s.def*1.65+s.spd*.22+difficulty*8);
+ const s=stats(c);return Math.round(110+s.def*1.7+s.spd*.2+difficulty*8);
 }
 function damage(attacker,defender,difficulty=0){
  const a=stats(attacker),d=stats(defender);
- const raw=a.atk*1.25+a.spd*.28-d.def*.62+difficulty*3;
- const variance=.9+Math.random()*.2;
- return Math.max(7,Math.round(raw*variance));
+ const raw=a.atk*1.18+a.spd*.24-d.def*.58+difficulty*3;
+ return Math.max(7,Math.round(raw*(.9+Math.random()*.2)));
 }
 function arenaCard(c,hp,max,active=false){
  const tier=tierFor(c),pct=Math.max(0,Math.min(100,hp/max*100));
@@ -609,60 +624,98 @@ function drawArena(team,enemy,php,ehp,pmax,emax,pa=-1,ea=-1,d=1){
  $("#playerArena").innerHTML=team.map((c,i)=>arenaCard(c,php[i],pmax[i],i===pa)).join("");
  $("#enemyArena").innerHTML=enemy.map((c,i)=>arenaCard(c,ehp[i],emax[i],i===ea)).join("");
 }
-function nextAlive(hp){return hp.findIndex(x=>x>0)}
+function aliveIndexes(hp){return hp.map((x,i)=>x>0?i:-1).filter(i=>i>=0)}
 function allDead(hp){return hp.every(x=>x<=0)}
+function showCenter(c,side){
+ const t=tierFor(c),el=$("#centerFighter");
+ el.className=`center-fighter ${side} show`;
+ el.style.setProperty("--rarity",R[t].color);
+ el.innerHTML=`<img src="${c.image}"><b>${c.name}<br>${t} · OVR ${overall(c)}</b>`;
+}
+function hideCenter(){$("#centerFighter").className="center-fighter";$("#centerFighter").innerHTML=""}
+function popDamage(targetEl,amount){
+ const r=targetEl.getBoundingClientRect(),d=document.createElement("div");
+ d.className="damage-pop";d.textContent="-"+amount;
+ d.style.left=(r.left+r.width/2-18)+"px";d.style.top=(r.top+r.height/2-12)+"px";
+ document.body.appendChild(d);setTimeout(()=>d.remove(),720);
+}
+async function sweepAttack(attacker,attackerSide,team,enemy,php,ehp,pmax,emax,difficulty,attackerIndex){
+ showCenter(attacker,attackerSide);
+ $("#arenaLog").textContent=`${attacker.name} steps in!`;
+ await wait(500);
+
+ const targets = attackerSide==="player" ? aliveIndexes(ehp) : aliveIndexes(php);
+ for(const ti of targets){
+   if(attackerSide==="player"){
+     drawArena(team,enemy,php,ehp,pmax,emax,attackerIndex,ti,difficulty);
+     const dmg=damage(attacker,enemy[ti],0);
+     $("#arenaLog").textContent=`${attacker.name} hits ${enemy[ti].name} for ${dmg}`;
+     await wait(340);
+     const cards=[...document.querySelectorAll("#enemyArena .arena-card")];
+     if(cards[ti])popDamage(cards[ti],dmg);
+     ehp[ti]=Math.max(0,ehp[ti]-dmg);
+     drawArena(team,enemy,php,ehp,pmax,emax,attackerIndex,ti,difficulty);
+   }else{
+     drawArena(team,enemy,php,ehp,pmax,emax,ti,attackerIndex,difficulty);
+     const dmg=damage(attacker,team[ti],difficulty);
+     $("#arenaLog").textContent=`${attacker.name} hits ${team[ti].name} for ${dmg}`;
+     await wait(340);
+     const cards=[...document.querySelectorAll("#playerArena .arena-card")];
+     if(cards[ti])popDamage(cards[ti],dmg);
+     php[ti]=Math.max(0,php[ti]-dmg);
+     drawArena(team,enemy,php,ehp,pmax,emax,ti,attackerIndex,difficulty);
+   }
+   await wait(520);
+   if(allDead(attackerSide==="player"?ehp:php))break;
+ }
+ hideCenter();
+ await wait(300);
+}
 async function startBattle(){
  cleanTeam();
  if(battleBusy)return;
  if(state.team.length<3){toast("Choose 3 cards first");return}
  const team=state.team.map(id=>CARDS.find(c=>c.id===id)).filter(Boolean);
  if(team.length<3){toast("Choose 3 owned cards first");return}
+
  const difficulty=1+Math.floor(Math.random()*5);
  const enemy=botDeck(difficulty);
  const pmax=team.map(c=>maxHP(c)),emax=enemy.map(c=>maxHP(c,difficulty));
  const php=pmax.slice(),ehp=emax.slice();
  battleBusy=true;$("#battleModal").classList.add("show");
- $("#arenaLog").textContent=`${difficulty}-STAR BOT · BATTLE START`;
  drawArena(team,enemy,php,ehp,pmax,emax,-1,-1,difficulty);
- await wait(900);
+ $("#arenaLog").textContent=`${difficulty}★ BOT`;
+ await wait(850);
 
- let turn=0;
- while(!allDead(php)&&!allDead(ehp)&&turn<120){
-   const pi=nextAlive(php),ei=nextAlive(ehp);
-   if(pi<0||ei<0)break;
+ let round=1;
+ while(!allDead(php)&&!allDead(ehp)&&round<=40){
+   for(let i=0;i<3;i++){
+     if(php[i]<=0)continue;
+     await sweepAttack(team[i],"player",team,enemy,php,ehp,pmax,emax,difficulty,i);
+     if(allDead(ehp))break;
 
-   // Your active card attacks each surviving enemy in order.
-   drawArena(team,enemy,php,ehp,pmax,emax,pi,ei,difficulty);
-   const pd=damage(team[pi],enemy[ei],0);
-   $("#arenaLog").textContent=`${team[pi].name} attacks ${enemy[ei].name} for ${pd}`;
-   await wait(520);ehp[ei]=Math.max(0,ehp[ei]-pd);
-   drawArena(team,enemy,php,ehp,pmax,emax,pi,ei,difficulty);
-   await wait(620);
-   if(allDead(ehp))break;
-
-   // Enemy active card retaliates against your first surviving card.
-   const epi=nextAlive(php),eei=nextAlive(ehp);
-   drawArena(team,enemy,php,ehp,pmax,emax,epi,eei,difficulty);
-   const ed=damage(enemy[eei],team[epi],difficulty);
-   $("#arenaLog").textContent=`${enemy[eei].name} attacks ${team[epi].name} for ${ed}`;
-   await wait(520);php[epi]=Math.max(0,php[epi]-ed);
-   drawArena(team,enemy,php,ehp,pmax,emax,epi,eei,difficulty);
-   await wait(620);
-   turn++;
+     const ei=i<3&&ehp[i]>0?i:aliveIndexes(ehp)[0];
+     if(ei!==undefined&&ei>=0){
+       await sweepAttack(enemy[ei],"enemy",team,enemy,php,ehp,pmax,emax,difficulty,ei);
+     }
+     if(allDead(php))break;
+   }
+   round++;
  }
+
  const won=allDead(ehp)&&!allDead(php);
- $("#battleModal").classList.remove("show");battleBusy=false;
+ $("#battleModal").classList.remove("show");hideCenter();battleBusy=false;
+
  if(won){
    state.battleWins=(state.battleWins||0)+1;
    state.normalWinsSinceBoss=(state.normalWinsSinceBoss||0)+1;
    state.moreBulletsProgress=(state.moreBulletsProgress||0)+1;
    if(state.normalWinsSinceBoss>=10)state.bossUnlocked=true;
    if(state.moreBulletsProgress>=20)state.moreBulletsBossUnlocked=true;
-   state.winStreak=(state.winStreak||0)+1;state.bestWinStreak=Math.max(state.bestWinStreak||0,state.winStreak);
+   state.winStreak=(state.winStreak||0)+1;
+   state.bestWinStreak=Math.max(state.bestWinStreak||0,state.winStreak);
    let bonus=500;
    if(state.winStreak===2)bonus+=500;
-   if(state.winStreak===5)openRewardPackAfterResult="Uncommon";
-   if(state.winStreak===10)openRewardPackAfterResult="Rare";
    state.coins+=bonus;
    for(const c of team)gainCardWin(c);
    save();
@@ -701,12 +754,12 @@ function renderBoss(){
  const bulletOwned=(state.owned[MORE_BULLETS_ID]||0)>0;
 
  const iceHTML=state.bossUnlocked
- ? `<div class="boss-card"><div class="boss-badge">${iceOwned?"DEFEATED":"BOSS READY"}</div><img src="assets/ice_agents.jpeg"><h2>ICE AGENTS</h2><p>Exclusive Exotic reward. Unlocks after 10 normal wins.</p><div class="ability">Ice Rage: +20 ATK when your team is behind.</div><button class="primary" style="margin-top:12px" onclick="startBossBattle()">${iceOwned?"FIGHT AGAIN":"FIGHT BOSS"}</button></div>`
- : `<div class="boss-card boss-locked"><div class="boss-badge">LOCKED</div><h2>ICE AGENTS</h2><p>Win 10 normal battles to unlock this boss.</p><div class="boss-progress"><i style="width:${iceWins*10}%"></i></div><b>${iceWins} / 10 NORMAL WINS</b></div>`;
+ ? `<div class="boss-card compact"><div class="boss-badge">${iceOwned?"DEFEATED":"BOSS READY"}</div><img src="assets/ice_agents.jpeg"><h2>ICE AGENTS</h2><p>Exclusive Exotic reward. Unlocks after 10 normal wins.</p><div class="ability">Ice Rage: +20 ATK when your team is behind.</div><button class="primary" style="margin-top:12px" onclick="startBossBattle()">${iceOwned?"FIGHT AGAIN":"FIGHT BOSS"}</button></div>`
+ : `<div class="boss-card compact boss-locked"><div class="boss-badge">LOCKED</div><h2>ICE AGENTS</h2><p>Win 10 normal battles to unlock this boss.</p><div class="boss-progress"><i style="width:${iceWins*10}%"></i></div><b>${iceWins} / 10 NORMAL WINS</b></div>`;
 
  const bulletsHTML=state.moreBulletsBossUnlocked
- ? `<div class="boss-card" style="margin-top:14px"><div class="boss-badge">${bulletOwned?"DEFEATED":"BOSS READY"}</div><img src="assets/i_need_more_bullets.JPG"><h2>I NEED MORE BULLETS</h2><p>Exotic Boss Exclusive. Unlocks after 20 normal wins.</p><div class="ability">Bullet Storm: massive attack pressure.</div><button class="primary" style="margin-top:12px" onclick="startMoreBulletsBoss()">${bulletOwned?"FIGHT AGAIN":"FIGHT BOSS"}</button></div>`
- : `<div class="boss-card boss-locked" style="margin-top:14px"><div class="boss-badge">LOCKED</div><h2>I NEED MORE BULLETS</h2><p>Win 20 normal battles to unlock this boss.</p><div class="boss-progress"><i style="width:${bulletWins*5}%"></i></div><b>${bulletWins} / 20 NORMAL WINS</b></div>`;
+ ? `<div class="boss-card compact"><div class="boss-badge">${bulletOwned?"DEFEATED":"BOSS READY"}</div><img src="assets/i_need_more_bullets.JPG"><h2>I NEED MORE BULLETS</h2><p>Exotic Boss Exclusive. Unlocks after 20 normal wins.</p><div class="ability">Bullet Storm: massive attack pressure.</div><button class="primary" style="margin-top:12px" onclick="startMoreBulletsBoss()">${bulletOwned?"FIGHT AGAIN":"FIGHT BOSS"}</button></div>`
+ : `<div class="boss-card compact boss-locked"><div class="boss-badge">LOCKED</div><h2>I NEED MORE BULLETS</h2><p>Win 20 normal battles to unlock this boss.</p><div class="boss-progress"><i style="width:${bulletWins*5}%"></i></div><b>${bulletWins} / 20 NORMAL WINS</b></div>`;
 
  $("#bossContent").innerHTML=iceHTML+bulletsHTML;
 }

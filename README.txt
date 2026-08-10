@@ -38,3 +38,14 @@ V7 GAMEPLAY UPDATE
 - Added Reset Everything with 3-second hold confirmation.
 - Added search bars to Collection and Card Index.
 - Card picker Cancel is now sticky at the top.
+
+V7 BATTLE FIX
+- Fixed the battle getting stuck with no attacks happening.
+- Enemy team stays at the top; player team stays at the bottom.
+- Cards step into the center one at a time, attack all surviving opponents, then return.
+- Enemy cards do the same back to the player team.
+- Full turn cycle repeats until one whole team is eliminated.
+- Added damage number popups and HP bar animation.
+- Removed extra 'enemy team / your team / one star battle' clutter; only colored stars remain.
+- Collection Sell All / Reset buttons moved to small controls beside COLLECTION.
+- Boss cards are now compact instead of huge.
