@@ -320,6 +320,30 @@ if(state.bossTier===undefined){
   else state.bossTier=1;
 }
 
+// Boss progression self-heal for older saves / already-owned boss rewards.
+if((state.owned[ICE_AGENTS_ID]||0)>0 && (state.bossTier||1)<2){
+  state.goldenKingUnlocked=true;
+  state.bossUnlocked=false;
+  state.normalWinsSinceBoss=0;
+  state.bossTier=2;
+  state.moreBulletsProgress=0;
+  state.moreBulletsBossUnlocked=false;
+}
+if((state.owned[MORE_BULLETS_ID]||0)>0 && (state.bossTier||1)<3){
+  state.moreBulletsUnlocked=true;
+  state.moreBulletsBossUnlocked=false;
+  state.moreBulletsProgress=0;
+  state.bossTier=3;
+  state.artlanderProgress=0;
+  state.artlanderBossUnlocked=false;
+}
+if((state.owned[ARTLANDER_ID]||0)>0 && (state.bossTier||1)<4){
+  state.artlanderUnlocked=true;
+  state.artlanderBossUnlocked=false;
+  state.artlanderProgress=0;
+  state.bossTier=4;
+}
+
 if(!state.moreBulletsProgressMigrationDone){
   state.moreBulletsProgress=0;
   state.moreBulletsBossUnlocked=false;
@@ -916,15 +940,19 @@ function renderBoss(){
  const artPhase=tier>=3;
  const artUnlocked=state.artlanderBossUnlocked || tier>3;
 
- const iceHTML=iceUnlocked
-  ? `<div class="boss-card compact"><div class="boss-badge">${iceOwned?"DEFEATED":"BOSS READY"}</div><img src="assets/ice_agents.jpeg"><div><h2>ICE AGENTS</h2><p>TIER 1 BOSS · 10 normal wins.</p><button class="primary" onclick="startBossBattle()">${iceOwned?"FIGHT AGAIN":"FIGHT BOSS"}</button></div></div>`
-  : `<div class="boss-card compact boss-locked"><div><div class="boss-badge">LOCKED</div><h2>ICE AGENTS</h2><p>Win 10 normal battles.</p><div class="boss-progress"><i style="width:${iceWins*10}%"></i></div><b>${iceWins} / 10</b></div></div>`;
+ const iceHTML=iceOwned
+  ? `<div class="boss-card compact"><div class="boss-badge">CLEARED</div><img src="assets/ice_agents.jpeg"><div><h2>ICE AGENTS</h2><p>TIER 1 CLEARED</p></div></div>`
+  : iceUnlocked
+    ? `<div class="boss-card compact"><div class="boss-badge">BOSS READY</div><img src="assets/ice_agents.jpeg"><div><h2>ICE AGENTS</h2><p>TIER 1 BOSS · 10 normal wins.</p><button class="primary" onclick="startBossBattle()">FIGHT BOSS</button></div></div>`
+    : `<div class="boss-card compact boss-locked"><div><div class="boss-badge">LOCKED</div><h2>ICE AGENTS</h2><p>Win 10 normal battles.</p><div class="boss-progress"><i style="width:${iceWins*10}%"></i></div><b>${iceWins} / 10</b></div></div>`;
 
- const bulletsHTML=!bulletsPhase
-  ? `<div class="boss-card compact boss-locked"><div><div class="boss-badge">LOCKED</div><h2>I NEED MORE BULLETS</h2><p>Defeat Ice Agents first.</p></div></div>`
-  : bulletsUnlocked
-    ? `<div class="boss-card compact"><div class="boss-badge">${bulletsOwned?"DEFEATED":"BOSS READY"}</div><img src="assets/i_need_more_bullets.JPG"><div><h2>I NEED MORE BULLETS</h2><p>TIER 2 BOSS · 20 fresh normal wins.</p><button class="primary" onclick="startMoreBulletsBoss()">${bulletsOwned?"FIGHT AGAIN":"FIGHT BOSS"}</button></div></div>`
-    : `<div class="boss-card compact boss-locked"><div><div class="boss-badge">LOCKED</div><h2>I NEED MORE BULLETS</h2><p>Win 20 normal battles after clearing Tier 1.</p><div class="boss-progress"><i style="width:${bulletWins*5}%"></i></div><b>${bulletWins} / 20</b></div></div>`;
+ const bulletsHTML=bulletsOwned
+  ? `<div class="boss-card compact"><div class="boss-badge">CLEARED</div><img src="assets/i_need_more_bullets.JPG"><div><h2>I NEED MORE BULLETS</h2><p>TIER 2 CLEARED</p></div></div>`
+  : !bulletsPhase
+    ? `<div class="boss-card compact boss-locked"><div><div class="boss-badge">LOCKED</div><h2>I NEED MORE BULLETS</h2><p>Defeat Ice Agents first.</p></div></div>`
+    : bulletsUnlocked
+      ? `<div class="boss-card compact"><div class="boss-badge">BOSS READY</div><img src="assets/i_need_more_bullets.JPG"><div><h2>I NEED MORE BULLETS</h2><p>TIER 2 BOSS · 20 fresh normal wins.</p><button class="primary" onclick="startMoreBulletsBoss()">FIGHT BOSS</button></div></div>`
+      : `<div class="boss-card compact boss-locked"><div><div class="boss-badge">LOCKED</div><h2>I NEED MORE BULLETS</h2><p>Win 20 normal battles after clearing Tier 1.</p><div class="boss-progress"><i style="width:${bulletWins*5}%"></i></div><b>${bulletWins} / 20</b></div></div>`;
 
  const artHTML=!artPhase
   ? `<div class="boss-card compact boss-locked"><div><div class="boss-badge">LOCKED</div><h2>ARTLANDER</h2><p>Defeat I Need More Bullets first.</p></div></div>`
@@ -1026,7 +1054,7 @@ async function startBossBattle(){
    state.bossWins=(state.bossWins||0)+1;
    if(!state.goldenKingUnlocked){
      state.goldenKingUnlocked=true;
-     state.owned[ICE_AGENTS_ID]=(state.owned[ICE_AGENTS_ID]||0)+1;
+     if((state.owned[ICE_AGENTS_ID]||0)<=0) state.owned[ICE_AGENTS_ID]=1;
      save();
      showResult(true,"BOSS DEFEATED! Ice Agents was added to your Collection.");
    }else{
@@ -1055,7 +1083,7 @@ async function startMoreBulletsBoss(){
    state.moreBulletsBossWins=(state.moreBulletsBossWins||0)+1;
    if(!state.moreBulletsUnlocked){
      state.moreBulletsUnlocked=true;
-     state.owned[MORE_BULLETS_ID]=(state.owned[MORE_BULLETS_ID]||0)+1;
+     if((state.owned[MORE_BULLETS_ID]||0)<=0) state.owned[MORE_BULLETS_ID]=1;
      save();
      showResult(true,"BOSS DEFEATED! I Need More Bullets was added to your Collection.");
    }else{
@@ -1086,7 +1114,7 @@ async function startArtlanderBoss(){
    state.artlanderBossWins=(state.artlanderBossWins||0)+1;
    if(!state.artlanderUnlocked){
      state.artlanderUnlocked=true;
-     state.owned[ARTLANDER_ID]=(state.owned[ARTLANDER_ID]||0)+1;
+     if((state.owned[ARTLANDER_ID]||0)<=0) state.owned[ARTLANDER_ID]=1;
      save();
      showResult(true,"BOSS DEFEATED! Artlander was added to your Collection.");
    }else{

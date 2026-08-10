@@ -117,3 +117,10 @@ GOLDEN PULLS V8 BALANCE FIX
 - Exotic owned cards are stronger than Legendary, but only by a modest amount.
 - Exotic HP is now above Legendary HP.
 - Boss difficulty unchanged.
+
+V8 BOSS PROGRESSION FIX
+- If Ice Agents is already owned, Tier 1 is automatically marked CLEARED.
+- Owning Ice Agents automatically advances the save to Tier 2 and starts I Need More Bullets at 0/20.
+- If I Need More Bullets is already owned, Tier 2 is automatically marked CLEARED and Tier 3 starts at 0/30.
+- Cleared bosses no longer offer duplicate reward cards.
+- Duplicate boss rewards are blocked even if an old save reaches the fight again.
