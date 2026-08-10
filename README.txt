@@ -1,22 +1,22 @@
-GOLDEN PULLS V3 - FIXED BUILD
+GOLDEN PULLS V4
 
-Fixes in this build:
-- Free 2-hour Uncommon Pack now opens correctly and does NOT consume a welcome pack.
-- Wheel rewards now actually pay out.
-- Wheel has a large red pointer arrow.
-- Wheel colors are brighter and easier to read.
-- Wheel result clearly says what you won.
-- Pack prizes from the wheel get an OPEN PRIZE PACK button.
-- Coins from the wheel are added automatically and saved.
-- Collection only shows cards you own.
-- Card Index shows every card in the game.
-- Automatic local saving now migrates the richest V1/V2/V3 save it can find.
-- V3 Update button remains beside the version badge.
-- New Golden Pulls app icon is included for iPhone Add to Home Screen.
-- PWA manifest and Apple touch icon are configured.
+NEW IN V4
+- Animated pack entrance and pack-tear opening.
+- Animated 3D card reveals with rarity-color burst and shine.
+- Smooth animation between each revealed card.
+- All paid prices are 300% higher than V3, meaning 4x the previous price.
+  Common Pack: 4,000
+  Uncommon Pack: 12,000
+  Rare Pack: 30,000
+  Epic Pack: 56,000
+  Legendary Pack: 96,000
+  Wheel spin: 20,000
+- Collection now shows ACCOUNT VALUE.
+- Account Value = current coin balance + current sell value of every owned card, including duplicate-value bonuses.
+- Existing V3 reward fixes, wheel pointer, Card Index, saving, update button, PWA behavior, and Home Screen icon remain.
 
-UPLOAD TO GITHUB:
-Upload the CONTENTS of this ZIP directly to the repository root:
+UPLOAD TO GITHUB
+Replace the existing site files with the CONTENTS of this ZIP:
 assets/
 icons/
 index.html
@@ -25,4 +25,4 @@ service-worker.js
 version.json
 README.txt
 
-Replace the old files with these. Keep the same repository and GitHub Pages URL so browser progress can carry forward.
+Keep them directly in the repository root and keep the same GitHub Pages URL so local player progress can carry forward.
