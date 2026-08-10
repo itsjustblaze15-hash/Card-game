@@ -109,3 +109,11 @@ GOLDEN PULLS V8.1
 - Collection still displays your upgraded rarity/version.
 - Fixed Victory and Defeat result overlays for normal battles and bosses.
 - Battle overlay is hidden before the result screen appears.
+
+GOLDEN PULLS V8 BALANCE FIX
+- Version label is V8.
+- Coin wallet pill is smaller on mobile.
+- Regular matchmaking is easier than the previous build, but still competitive.
+- Exotic owned cards are stronger than Legendary, but only by a modest amount.
+- Exotic HP is now above Legendary HP.
+- Boss difficulty unchanged.
