@@ -224,20 +224,6 @@ button{font:inherit;cursor:pointer}
   box-shadow:0 0 0 2px #f6e2bd,0 8px 18px #0003;
 }
 
-
-/* GOLDEN ARENA BETA - ISOLATED FROM NORMAL BATTLE */
-.ga-launch{margin:0 0 14px;padding:14px;background:linear-gradient(145deg,#151515,#2b2400);color:#fff;border:3px solid #ffd52a;border-radius:18px;box-shadow:0 8px 18px #0003;text-align:center}
-.ga-launch .ga-chip,.ga-chip{display:inline-block;background:#111;color:#ffd52a;border:1px solid #ffd52a;border-radius:999px;padding:4px 8px;font-size:9px;font-weight:1000;letter-spacing:1px}
-.ga-launch h2{margin:7px 0 4px}.ga-launch p{font-size:10px;font-weight:850;margin:0 0 9px;opacity:.88}.ga-launch button{width:100%;border:0;border-radius:11px;padding:11px;background:#ffd52a;color:#111;font-weight:1000;font-size:14px;touch-action:manipulation}
-.ga-select{position:fixed;inset:0;z-index:100010;background:#111;color:#fff;display:none;overflow-y:auto;padding:12px}.ga-select.show{display:block}
-.ga-select-head{position:sticky;top:-12px;z-index:4;background:#111;padding:10px 0;border-bottom:1px solid #ffd52a55}.ga-head-row{display:flex;justify-content:space-between;align-items:center;gap:8px}.ga-head-row button{border:0;border-radius:10px;padding:8px 10px;background:#ffd52a;color:#111;font-weight:1000}
-.ga-pick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.ga-pick{background:#ffd52a;color:#111;border:3px solid var(--r);border-radius:12px;padding:4px;text-align:center;touch-action:manipulation}.ga-pick img{width:100%;height:92px;object-fit:cover;border-radius:7px}.ga-pick b{display:block;font-size:8px;line-height:1.05}.ga-pick.sel{box-shadow:0 0 0 4px #fff;transform:scale(.96)}
-.ga-game{position:fixed;inset:0;z-index:100005;background:#080808;color:#fff;display:none;flex-direction:column;overflow:hidden}.ga-game.show{display:flex}.ga-game-head{height:48px;flex:0 0 48px;background:#111;border-bottom:2px solid #ffd52a;display:flex;align-items:center;justify-content:space-between;padding:0 9px}.ga-game-head button{border:0;border-radius:9px;padding:7px 9px;background:#ffd52a;color:#111;font-weight:1000}
-.ga-map{position:relative;flex:1;min-height:0;overflow:hidden;background:linear-gradient(#161616 0 49%,#e1b800 49% 51%,#7b6800 51% 100%)}.ga-map-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;user-select:none}.ga-field{position:absolute;inset:0;overflow:hidden}.ga-label{position:absolute;left:50%;transform:translateX(-50%);z-index:2;font-weight:1000;font-size:8px;letter-spacing:1.5px}.ga-label.enemy{top:2%;color:#ddd}.ga-label.player{bottom:2%;color:#ffd52a}
-.ga-unit{position:absolute;width:29px;height:38px;border:3px solid var(--r);border-radius:7px;object-fit:cover;transform:translate(-50%,-50%);z-index:8;box-shadow:0 3px 8px #000b}.ga-unit.player{background:#ffd52a}.ga-unit.enemy{background:#050505}.ga-hp{position:absolute;width:30px;height:4px;background:#111;border-radius:5px;overflow:hidden;transform:translate(-50%,-50%);z-index:9}.ga-hp i{display:block;height:100%;background:#42d46b}.ga-tower-hp{position:absolute;width:54px;height:7px;background:#111;border:1px solid #ffffff55;border-radius:8px;overflow:hidden;transform:translateX(-50%);z-index:5}.ga-tower-hp i{display:block;height:100%;background:#ffd52a}.ga-tower-hp.enemy i{background:#555}.ga-destroyed{position:absolute;z-index:4;font-size:22px;transform:translate(-50%,-50%)}
-.ga-bottom{background:#111;border-top:2px solid #ffd52a;padding:7px 7px 9px}.ga-energy-row{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:1000}.ga-energy{flex:1;height:9px;background:#333;border-radius:99px;overflow:hidden}.ga-energy i{display:block;height:100%;background:#ffd52a}.ga-hand{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:7px}.ga-hand-card{position:relative;background:#ffd52a;color:#111;border:3px solid var(--r);border-radius:10px;padding:3px;text-align:center;min-width:0;touch-action:manipulation}.ga-hand-card.selected{box-shadow:0 0 0 3px #fff}.ga-hand-card.disabled{opacity:.35}.ga-hand-card img{width:100%;height:50px;object-fit:cover;border-radius:6px}.ga-hand-card span{display:block;font-size:7px;font-weight:1000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ga-cost{position:absolute;right:2px;top:2px;background:#111;color:#ffd52a;border-radius:99px;padding:2px 5px;font-size:9px}
-.ga-result{position:fixed;inset:0;z-index:100020;background:#000d;display:none;align-items:center;justify-content:center;text-align:center;color:#fff;padding:18px}.ga-result.show{display:flex}.ga-result-box{width:min(340px,100%);background:#171717;border:3px solid #ffd52a;border-radius:20px;padding:20px}.ga-result-box h1{margin:8px 0;color:#ffd52a;font-size:42px}.ga-result-box button{width:100%;border:0;border-radius:12px;padding:12px;background:#ffd52a;color:#111;font-weight:1000}
-
 </style>
 </head>
 <body>
@@ -267,7 +253,6 @@ button{font:inherit;cursor:pointer}
 </section>
 
 <section id="battle" class="screen">
-<div class="ga-launch"><span class="ga-chip">BETA</span><h2>GOLDEN ARENA</h2><p>Choose 4 cards, spend energy, deploy tiny units, and destroy the black towers.</p><button id="goldenArenaLaunchButton" type="button" onclick="openGoldenArenaBeta();return false;">PLAY GOLDEN ARENA</button></div>
 <div class="hero"><h1>BATTLE</h1><p>Pick 3 owned cards and fight a random bot. Wins power up the cards you used.</p></div><div class="streak-box"><div><b>WIN STREAK</b><div style="font-size:11px">Base reward: 2K–5K · 3 standing = 100% · 2 standing = 75% · 1 standing = 50%</div></div><div class="streak-num" id="streakNum">0</div></div>
 <div class="panel"><b>BOT DIFFICULTY</b><div class="bot-stars" id="stars">TEAM-BASED MATCHMAKING</div><div style="font-size:12px;font-weight:900;text-align:center;margin-top:8px">Bot strength is matched around your team rating, with some easier and harder opponents.</div></div>
 <div id="teamRatingBox" class="team-rating-box" style="--team-color:#9b9b9b"><span>YOUR TEAM: <b id="teamRatingName">GRAY</b></span><span id="teamRatingStars" class="team-rating-stars">★</span></div><div class="battle-grid" id="teamSlots"></div>
@@ -331,19 +316,7 @@ button{font:inherit;cursor:pointer}
 <div class="sub-section-title">ACTIVE</div><div id="subActiveChoices" class="sub-choice-grid"></div>
 <div class="sub-section-title">BENCH</div><div id="subBenchChoices" class="sub-choice-grid"></div>
 <div class="sub-actions"><button id="subSwapBtn" onclick="confirmSubChoice()" disabled>SWAP</button><button onclick="finishSubBreak()">DONE</button></div>
-</div></div>
-<div id="goldenArenaSelect" class="ga-select">
- <div class="ga-select-head"><div class="ga-head-row"><div><span class="ga-chip">BETA</span> <b>CHOOSE 4 CARDS</b></div><button type="button" onclick="closeGoldenArenaSelect()">CANCEL</button></div><div id="goldenArenaCount" style="margin-top:7px;font-size:11px;font-weight:900">0 / 4 selected</div></div>
- <div id="goldenArenaPickGrid" class="ga-pick-grid"></div>
-</div>
-<div id="goldenArenaGame" class="ga-game">
- <div class="ga-game-head"><button type="button" onclick="exitGoldenArena()">EXIT</button><strong><span class="ga-chip">BETA</span> GOLDEN ARENA</strong><span id="goldenArenaTimer">3:00</span></div>
- <div class="ga-map"><img class="ga-map-bg" src="assets/beta_arena.png" onerror="this.style.display='none'"><div class="ga-label enemy">BLACK SIDE</div><div class="ga-label player">YELLOW SIDE</div><div id="goldenArenaField" class="ga-field"></div></div>
- <div class="ga-bottom"><div class="ga-energy-row"><span>ENERGY <b id="goldenArenaEnergyText">10</b>/10</span><div class="ga-energy"><i id="goldenArenaEnergyBar" style="width:100%"></i></div><span id="goldenArenaBoost"></span></div><div id="goldenArenaHand" class="ga-hand"></div></div>
-</div>
-<div id="goldenArenaResult" class="ga-result"><div class="ga-result-box"><span class="ga-chip">BETA</span><h1 id="goldenArenaResultTitle">VICTORY</h1><p id="goldenArenaResultText"></p><button type="button" onclick="closeGoldenArenaResult()">CONTINUE</button></div></div>
-
-<div class="toast" id="toast"></div>
+</div></div><div class="toast" id="toast"></div>
 <div class="confirm-overlay" id="dangerOverlay"><div class="confirm-box">
 <h2 id="dangerTitle">ARE YOU SURE?</h2><p id="dangerText"></p>
 <button id="holdYes" class="hold-confirm"><span>HOLD YES FOR 3 SECONDS</span></button>
@@ -1380,9 +1353,11 @@ function renderBoss(){
 
  const artHTML=!artPhase
   ? `<div class="boss-card compact boss-locked"><div><div class="boss-badge">LOCKED</div><h2>ARTLANDER</h2><p>Defeat I Need More Bullets first.</p></div></div>`
-  : artUnlocked
-    ? `<div class="boss-card compact"><div class="boss-badge">${artOwned?"DEFEATED":"BOSS READY"}</div><img src="assets/artlander.PNG"><div><h2>ARTLANDER</h2><p>TIER 3 BOSS · 30 fresh normal wins.</p><button class="primary" onclick="startArtlanderBoss()">${artOwned?"FIGHT AGAIN":"FIGHT BOSS"}</button></div></div>`
-    : `<div class="boss-card compact boss-locked"><div><div class="boss-badge">LOCKED</div><h2>ARTLANDER</h2><p>Win 30 normal battles after clearing Tier 2.</p><div class="boss-progress"><i style="width:${artWins*(100/30)}%"></i></div><b>${artWins} / 30</b></div></div>`;
+  : artOwned
+    ? `<div class="boss-card compact"><div class="boss-badge">COMPLETED</div><img src="assets/artlander.PNG"><div><h2>ARTLANDER</h2><p>TIER 3 COMPLETED</p></div></div>`
+    : artUnlocked
+      ? `<div class="boss-card compact"><div class="boss-badge">BOSS READY</div><img src="assets/artlander.PNG"><div><h2>ARTLANDER</h2><p>TIER 3 BOSS · 30 fresh normal wins.</p><button class="primary" onclick="startArtlanderBoss()">FIGHT BOSS</button></div></div>`
+      : `<div class="boss-card compact boss-locked"><div><div class="boss-badge">LOCKED</div><h2>ARTLANDER</h2><p>Win 30 normal battles after clearing Tier 2.</p><div class="boss-progress"><i style="width:${artWins*(100/30)}%"></i></div><b>${artWins} / 30</b></div></div>`;
 
  $("#bossContent").innerHTML=iceHTML+bulletsHTML+artHTML;
 }
@@ -1580,7 +1555,7 @@ async function registerSW(){
  if(!("serviceWorker" in navigator))return;
  try{
    swReg=await navigator.serviceWorker.register("./service-worker.js",{scope:"./"});
-   navigator.serviceWorker.addEventListener("controllerchange",()=>location.reload());
+   navigator.serviceWorker.addEventListener("controllerchange",()=>{if(!updateReloading)hardReloadForUpdate()});
    swReg.addEventListener("updatefound",()=>{
      const w=swReg.installing;if(!w)return;
      w.addEventListener("statechange",()=>{
@@ -1663,31 +1638,97 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
+const APP_INTERNAL_VERSION=9.11;
+let updateReloading=false;
+
+function hardReloadForUpdate(){
+ if(updateReloading)return;
+ updateReloading=true;
+ const url=new URL(location.href);
+ url.searchParams.set("_gpupdate",Date.now().toString());
+ location.replace(url.toString());
+}
+
+async function activateWaitingWorker(reg){
+ if(!reg)return false;
+ if(reg.waiting){
+   reg.waiting.postMessage({type:"SKIP_WAITING"});
+   return true;
+ }
+ if(reg.installing){
+   await new Promise(resolve=>{
+     const w=reg.installing;
+     let done=false;
+     const finish=()=>{if(done)return;done=true;resolve()};
+     w.addEventListener("statechange",()=>{
+       if(["installed","activated","redundant"].includes(w.state))finish();
+     });
+     setTimeout(finish,2200);
+   });
+   if(reg.waiting){
+     reg.waiting.postMessage({type:"SKIP_WAITING"});
+     return true;
+   }
+ }
+ return false;
+}
+
 async function checkForUpdate(){
- const b=$("#updateBtn");b.textContent="CHECKING...";
+ const b=$("#updateBtn");
+ b.textContent="CHECKING...";
+ b.disabled=true;
  try{
    const r=await fetch("./version.json?t="+Date.now(),{cache:"no-store"});
+   if(!r.ok)throw new Error("version fetch failed");
    const remote=await r.json();
-   const local=9.10;
-   if(Number(remote.version)>local){
-     b.textContent=`V${remote.version} READY`;
+   const remoteVersion=Number(remote.version||0);
+
+   if(remoteVersion>APP_INTERNAL_VERSION){
+     b.textContent="INSTALLING...";
      b.classList.add("update-ready");
-     if(swReg)await swReg.update();
-     if(swReg&&swReg.waiting){swReg.waiting.postMessage({type:"SKIP_WAITING"});return}
-     setTimeout(()=>location.reload(),300);
+
+     let controllerChanged=false;
+     if("serviceWorker" in navigator){
+       navigator.serviceWorker.addEventListener("controllerchange",()=>{
+         controllerChanged=true;
+         hardReloadForUpdate();
+       },{once:true});
+     }
+
+     if(swReg){
+       await swReg.update();
+       await activateWaitingWorker(swReg);
+     }
+
+     setTimeout(async()=>{
+       if(controllerChanged)return;
+       try{
+         if("caches" in window){
+           const keys=await caches.keys();
+           await Promise.all(keys.map(k=>caches.delete(k)));
+         }
+       }catch(e){}
+       hardReloadForUpdate();
+     },1800);
    }else{
-     b.textContent="UP TO DATE";b.classList.remove("update-ready");
-     setTimeout(()=>b.textContent="UPDATE",1400);
+     b.textContent="UP TO DATE";
+     b.classList.remove("update-ready");
+     setTimeout(()=>{b.textContent="UPDATE";b.disabled=false},1400);
    }
- }catch(e){b.textContent="TRY AGAIN";setTimeout(()=>b.textContent="UPDATE",1500)}
+ }catch(e){
+   console.error("Update error",e);
+   b.textContent="TRY AGAIN";
+   setTimeout(()=>{b.textContent="UPDATE";b.disabled=false},1500);
+ }
 }
+
 async function passiveUpdateCheck(){
  try{
    const r=await fetch("./version.json?t="+Date.now(),{cache:"no-store"});
    const remote=await r.json();
-   if(Number(remote.version)>9.10){
+   if(Number(remote.version||0)>APP_INTERNAL_VERSION){
      const b=$("#updateBtn");
-     b.textContent=`V${remote.version} READY`;
+     b.textContent=`V${remote.display_version||remote.version} READY`;
      b.classList.add("update-ready");
    }
  }catch(e){}
@@ -1697,52 +1738,5 @@ passiveUpdateCheck();
 maybeShowWhatsNew();
 cleanTeam();
 save();
-
-/* GOLDEN ARENA BETA - isolated namespace/state; normal Battle code above is untouched */
-const GA_COST={Common:1,Uncommon:3,Rare:5,Epic:7,Legendary:9,Exotic:10};
-let gaDeck=[],gaBotDeck=[],gaEnergy=10,gaBotEnergy=10,gaUnits=[],gaTowers=null,gaRunning=false,gaSelected=null,gaStart=0,gaOvertime=false,gaIntervals=[];
-function gaCost(c){return GA_COST[tierFor(c)]||1}
-function openGoldenArenaBeta(){
- gaDeck=[];
- const overlay=$("#goldenArenaSelect"),grid=$("#goldenArenaPickGrid"),count=$("#goldenArenaCount");
- if(!overlay||!grid||!count){toast("Golden Arena could not open");return}
- const owned=CARDS.filter(c=>(state.owned[c.id]||0)>0);
- grid.innerHTML=owned.map(c=>{const tier=tierFor(c),rarity=R[tier]||R.Common;return `<button type="button" id="gaPick${c.id}" class="ga-pick" style="--r:${rarity.color}" onclick="toggleGoldenArenaPick(${c.id})"><img src="${c.image}" onerror="this.style.opacity='.2'"><b>${c.name}<br>${tier} · ${gaCost(c)} ENERGY</b></button>`}).join("");
- count.textContent="0 / 4 selected";
- overlay.classList.add("show");
- if(!owned.length)toast("You need owned cards to play Golden Arena");
-}
-function closeGoldenArenaSelect(){$("#goldenArenaSelect")?.classList.remove("show")}
-function toggleGoldenArenaPick(id){
- const i=gaDeck.indexOf(id);if(i>=0)gaDeck.splice(i,1);else{if(gaDeck.length>=4){toast("Choose exactly 4 cards");return}gaDeck.push(id)}
- document.querySelectorAll(".ga-pick").forEach(x=>x.classList.remove("sel"));gaDeck.forEach(x=>$("#gaPick"+x)?.classList.add("sel"));
- $("#goldenArenaCount").textContent=gaDeck.length+" / 4 selected";if(gaDeck.length===4)setTimeout(startGoldenArenaBeta,180);
-}
-function gaRank(c){return {Common:1,Uncommon:2,Rare:3,Epic:4,Legendary:5,Exotic:6}[tierFor(c)]||1}
-function gaMakeBotDeck(){const used=new Set();return gaDeck.map(id=>{const player=CARDS.find(c=>c.id===id),rank=gaRank(player);let pool=CARDS.filter(c=>gaRank(c)===rank&&!c.bossExclusive&&!used.has(c.id));if(!pool.length)pool=CARDS.filter(c=>gaRank(c)===rank&&!used.has(c.id));const c=pool[Math.floor(Math.random()*pool.length)]||player;used.add(c.id);return c.id})}
-function gaTowerSetup(){return {pL:{side:"player",x:34,y:70,hp:820,max:820},pR:{side:"player",x:71,y:70,hp:820,max:820},pK:{side:"player",x:52,y:83,hp:1250,max:1250},eL:{side:"enemy",x:32,y:28,hp:820,max:820},eR:{side:"enemy",x:70,y:28,hp:820,max:820},eK:{side:"enemy",x:51,y:16,hp:1250,max:1250}}}
-function startGoldenArenaBeta(){
- if(gaDeck.length!==4)return;closeGoldenArenaSelect();gaBotDeck=gaMakeBotDeck();gaEnergy=10;gaBotEnergy=10;gaUnits=[];gaTowers=gaTowerSetup();gaRunning=true;gaSelected=null;gaStart=Date.now();gaOvertime=false;
- $("#goldenArenaTimer").textContent="3:00";$("#goldenArenaBoost").textContent="";$("#goldenArenaGame").classList.add("show");renderGoldenArenaHand();renderGoldenArena();updateGoldenArenaEnergy();
- const field=$("#goldenArenaField");field.onclick=e=>{if(!gaRunning||gaSelected===null)return;const r=field.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100;if(y<52){toast("Place cards on your yellow side");return}const c=CARDS.find(z=>z.id===gaSelected),cost=gaCost(c);if(gaEnergy<cost){toast("Not enough energy");return}gaEnergy-=cost;spawnGoldenArenaUnit(c,"player",x,y);gaSelected=null;updateGoldenArenaEnergy();renderGoldenArenaHand()};
- gaIntervals=[setInterval(()=>{if(!gaRunning)return;const rate=gaOvertime?.62:.30;gaEnergy=Math.min(10,gaEnergy+rate);gaBotEnergy=Math.min(10,gaBotEnergy+rate);updateGoldenArenaEnergy();renderGoldenArenaHand()},500),setInterval(goldenArenaTick,100),setInterval(goldenArenaAi,650),setInterval(goldenArenaClock,250)];
-}
-function exitGoldenArena(){gaRunning=false;gaIntervals.forEach(clearInterval);gaIntervals=[];$("#goldenArenaGame")?.classList.remove("show")}
-function selectGoldenArenaCard(id){const c=CARDS.find(z=>z.id===id);if(!c)return;if(gaEnergy<gaCost(c)){toast("Not enough energy");return}gaSelected=id;renderGoldenArenaHand();toast("Tap your yellow side to deploy")}
-function updateGoldenArenaEnergy(){const t=$("#goldenArenaEnergyText"),b=$("#goldenArenaEnergyBar");if(t)t.textContent=Math.floor(gaEnergy);if(b)b.style.width=(gaEnergy*10)+"%"}
-function renderGoldenArenaHand(){$("#goldenArenaHand").innerHTML=gaDeck.map(id=>{const c=CARDS.find(z=>z.id===id),cost=gaCost(c),disabled=gaEnergy<cost;return `<button type="button" class="ga-hand-card ${disabled?"disabled":""} ${gaSelected===id?"selected":""}" style="--r:${R[tierFor(c)].color}" onclick="selectGoldenArenaCard(${id})"><img src="${c.image}"><span>${c.name}</span><b class="ga-cost">${cost}</b></button>`}).join("")}
-function spawnGoldenArenaUnit(c,side,x,y){const s=stats(c),hp=Math.round(70+s.def*.42);gaUnits.push({uid:Date.now()+Math.random(),card:c,side,x,y,hp,max:hp,atk:Math.max(6,Math.round(s.atk*.095)),speed:.115+s.spd*.00045,cool:0})}
-function goldenArenaAi(){if(!gaRunning)return;const choices=gaBotDeck.map(id=>CARDS.find(c=>c.id===id)).filter(Boolean),affordable=choices.filter(c=>gaCost(c)<=gaBotEnergy);if(!affordable.length)return;const c=affordable[Math.floor(Math.random()*affordable.length)];gaBotEnergy-=gaCost(c);spawnGoldenArenaUnit(c,"enemy",27+Math.random()*47,44+Math.random()*4)}
-function gaEnemyUnits(side){return gaUnits.filter(u=>u.side!==side&&u.hp>0)}
-function gaTargets(side){return Object.values(gaTowers).filter(t=>t.side!==side&&t.hp>0)}
-function gaNearestTower(u){const a=gaTargets(u.side);if(!a.length)return null;return a.sort((x,y)=>Math.hypot(u.x-x.x,u.y-x.y)-Math.hypot(u.x-y.x,u.y-y.y))[0]}
-function goldenArenaTick(){if(!gaRunning)return;for(const u of gaUnits){if(u.hp<=0)continue;u.cool=Math.max(0,u.cool-1);const foe=gaEnemyUnits(u.side).sort((a,b)=>Math.hypot(u.x-a.x,u.y-a.y)-Math.hypot(u.x-b.x,u.y-b.y))[0];if(foe&&Math.hypot(u.x-foe.x,u.y-foe.y)<4.8){if(!u.cool){foe.hp-=u.atk;u.cool=7}continue}const t=gaNearestTower(u);if(!t)continue;const dist=Math.hypot(u.x-t.x,u.y-t.y);if(dist<5.7){if(!u.cool){t.hp=Math.max(0,t.hp-u.atk);u.cool=8}}else{const dx=t.x-u.x,dy=t.y-u.y,len=Math.max(.01,Math.hypot(dx,dy));u.x+=dx/len*u.speed;u.y+=dy/len*u.speed}}for(const t of Object.values(gaTowers)){if(t.hp<=0)continue;const targets=gaUnits.filter(u=>u.side!==t.side&&u.hp>0&&Math.hypot(u.x-t.x,u.y-t.y)<15);if(targets.length&&Math.random()<.14)targets[0].hp-=11}gaUnits=gaUnits.filter(u=>u.hp>0);renderGoldenArena();checkGoldenArenaResult()}
-function renderGoldenArena(){if(!gaTowers)return;let s="";for(const t of Object.values(gaTowers)){s+=`<div class="ga-tower-hp ${t.side==="enemy"?"enemy":""}" style="left:${t.x}%;top:${t.y-5}%"><i style="width:${Math.max(0,t.hp/t.max*100)}%"></i></div>`;if(t.hp<=0)s+=`<div class="ga-destroyed" style="left:${t.x}%;top:${t.y}%">✕</div>`}for(const u of gaUnits)s+=`<div class="ga-hp" style="left:${u.x}%;top:${u.y-3}%"><i style="width:${Math.max(0,u.hp/u.max*100)}%"></i></div><img class="ga-unit ${u.side}" src="${u.card.image}" style="--r:${R[tierFor(u.card)].color};left:${u.x}%;top:${u.y}%">`;$("#goldenArenaField").innerHTML=s}
-function goldenArenaClock(){if(!gaRunning)return;const sec=Math.floor((Date.now()-gaStart)/1000);if(sec<180){const left=180-sec;$("#goldenArenaTimer").textContent=Math.floor(left/60)+":"+String(left%60).padStart(2,"0")}else{gaOvertime=true;$("#goldenArenaTimer").textContent="OVERTIME";$("#goldenArenaBoost").textContent="2× ENERGY"}}
-function gaScore(side){return Object.values(gaTowers).filter(t=>t.side!==side&&t.hp<=0).length}
-function checkGoldenArenaResult(){if(gaTowers.eK.hp<=0)return finishGoldenArena(true);if(gaTowers.pK.hp<=0)return finishGoldenArena(false);if(gaOvertime){const p=gaScore("player"),e=gaScore("enemy");if(p!==e)return finishGoldenArena(p>e)}}
-function finishGoldenArena(win){gaRunning=false;gaIntervals.forEach(clearInterval);gaIntervals=[];$("#goldenArenaGame").classList.remove("show");const destroyed=gaScore("player"),reward=win?1500+destroyed*500:0;if(win){state.coins+=reward;save()}$("#goldenArenaResultTitle").textContent=win?"VICTORY":"DEFEAT";$("#goldenArenaResultText").textContent=win?`Destroyed ${destroyed} tower${destroyed===1?"":"s"} · +${reward.toLocaleString()} coins`:"The black side won the arena.";$("#goldenArenaResult").classList.add("show")}
-function closeGoldenArenaResult(){$("#goldenArenaResult")?.classList.remove("show");render()}
-
 </script>
 </body></html>

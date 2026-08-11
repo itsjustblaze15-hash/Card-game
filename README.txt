@@ -280,9 +280,9 @@ V9 SURVIVOR-BASED WIN REWARDS
 - Victory screen shows survivors and payout.
 - Visible version remains V9; internal build is 9.10.
 
-GOLDEN ARENA ISOLATED BETA
-- Built directly on the confirmed-working V9 Battle build.
-- Normal 3v3 startBattle() code is unchanged.
-- Golden Arena uses separate ga* state/functions and overlays.
-- Golden Arena wins only award Arena coins; they do not change normal Battle records, win streak, or boss unlock progress.
-- Existing assets are not bundled. Keep assets/beta_arena.png already in your repo.
+V9.11 UPDATE BUTTON + FINAL BOSS FIX
+- Update button now installs the newest service worker and forces a cache-busted refresh.
+- Added an iPhone/PWA fallback that clears stale runtime caches when controllerchange is delayed.
+- Artlander now displays COMPLETED after it is defeated.
+- Removed the FIGHT AGAIN option for Artlander.
+- Golden Arena is not included in this build. Normal Battle stays on the confirmed-working V9 base.
