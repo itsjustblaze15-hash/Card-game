@@ -279,3 +279,12 @@ V9 SURVIVOR-BASED WIN REWARDS
 - Final payouts stay in clean 500-coin steps.
 - Victory screen shows survivors and payout.
 - Visible version remains V9; internal build is 9.10.
+
+V9 GOLDEN ARENA BETA
+- Internal build 9.11; visible version remains V9.
+- Separate Play-page BETA mode; V9.10 normal modes preserved.
+- 4-card deck. Energy: Common 1, Uncommon 3, Rare 5, Epic 7, Legendary 9, Exotic 10.
+- Yellow player side, black enemy side, rarity outlines.
+- Tiny units auto-move/fight, towers shoot, 3-minute timer, 2x-energy overtime.
+- Bot deck mirrors player rarity levels without duplicate bot cards.
+- Patch includes only assets/beta_arena.png; existing assets/icons stay in the repo.

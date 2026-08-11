@@ -224,6 +224,34 @@ button{font:inherit;cursor:pointer}
   box-shadow:0 0 0 2px #f6e2bd,0 8px 18px #0003;
 }
 
+
+/* V9.11 GOLDEN ARENA BETA */
+.beta-mode-card{margin:14px 0 4px;padding:14px;background:linear-gradient(145deg,#151515,#2b2400);color:#fff;border:3px solid #ffd52a;border-radius:18px;box-shadow:0 10px 22px #0004}
+.beta-mode-card h3{margin:7px 0 5px;font-size:20px}.beta-mode-card p{margin:0 0 11px;font-size:11px;font-weight:800;opacity:.86}
+.beta-chip{display:inline-block;background:#111;color:#ffd52a;border:1px solid #ffd52a;border-radius:999px;padding:4px 8px;font-size:9px;font-weight:1000;letter-spacing:1px}
+.beta-select{position:fixed;inset:0;z-index:100010;background:#111;color:#fff;display:none;overflow-y:auto;padding:12px}.beta-select.show{display:block}
+.beta-select-head{position:sticky;top:-12px;z-index:4;background:#111;padding:10px 0;border-bottom:1px solid #ffd52a55}
+.beta-select-head-row{display:flex;justify-content:space-between;gap:8px;align-items:center}.beta-select-head button{border:0;border-radius:10px;padding:8px 10px;background:#ffd52a;color:#171100;font-weight:1000}
+.beta-pick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.beta-pick{position:relative;background:#ffd52a;color:#171100;border:3px solid var(--r);border-radius:12px;padding:4px;text-align:center}
+.beta-pick img{width:100%;height:92px;object-fit:cover;border-radius:7px}.beta-pick b{display:block;font-size:8px;line-height:1.05}.beta-pick.sel{box-shadow:0 0 0 4px #fff;transform:scale(.96)}
+.beta-arena-screen{position:fixed;inset:0;z-index:100005;background:#080808;color:#fff;display:none;flex-direction:column;overflow:hidden}.beta-arena-screen.show{display:flex}
+.beta-arena-head{height:48px;flex:0 0 48px;background:#111;border-bottom:2px solid #ffd52a;display:flex;align-items:center;justify-content:space-between;padding:0 9px;gap:7px}
+.beta-arena-head button{border:0;border-radius:9px;padding:7px 9px;background:#ffd52a;color:#171100;font-weight:1000}.beta-arena-head strong{font-size:11px}.beta-arena-timer{font-size:13px;font-weight:1000}
+.beta-map{position:relative;flex:1;min-height:0;overflow:hidden;background:#050505}.beta-map-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;user-select:none}
+.beta-field{position:absolute;inset:0;overflow:hidden}.beta-side-label{position:absolute;left:50%;transform:translateX(-50%);z-index:2;font-weight:1000;font-size:8px;letter-spacing:1.5px;opacity:.72}.beta-side-label.enemy{top:2%;color:#ddd}.beta-side-label.player{bottom:2%;color:#ffd52a}
+.beta-unit{position:absolute;width:29px;height:38px;border:3px solid var(--r);border-radius:7px;object-fit:cover;transform:translate(-50%,-50%);z-index:8;box-shadow:0 3px 8px #000b}
+.beta-unit.player{background:#ffd52a}.beta-unit.enemy{background:#050505}
+.beta-hp{position:absolute;width:30px;height:4px;background:#111;border-radius:5px;overflow:hidden;transform:translate(-50%,-50%);z-index:9}.beta-hp i{display:block;height:100%;background:#42d46b}
+.beta-tower-hp{position:absolute;width:54px;height:7px;background:#111;border:1px solid #ffffff55;border-radius:8px;overflow:hidden;transform:translateX(-50%);z-index:5}.beta-tower-hp i{display:block;height:100%;background:#ffd52a}.beta-tower-hp.enemy i{background:#555}
+.beta-tower-destroyed{position:absolute;z-index:4;font-size:22px;transform:translate(-50%,-50%);filter:grayscale(1)}
+.beta-bottom{flex:0 0 auto;background:#111;border-top:2px solid #ffd52a;padding:7px 7px 9px}.beta-energy-row{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:1000}
+.beta-energy{flex:1;height:9px;background:#333;border-radius:99px;overflow:hidden}.beta-energy i{display:block;height:100%;background:#ffd52a;transition:width .15s}
+.beta-hand{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:7px}.beta-hand-card{position:relative;background:#ffd52a;color:#111;border:3px solid var(--r);border-radius:10px;padding:3px;text-align:center;min-width:0}
+.beta-hand-card.selected{box-shadow:0 0 0 3px #fff}.beta-hand-card.disabled{opacity:.35}.beta-hand-card img{width:100%;height:50px;object-fit:cover;border-radius:6px}.beta-hand-card span{display:block;font-size:7px;font-weight:1000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.beta-energy-cost{position:absolute;right:2px;top:2px;background:#111;color:#ffd52a;border-radius:99px;padding:2px 5px;font-size:9px;font-weight:1000}
+.beta-result{position:fixed;inset:0;z-index:100020;background:#000d;display:none;align-items:center;justify-content:center;text-align:center;color:#fff;padding:18px}.beta-result.show{display:flex}
+.beta-result-box{width:min(340px,100%);background:#171717;border:3px solid #ffd52a;border-radius:20px;padding:20px}.beta-result-box h1{margin:8px 0;color:#ffd52a;font-size:42px}.beta-result-box button{width:100%;border:0;border-radius:12px;padding:12px;background:#ffd52a;color:#171100;font-weight:1000}
+
 </style>
 </head>
 <body>
@@ -258,6 +286,12 @@ button{font:inherit;cursor:pointer}
 <div id="teamRatingBox" class="team-rating-box" style="--team-color:#9b9b9b"><span>YOUR TEAM: <b id="teamRatingName">GRAY</b></span><span id="teamRatingStars" class="team-rating-stars">★</span></div><div class="battle-grid" id="teamSlots"></div>
 <div class="sub-label">SUBSTITUTES</div><div class="sub-pick-grid" id="subSlots"></div>
 <button class="primary" onclick="startBattle()">PLAY</button>
+<div class="beta-mode-card">
+  <span class="beta-chip">BETA</span>
+  <h3>GOLDEN ARENA</h3>
+  <p>Choose 4 cards. Place tiny units on your yellow side, manage energy, and destroy the black towers.</p>
+  <button class="primary" onclick="openGoldenArenaBeta()">PLAY BETA</button>
+</div>
 </section>
 
 <section id="upgrade" class="screen">
@@ -316,7 +350,41 @@ button{font:inherit;cursor:pointer}
 <div class="sub-section-title">ACTIVE</div><div id="subActiveChoices" class="sub-choice-grid"></div>
 <div class="sub-section-title">BENCH</div><div id="subBenchChoices" class="sub-choice-grid"></div>
 <div class="sub-actions"><button id="subSwapBtn" onclick="confirmSubChoice()" disabled>SWAP</button><button onclick="finishSubBreak()">DONE</button></div>
-</div></div><div class="toast" id="toast"></div>
+</div></div>
+<div id="goldenArenaSelect" class="beta-select">
+  <div class="beta-select-head">
+    <div class="beta-select-head-row"><div><span class="beta-chip">BETA</span> <b>CHOOSE 4 CARDS</b></div><button onclick="closeGoldenArenaSelect()">CANCEL</button></div>
+    <div id="goldenArenaCount" style="margin-top:7px;font-size:11px;font-weight:900">0 / 4 selected</div>
+  </div>
+  <div id="goldenArenaPickGrid" class="beta-pick-grid"></div>
+</div>
+<div id="goldenArenaGame" class="beta-arena-screen">
+  <div class="beta-arena-head">
+    <button onclick="exitGoldenArena()">EXIT</button>
+    <strong><span class="beta-chip">BETA</span> GOLDEN ARENA</strong>
+    <span id="goldenArenaTimer" class="beta-arena-timer">3:00</span>
+  </div>
+  <div class="beta-map">
+    <img class="beta-map-bg" src="assets/beta_arena.png">
+    <div class="beta-side-label enemy">BLACK SIDE</div>
+    <div class="beta-side-label player">YELLOW SIDE</div>
+    <div id="goldenArenaField" class="beta-field"></div>
+  </div>
+  <div class="beta-bottom">
+    <div class="beta-energy-row"><span>ENERGY <b id="goldenArenaEnergyText">10</b>/10</span><div class="beta-energy"><i id="goldenArenaEnergyBar" style="width:100%"></i></div><span id="goldenArenaBoost"></span></div>
+    <div id="goldenArenaHand" class="beta-hand"></div>
+  </div>
+</div>
+<div id="goldenArenaResult" class="beta-result">
+  <div class="beta-result-box">
+    <span class="beta-chip">BETA</span>
+    <h1 id="goldenArenaResultTitle">VICTORY</h1>
+    <p id="goldenArenaResultText"></p>
+    <button onclick="closeGoldenArenaResult()">CONTINUE</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
 <div class="confirm-overlay" id="dangerOverlay"><div class="confirm-box">
 <h2 id="dangerTitle">ARE YOU SURE?</h2><p id="dangerText"></p>
 <button id="holdYes" class="hold-confirm"><span>HOLD YES FOR 3 SECONDS</span></button>
@@ -1670,5 +1738,85 @@ passiveUpdateCheck();
 maybeShowWhatsNew();
 cleanTeam();
 save();
+
+const GA_COST={Common:1,Uncommon:3,Rare:5,Epic:7,Legendary:9,Exotic:10};
+let gaDeck=[],gaBotDeck=[],gaEnergy=10,gaBotEnergy=10,gaUnits=[],gaTowers=null,gaRunning=false,gaSelected=null,gaStart=0,gaOvertime=false,gaIntervals=[];
+function gaCost(c){return GA_COST[tierFor(c)]||1}
+function openGoldenArenaBeta(){
+  gaDeck=[];
+  const owned=CARDS.filter(c=>(state.owned[c.id]||0)>0);
+  $("#goldenArenaPickGrid").innerHTML=owned.map(c=>`<div id="gaPick${c.id}" class="beta-pick" style="--r:${R[tierFor(c)].color}" onclick="toggleGoldenArenaPick(${c.id})"><img src="${c.image}"><b>${c.name}<br>${tierFor(c)} · ${gaCost(c)} ENERGY</b></div>`).join("");
+  $("#goldenArenaCount").textContent="0 / 4 selected";
+  $("#goldenArenaSelect").classList.add("show");
+}
+function closeGoldenArenaSelect(){$("#goldenArenaSelect").classList.remove("show")}
+function toggleGoldenArenaPick(id){
+  const i=gaDeck.indexOf(id);
+  if(i>=0)gaDeck.splice(i,1); else {if(gaDeck.length>=4){toast("Choose exactly 4 cards");return} gaDeck.push(id)}
+  document.querySelectorAll(".beta-pick").forEach(x=>x.classList.remove("sel"));
+  gaDeck.forEach(x=>$("#gaPick"+x)?.classList.add("sel"));
+  $("#goldenArenaCount").textContent=gaDeck.length+" / 4 selected";
+  if(gaDeck.length===4)setTimeout(startGoldenArenaBeta,180);
+}
+function gaRank(c){return {Common:1,Uncommon:2,Rare:3,Epic:4,Legendary:5,Exotic:6}[tierFor(c)]||1}
+function gaMakeBotDeck(){
+  const used=new Set();
+  return gaDeck.map(id=>{
+    const player=CARDS.find(c=>c.id===id),rank=gaRank(player);
+    let pool=CARDS.filter(c=>gaRank(c)===rank&&!c.bossExclusive&&!used.has(c.id));
+    if(!pool.length)pool=CARDS.filter(c=>gaRank(c)===rank&&!used.has(c.id));
+    const c=pool[Math.floor(Math.random()*pool.length)]||player;used.add(c.id);return c.id;
+  });
+}
+function gaTowerSetup(){return {pL:{side:"player",x:34,y:70,hp:820,max:820},pR:{side:"player",x:71,y:70,hp:820,max:820},pK:{side:"player",x:52,y:83,hp:1250,max:1250},eL:{side:"enemy",x:32,y:28,hp:820,max:820},eR:{side:"enemy",x:70,y:28,hp:820,max:820},eK:{side:"enemy",x:51,y:16,hp:1250,max:1250}}}
+function startGoldenArenaBeta(){
+  if(gaDeck.length!==4)return;
+  closeGoldenArenaSelect();gaBotDeck=gaMakeBotDeck();gaEnergy=10;gaBotEnergy=10;gaUnits=[];gaTowers=gaTowerSetup();gaRunning=true;gaSelected=null;gaStart=Date.now();gaOvertime=false;
+  $("#goldenArenaTimer").textContent="3:00";$("#goldenArenaBoost").textContent="";$("#goldenArenaGame").classList.add("show");renderGoldenArenaHand();renderGoldenArena();updateGoldenArenaEnergy();
+  const field=$("#goldenArenaField");
+  field.onclick=e=>{
+    if(!gaRunning||gaSelected===null)return;
+    const r=field.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100;
+    if(y<52){toast("Place cards on your yellow side");return}
+    const c=CARDS.find(z=>z.id===gaSelected),cost=gaCost(c);
+    if(gaEnergy<cost){toast("Not enough energy");return}
+    gaEnergy-=cost;spawnGoldenArenaUnit(c,"player",x,y);gaSelected=null;updateGoldenArenaEnergy();renderGoldenArenaHand();
+  };
+  gaIntervals=[setInterval(()=>{if(!gaRunning)return;const rate=gaOvertime?.62:.30;gaEnergy=Math.min(10,gaEnergy+rate);gaBotEnergy=Math.min(10,gaBotEnergy+rate);updateGoldenArenaEnergy();renderGoldenArenaHand()},500),setInterval(goldenArenaTick,100),setInterval(goldenArenaAi,650),setInterval(goldenArenaClock,250)];
+}
+function exitGoldenArena(){gaRunning=false;gaIntervals.forEach(clearInterval);gaIntervals=[];$("#goldenArenaGame").classList.remove("show")}
+function selectGoldenArenaCard(id){const c=CARDS.find(z=>z.id===id);if(gaEnergy<gaCost(c)){toast("Not enough energy");return}gaSelected=id;renderGoldenArenaHand();toast("Tap anywhere on your yellow side")}
+function updateGoldenArenaEnergy(){$("#goldenArenaEnergyText").textContent=Math.floor(gaEnergy);$("#goldenArenaEnergyBar").style.width=(gaEnergy*10)+"%"}
+function renderGoldenArenaHand(){$("#goldenArenaHand").innerHTML=gaDeck.map(id=>{const c=CARDS.find(z=>z.id===id),cost=gaCost(c),disabled=gaEnergy<cost;return `<div class="beta-hand-card ${disabled?"disabled":""} ${gaSelected===id?"selected":""}" style="--r:${R[tierFor(c)].color}" onclick="selectGoldenArenaCard(${id})"><img src="${c.image}"><span>${c.name}</span><b class="beta-energy-cost">${cost}</b></div>`}).join("")}
+function spawnGoldenArenaUnit(c,side,x,y){const s=stats(c),hp=Math.round(70+s.def*.42);gaUnits.push({uid:Date.now()+Math.random(),card:c,side,x,y,hp,max:hp,atk:Math.max(6,Math.round(s.atk*.095)),speed:.115+s.spd*.00045,cool:0})}
+function goldenArenaAi(){if(!gaRunning)return;const choices=gaBotDeck.map(id=>CARDS.find(c=>c.id===id)).filter(Boolean),affordable=choices.filter(c=>gaCost(c)<=gaBotEnergy);if(!affordable.length)return;const c=affordable[Math.floor(Math.random()*affordable.length)];gaBotEnergy-=gaCost(c);spawnGoldenArenaUnit(c,"enemy",27+Math.random()*47,44+Math.random()*4)}
+function gaEnemyUnits(side){return gaUnits.filter(u=>u.side!==side&&u.hp>0)}
+function gaTargets(side){return Object.values(gaTowers).filter(t=>t.side!==side&&t.hp>0)}
+function gaNearestTower(u){const a=gaTargets(u.side);if(!a.length)return null;return a.sort((x,y)=>Math.hypot(u.x-x.x,u.y-x.y)-Math.hypot(u.x-y.x,u.y-y.y))[0]}
+function goldenArenaTick(){
+  if(!gaRunning)return;
+  for(const u of gaUnits){
+    if(u.hp<=0)continue;u.cool=Math.max(0,u.cool-1);
+    const foe=gaEnemyUnits(u.side).sort((a,b)=>Math.hypot(u.x-a.x,u.y-a.y)-Math.hypot(u.x-b.x,u.y-b.y))[0];
+    if(foe&&Math.hypot(u.x-foe.x,u.y-foe.y)<4.8){if(!u.cool){foe.hp-=u.atk;u.cool=7}continue}
+    const t=gaNearestTower(u);if(!t)continue;const dist=Math.hypot(u.x-t.x,u.y-t.y);
+    if(dist<5.7){if(!u.cool){t.hp=Math.max(0,t.hp-u.atk);u.cool=8}}
+    else{const dx=t.x-u.x,dy=t.y-u.y,len=Math.max(.01,Math.hypot(dx,dy));u.x+=dx/len*u.speed;u.y+=dy/len*u.speed}
+  }
+  for(const t of Object.values(gaTowers)){if(t.hp<=0)continue;const targets=gaUnits.filter(u=>u.side!==t.side&&u.hp>0&&Math.hypot(u.x-t.x,u.y-t.y)<15);if(targets.length&&Math.random()<.14)targets[0].hp-=11}
+  gaUnits=gaUnits.filter(u=>u.hp>0);renderGoldenArena();checkGoldenArenaResult();
+}
+function renderGoldenArena(){
+  if(!gaTowers)return;let s="";
+  for(const t of Object.values(gaTowers)){s+=`<div class="beta-tower-hp ${t.side==="enemy"?"enemy":""}" style="left:${t.x}%;top:${t.y-5}%"><i style="width:${Math.max(0,t.hp/t.max*100)}%"></i></div>`;if(t.hp<=0)s+=`<div class="beta-tower-destroyed" style="left:${t.x}%;top:${t.y}%">✕</div>`}
+  for(const u of gaUnits)s+=`<div class="beta-hp" style="left:${u.x}%;top:${u.y-3}%"><i style="width:${Math.max(0,u.hp/u.max*100)}%"></i></div><img class="beta-unit ${u.side}" src="${u.card.image}" style="--r:${R[tierFor(u.card)].color};left:${u.x}%;top:${u.y}%">`;
+  $("#goldenArenaField").innerHTML=s;
+}
+function goldenArenaClock(){if(!gaRunning)return;const sec=Math.floor((Date.now()-gaStart)/1000);if(sec<180){const left=180-sec;$("#goldenArenaTimer").textContent=Math.floor(left/60)+":"+String(left%60).padStart(2,"0")}else{gaOvertime=true;$("#goldenArenaTimer").textContent="OVERTIME";$("#goldenArenaBoost").textContent="2× ENERGY"}}
+function gaScore(side){return Object.values(gaTowers).filter(t=>t.side!==side&&t.hp<=0).length}
+function checkGoldenArenaResult(){if(gaTowers.eK.hp<=0)return finishGoldenArena(true);if(gaTowers.pK.hp<=0)return finishGoldenArena(false);if(gaOvertime){const p=gaScore("player"),e=gaScore("enemy");if(p!==e)return finishGoldenArena(p>e)}}
+function finishGoldenArena(win){gaRunning=false;gaIntervals.forEach(clearInterval);gaIntervals=[];$("#goldenArenaGame").classList.remove("show");const destroyed=gaScore("player"),reward=win?1500+destroyed*500:0;if(win){state.coins+=reward;save()}$("#goldenArenaResultTitle").textContent=win?"VICTORY":"DEFEAT";$("#goldenArenaResultText").textContent=win?`Destroyed ${destroyed} tower${destroyed===1?"":"s"} · +${reward.toLocaleString()} coins`:"The black side won the arena.";$("#goldenArenaResult").classList.add("show")}
+function closeGoldenArenaResult(){$("#goldenArenaResult").classList.remove("show");render()}
+
 </script>
 </body></html>
