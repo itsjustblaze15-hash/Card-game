@@ -311,3 +311,13 @@ V9.14 GOLDEN ARENA COMBAT UPDATE
 - Cards have varied movement speeds.
 - Every Arena card gets one consistent ability: Guardian, Berserker, Sprinter, Drain, Splash, or Shield.
 - Normal 3v3 Battle code remains unchanged.
+
+V9.15
+- PLAY is now a two-mode chooser: BATTLE or GOLDEN ARENA.
+- Golden Arena always uses each card's original printed rarity (card.rarity), even if that card evolved in 3v3.
+- Bot stays strictly on its own black half until it destroys an outer tower; only that destroyed lane opens.
+- Player follows the mirrored rule on the enemy side.
+- Player Arena units have yellow inner treatment; bot units black.
+- Every Arena tower HP bar is green and above its tower.
+- Leaving/closing the app during an active normal Battle removes up to 20,000 coins; balances under 20,000 go to 0.
+- A warning is shown before normal Battle starts and on the Battle setup panel.

@@ -234,6 +234,15 @@ button{font:inherit;cursor:pointer}
 
 .ga-ability{display:block;font-size:6px;font-weight:1000;line-height:1.05;margin-top:2px;opacity:.82}
 .ga-lane-open{position:absolute;z-index:3;font-size:7px;font-weight:1000;color:#fff;background:#0009;border:1px solid #ffd52a;border-radius:999px;padding:3px 6px;transform:translateX(-50%);pointer-events:none}
+
+.mode-chooser{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.mode-choice{border:3px solid #ffd52a;border-radius:17px;background:#171717;color:#fff;padding:16px 8px;text-align:center;font-weight:1000;touch-action:manipulation}
+.mode-choice small,.mode-choice span{display:block;font-size:8px;opacity:.78}.mode-choice b{display:block;color:#ffd52a;font-size:17px;margin:4px 0}
+.battle-leave-warning{margin:0 0 12px;padding:10px;border:2px solid #ffb000;border-radius:11px;background:#2b1600;color:#ffd77a;font-size:9px;font-weight:1000;text-align:center}
+.ga-tower i,.ga-tower.enemy i{background:#42d46b!important}
+.ga-unit.player{background:#ffd52a!important;box-shadow:inset 0 0 0 6px #ffd52a,0 3px 8px #000a!important}
+.ga-unit.enemy{background:#050505!important;box-shadow:inset 0 0 0 6px #050505,0 3px 8px #000a!important}
+
 </style>
 </head>
 <body>
@@ -263,13 +272,21 @@ button{font:inherit;cursor:pointer}
 </section>
 
 <section id="battle" class="screen">
-<div class="ga-beta-launch"><span class="tag">BETA</span><h2>GOLDEN ARENA</h2><p>Choose 4 cards, spend energy, deploy tiny units, and destroy the black towers.</p><button id="gaLaunch" type="button" onclick="gaOpenPicker();return false;">PLAY GOLDEN ARENA</button></div>
+<div class="mode-chooser">
+ <button class="mode-choice" type="button" onclick="openBattleMode()"><small>MAIN MODE</small><b>BATTLE</b><span>3v3 AUTO BATTLE</span></button>
+ <button class="mode-choice" type="button" onclick="gaOpenPicker()"><small>BETA</small><b>GOLDEN ARENA</b><span>4-CARD ARENA</span></button>
+</div>
+<div id="battleModePanel" style="display:none">
+ <div class="battle-leave-warning">WARNING: LEAVING AN ACTIVE BATTLE COSTS 20,000 COINS. IF YOU HAVE LESS THAN 20,000, YOUR BALANCE DROPS TO 0.</div>
+ 
+
 <div class="hero"><h1>BATTLE</h1><p>Pick 3 owned cards and fight a random bot. Wins power up the cards you used.</p></div><div class="streak-box"><div><b>WIN STREAK</b><div style="font-size:11px">Base reward: 2K–5K · 3 standing = 100% · 2 standing = 75% · 1 standing = 50%</div></div><div class="streak-num" id="streakNum">0</div></div>
 <div class="panel"><b>BOT DIFFICULTY</b><div class="bot-stars" id="stars">TEAM-BASED MATCHMAKING</div><div style="font-size:12px;font-weight:900;text-align:center;margin-top:8px">Bot strength is matched around your team rating, with some easier and harder opponents.</div></div>
 <div id="teamRatingBox" class="team-rating-box" style="--team-color:#9b9b9b"><span>YOUR TEAM: <b id="teamRatingName">GRAY</b></span><span id="teamRatingStars" class="team-rating-stars">★</span></div><div class="battle-grid" id="teamSlots"></div>
 <div class="sub-label">SUBSTITUTES</div><div class="sub-pick-grid" id="subSlots"></div>
-<button class="primary" onclick="startBattle()">PLAY</button>
-</section>
+<button class="primary" onclick="confirmBattleStart()">PLAY</button>
+
+</div></section>
 
 <section id="upgrade" class="screen">
 <div class="hero"><h1>UPGRADE CENTER</h1><p>Battle wins build evolution progress. Win requirements: Common → Uncommon 10, Uncommon → Rare 20, Rare → Epic 30, Epic → Legendary 40, Legendary → Exotic 50. Exotic is the permanent maximum.</p></div>
@@ -1149,6 +1166,26 @@ async function sweepAttack(attacker,side,attackerIndex,team,enemy,php,ehp,pmax,e
  await wait(280);
 }
 
+
+let normalBattlePenaltyArmed=false;
+function openBattleMode(){
+ $("#battleModePanel").style.display="block";
+ setTimeout(()=>$("#battleModePanel").scrollIntoView({behavior:"smooth",block:"start"}),20);
+}
+function confirmBattleStart(){
+ if(!confirm("Leaving an active Battle before it finishes costs 20,000 coins. If you have less than 20,000, your coins will drop to 0.\\n\\nStart Battle?"))return;
+ startBattle();
+}
+function chargeBattleLeavePenalty(){
+ if(!normalBattlePenaltyArmed)return 0;
+ const loss=Math.min(20000,Math.max(0,Number(state.coins)||0));
+ state.coins=Math.max(0,(Number(state.coins)||0)-loss);
+ normalBattlePenaltyArmed=false;
+ save();
+ return loss;
+}
+window.addEventListener("pagehide",()=>{if(normalBattlePenaltyArmed&&battleBusy)chargeBattleLeavePenalty()});
+
 async function startBattle(){
  cleanTeam();
  if(battleBusy)return;
@@ -1177,6 +1214,7 @@ async function startBattle(){
  battleEnemyBenchLocked=[false,false];
 
  battleBusy=true;
+ normalBattlePenaltyArmed=true;
  $("#battleModal").style.display="flex";$("#battleModal").classList.add("show");
  $("#arenaLog").textContent="";
  drawArena(team,enemy,php,ehp,pmax,emax,-1,-1,difficulty);
@@ -1227,6 +1265,7 @@ async function startBattle(){
  }
 
  const won=allDead(ehp)&&!allDead(php);
+ normalBattlePenaltyArmed=false;
  $("#battleModal").classList.remove("show");
  $("#battleModal").style.display="none";
  hideCenter();battlePlayerBench=[];battleEnemyBench=[];battlePlayerBenchLocked=[];battleEnemyBenchLocked=[];
@@ -1778,8 +1817,8 @@ const GA_SCALE={
 const GA_POWER_NAMES=["GUARDIAN","BERSERKER","SPRINTER","DRAIN","SPLASH","SHIELD"];
 const GA={deck:[],botDeck:[],energy:10,botEnergy:10,units:[],towers:null,selected:null,running:false,start:0,overtime:false,loops:[]};
 
-function gaCost(c){return GA_COST[tierFor(c)]||1}
-function gaRank(c){return GA_RANK[tierFor(c)]||1}
+function gaCost(c){return GA_COST[c.rarity]||1}
+function gaRank(c){return GA_RANK[c.rarity]||1}
 function gaPower(c){return GA_POWER_NAMES[(Number(c.id)||0)%GA_POWER_NAMES.length]}
 
 function gaOpenPicker(){
@@ -1789,7 +1828,7 @@ function gaOpenPicker(){
    if(d)return d;
    return (a.name||"").localeCompare(b.name||"") || a.id-b.id;
  });
- $("#gaGrid").innerHTML=owned.map(c=>`<button type="button" id="gaPick${c.id}" class="ga-pick" style="--r:${R[tierFor(c)].color}" onclick="gaTogglePick(${c.id})"><img src="${c.image}" onerror="this.style.opacity='.2'"><b>${c.name}<br>${tierFor(c)} · ${gaCost(c)} ENERGY<span class="ga-ability">${gaPower(c)}</span></b></button>`).join("");
+ $("#gaGrid").innerHTML=owned.map(c=>`<button type="button" id="gaPick${c.id}" class="ga-pick" style="--r:${R[c.rarity].color}" onclick="gaTogglePick(${c.id})"><img src="${c.image}" onerror="this.style.opacity='.2'"><b>${c.name}<br>${c.rarity} · ${gaCost(c)} ENERGY<span class="ga-ability">${gaPower(c)}</span></b></button>`).join("");
  $("#gaCount").textContent="0 / 4";
  $("#gaPicker").classList.add("show");
  if(!owned.length)toast("You need owned cards to play Golden Arena");
@@ -1847,7 +1886,7 @@ function gaUpdateEnergy(){$("#gaEnergyText").textContent=Math.floor(GA.energy);$
 function gaRenderHand(){
  $("#gaHand").innerHTML=GA.deck.map(id=>{
    const c=CARDS.find(x=>x.id===id),cost=gaCost(c),off=GA.energy<cost;
-   return `<button type="button" class="ga-hand-card ${off?"disabled":""} ${GA.selected===id?"selected":""}" style="--r:${R[tierFor(c)].color}" onclick="gaSelect(${id})"><img src="${c.image}"><span>${c.name}</span><span class="ga-ability">${gaPower(c)}</span><b class="ga-cost">${cost}</b></button>`;
+   return `<button type="button" class="ga-hand-card ${off?"disabled":""} ${GA.selected===id?"selected":""}" style="--r:${R[c.rarity].color}" onclick="gaSelect(${id})"><img src="${c.image}"><span>${c.name}</span><span class="ga-ability">${gaPower(c)}</span><b class="ga-cost">${cost}</b></button>`;
  }).join("");
 }
 
@@ -1858,7 +1897,8 @@ function gaPlayerLaneOpenForEnemy(lane){return lane==="left"?GA.towers.pL.hp<=0:
 function gaPlayerDeployAllowed(x,y){
  if(y>=52)return true;
  const lane=gaLaneForX(x);
- return y>=20 && gaEnemyLaneOpenForPlayer(lane);
+ if(!gaEnemyLaneOpenForPlayer(lane))return false;
+ return lane==="left"?x<52:x>=52;
 }
 function gaDeploy(e){
  if(!GA.running||GA.selected===null)return;
@@ -1873,7 +1913,7 @@ function gaDeploy(e){
  GA.energy-=cost;gaSpawn(c,"player",x,y);GA.selected=null;gaUpdateEnergy();gaRenderHand();
 }
 function gaSpawn(c,side,x,y){
- const s=stats(c),tier=tierFor(c),scale=GA_SCALE[tier]||GA_SCALE.Common,power=gaPower(c);
+ const s=stats(c),tier=c.rarity,scale=GA_SCALE[tier]||GA_SCALE.Common,power=gaPower(c);
  const speedVariance=.88+((Number(c.id)||0)%7)*.04;
  let hp=Math.round((70+s.def*.42)*scale.hp);
  let atk=Math.max(6,Math.round((s.atk*.095)*scale.atk));
@@ -1894,16 +1934,15 @@ function gaBotTick(){
  if(!aff.length)return;
  const c=aff[Math.floor(Math.random()*aff.length)];
  GA.botEnergy-=gaCost(c);
-
  const advanced=[];
- if(GA.towers.pL.hp<=0)advanced.push("left");
- if(GA.towers.pR.hp<=0)advanced.push("right");
-
- if(advanced.length && Math.random()<.58){
+ if(gaPlayerLaneOpenForEnemy("left"))advanced.push("left");
+ if(gaPlayerLaneOpenForEnemy("right"))advanced.push("right");
+ if(advanced.length&&Math.random()<.58){
    const lane=advanced[Math.floor(Math.random()*advanced.length)];
-   gaSpawn(c,"enemy",lane==="left"?32+Math.random()*10:62+Math.random()*13,58+Math.random()*10);
+   gaSpawn(c,"enemy",lane==="left"?28+Math.random()*20:54+Math.random()*20,54+Math.random()*14);
  }else{
-   gaSpawn(c,"enemy",Math.random()<.5?30+Math.random()*12:62+Math.random()*13,40+Math.random()*7);
+   // STRICT: before taking a tower, bot can spawn only on its black half.
+   gaSpawn(c,"enemy",Math.random()<.5?28+Math.random()*20:54+Math.random()*20,28+Math.random()*18);
  }
 }
 function gaEnemyUnits(side){return GA.units.filter(u=>u.side!==side&&u.hp>0)}
@@ -2002,7 +2041,7 @@ function gaDraw(){
  if(GA.towers.pL.hp<=0)out+=`<div class="ga-lane-open" style="left:34%;top:62%">ENEMY CAN DEPLOY</div>`;
  if(GA.towers.pR.hp<=0)out+=`<div class="ga-lane-open" style="left:71%;top:62%">ENEMY CAN DEPLOY</div>`;
  for(const u of GA.units){
-   out+=`<div class="ga-unit-hp" style="left:${u.x}%;top:${u.y-3}%"><i style="width:${Math.max(0,u.hp/u.max*100)}%"></i></div><img class="ga-unit ${u.side}" title="${u.power}" src="${u.c.image}" style="--r:${R[tierFor(u.c)].color};left:${u.x}%;top:${u.y}%">`;
+   out+=`<div class="ga-unit-hp" style="left:${u.x}%;top:${u.y-3}%"><i style="width:${Math.max(0,u.hp/u.max*100)}%"></i></div><img class="ga-unit ${u.side}" title="${u.power}" src="${u.c.image}" style="--r:${R[u.c.rarity].color};left:${u.x}%;top:${u.y}%">`;
  }
  $("#gaField").innerHTML=out;
 }
