@@ -250,3 +250,12 @@ V9 BATTLE SPACING CLEANUP
 - Center attacking card shows only the image, no name, rarity, OVR, or damage text.
 - Exact damage is still visible through the minus-number popup on the card that gets hit.
 - Visible version remains V9; internal build is 9.07.
+
+V9 TURN ORDER + UPGRADE LINEUP FIX
+- Fixed the normal-battle double-turn bug.
+- Turns now remain strictly alternating across exchange boundaries.
+- The random side that starts the battle still starts first, but neither side can receive two full attack turns in a row.
+- Upgrade screen now marks the 3 active starters with a SOLID BROWN outline.
+- Upgrade screen marks the 2 substitutes with a DASHED BROWN outline.
+- Highlights update from the current live team/sub selections.
+- Visible version remains V9; internal build is 9.08.

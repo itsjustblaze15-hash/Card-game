@@ -212,6 +212,18 @@ button{font:inherit;cursor:pointer}
 
 .arena-card.moving-source{opacity:0!important;transform:scale(.76)!important}
 .center-fighter.move-to-center{opacity:1!important}
+
+.upgrade-card.in-starting-team{
+  outline:4px solid #6b3f22;
+  outline-offset:3px;
+  box-shadow:0 0 0 2px #f6e2bd,0 8px 18px #0003;
+}
+.upgrade-card.in-sub-team{
+  outline:4px dashed #6b3f22;
+  outline-offset:3px;
+  box-shadow:0 0 0 2px #f6e2bd,0 8px 18px #0003;
+}
+
 </style>
 </head>
 <body>
@@ -1150,7 +1162,7 @@ async function startBattle(){
    }
 
    exchange++;safety++;
-   playerFirst=!playerFirst;
+   // Keep the same exchange order so turns stay strictly alternating across boundaries.
 
    // After every two complete exchanges, pause for substitutions.
    if(exchange%2===0&&!allDead(php)&&!allDead(ehp)){
@@ -1233,9 +1245,10 @@ function renderUpgrades(){
  });
  $("#upgradeList").innerHTML=owned.length?owned.map(c=>{
    const tier=tierFor(c),s=stats(c);
+   const lineupClass=(state.team||[]).includes(c.id)?"in-starting-team":((state.subs||[]).includes(c.id)?"in-sub-team":"");
 
    if(tier==="Exotic"){
-     return `<div class="upgrade-card" style="--rarity:${R[tier].color}">
+     return `<div class="upgrade-card ${lineupClass}" style="--rarity:${R[tier].color}">
        <div class="upgrade-row"><img src="${c.image}"><div>
          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
            <b>${c.name}</b><b style="font-size:20px;color:${R[tier].color}">OVR ${overall(c)}</b>
@@ -1257,7 +1270,7 @@ function renderUpgrades(){
      cd=`<div class="cooldown">Evolution cooldown: about ${hours}h remaining</div>`;
    }
 
-   return `<div class="upgrade-card" style="--rarity:${R[tier].color}">
+   return `<div class="upgrade-card ${lineupClass}" style="--rarity:${R[tier].color}">
      <div class="upgrade-row"><img src="${c.image}"><div>
        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
          <b>${c.name}</b><b style="font-size:20px;color:${R[tier].color}">OVR ${overall(c)}</b>
@@ -1595,7 +1608,7 @@ async function checkForUpdate(){
  try{
    const r=await fetch("./version.json?t="+Date.now(),{cache:"no-store"});
    const remote=await r.json();
-   const local=9.07;
+   const local=9.08;
    if(Number(remote.version)>local){
      b.textContent=`V${remote.version} READY`;
      b.classList.add("update-ready");
@@ -1612,7 +1625,7 @@ async function passiveUpdateCheck(){
  try{
    const r=await fetch("./version.json?t="+Date.now(),{cache:"no-store"});
    const remote=await r.json();
-   if(Number(remote.version)>9.07){
+   if(Number(remote.version)>9.08){
      const b=$("#updateBtn");
      b.textContent=`V${remote.version} READY`;
      b.classList.add("update-ready");
