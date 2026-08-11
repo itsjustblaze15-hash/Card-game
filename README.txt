@@ -213,3 +213,31 @@ V9 PACK DUPLICATE + NEW CARD FIX
 - Cards the player did not own before opening the pack display a NEW badge during the reveal.
 - Cards already owned do not display NEW.
 - Visible version remains V9; internal build is 9.03 so existing V9.02 installs detect the update.
+
+V9 MONEY REWARD UPDATE
+- Normal battle wins now pay a clean amount between 2,000 and 5,000 coins.
+- Possible payouts: 2,000 / 2,500 / 3,000 / 3,500 / 4,000 / 4,500 / 5,000.
+- No weird random values such as 1,967.
+- Every 2-win milestone favors the higher payout range: 3,500 to 5,000.
+- Visible version remains V9; internal build is 9.04 so current V9.03 installs detect the update.
+
+V9 RARITY REBALANCE
+The current game database contains 149 cards.
+New base rarity distribution:
+- Gray / Common: 50
+- Green / Uncommon: 40
+- Blue / Rare: 28
+- Purple / Epic: 18
+- Legendary: 10
+- Exotic: 3
+Existing Exotic cards stay Exotic.
+This increases Gray and Green, keeps Blue at 28, and cuts Purple and Legendary significantly.
+Visible version stays V9; internal build is 9.05.
+
+V9 BATTLE SIZE + MOTION UPDATE
+- Active battle cards are smaller.
+- The center attack card is smaller.
+- Removed the old raised/highlighted active-card look.
+- The attacking card now visually moves from its real slot into the center.
+- Its original slot temporarily disappears while it is in the center, then it returns.
+- Visible version remains V9; internal build is 9.06.
