@@ -1587,7 +1587,6 @@ async function registerSW(){
    });
  }catch(e){console.log(e)}
 }
-async 
 function openDanger(action){
  dangerAction=action;
  $("#dangerTitle").textContent=action==="sell"?"SELL ALL CARDS?":"RESET EVERYTHING?";
@@ -1659,7 +1658,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=9.12;
+const APP_INTERNAL_VERSION=9.13;
 let updateReloading=false;
 
 function hardReloadForUpdate(){

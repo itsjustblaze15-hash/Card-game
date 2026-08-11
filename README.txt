@@ -294,3 +294,10 @@ V9.12 TESTED GOLDEN ARENA
 - Uses assets/beta_arena.png.
 - Arena wins award coins only and do not affect normal battle records, win streak, or boss unlocks.
 - Update URL now resolves from service worker scope/document base; failed version checks fall back to a refresh button instead of TRY AGAIN.
+
+V9.13 RUNTIME INITIALIZATION FIX
+- Fixed a stray standalone `async` token before openDanger() that caused the main script to stop during startup.
+- That startup crash left Golden Arena state uninitialized, so tapping PLAY GOLDEN ARENA appeared to do nothing.
+- The same crash could also prevent the Update button's internal version state from initializing correctly.
+- Golden Arena code remains isolated from normal 3v3 Battle.
+- Visible version remains V9.
