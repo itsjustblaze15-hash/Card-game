@@ -321,3 +321,15 @@ V9.15
 - Every Arena tower HP bar is green and above its tower.
 - Leaving/closing the app during an active normal Battle removes up to 20,000 coins; balances under 20,000 go to 0.
 - A warning is shown before normal Battle starts and on the Battle setup panel.
+
+V9.16 GOLDEN ARENA AI + DECK UPDATE
+- Saved 8-card Golden Arena decks.
+- Randomized starting cycle each match: 4-card hand + Next card.
+- Played card returns to back of cycle.
+- Common cost 3; Exotic cost 9. Middle costs: Uncommon 4, Rare 5, Epic 6, Legendary 8.
+- Bot has its own 8-card deck matched to the player's rarity/strength profile, following the 3v3 matchmaking philosophy.
+- Bot has its own hand/cycle and cannot spam a card that is not currently in hand.
+- Bot evaluates defense, lane pressure, energy, rarity and card powers before playing.
+- Placement limit overlay appears when a card is selected.
+- Destroyed outer tower opens only that lane deeper into enemy territory.
+- Existing original-rarity Arena rules remain.

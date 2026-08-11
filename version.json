@@ -1,5 +1,5 @@
 {
-  "version": "9.15",
+  "version": "9.16",
   "display_version": "9",
-  "build": "modes-original-arena-rarity-strict-lanes-leave-penalty"
+  "build": "arena-8-card-cycle-smart-ai-placement"
 }
