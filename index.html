@@ -257,6 +257,20 @@ button{font:inherit;cursor:pointer}
 .ga-place-line{position:absolute;z-index:16;height:3px;background:#ff2929;box-shadow:0 0 5px #ff2929;pointer-events:none}
 .ga-place-label{position:absolute;z-index:17;background:#c91515;color:#fff;border-radius:999px;padding:3px 6px;font-size:7px;font-weight:1000;pointer-events:none}
 
+
+/* V9.17 Arena lobby + bridge-only river pathing */
+#gaLobby{position:fixed;inset:0;z-index:100090;background:#111;color:#fff;display:none;overflow:auto;padding:14px}
+#gaLobby.show{display:block}
+.ga-lobby-card{width:min(470px,100%);margin:8px auto;background:#171717;border:3px solid #ffd52a;border-radius:18px;padding:14px}
+.ga-lobby-card h2{margin:6px 0 3px;color:#ffd52a}.ga-lobby-card p{font-size:10px;font-weight:800;opacity:.8;margin:0 0 12px}
+.ga-lobby-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ga-lobby-top button,.ga-lobby-actions button{border:0;border-radius:10px;padding:9px 11px;background:#ffd52a;color:#111;font-weight:1000}
+.ga-lobby-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+#gaDeckSlots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.ga-deck-slot{height:70px;border:2px dashed #777;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:8px;overflow:hidden;background:#090909}
+.ga-deck-slot img{width:100%;height:100%;object-fit:cover}
+.ga-deck-title{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:10px;font-weight:1000;margin-top:12px}
+.ga-bridge-hint{position:absolute;z-index:14;width:7%;height:9%;border:1px solid #ffd52a55;background:#ffd52a12;pointer-events:none;transform:translate(-50%,-50%)}
 </style>
 </head>
 <body>
@@ -287,17 +301,9 @@ button{font:inherit;cursor:pointer}
 
 <section id="battle" class="screen">
 
-<div class="ga-deck-box">
- <div class="ga-deck-title"><span>GOLDEN ARENA DECK</span><span id="gaDeckStatus">0 / 8</span></div>
- <div id="gaDeckSlots"></div>
- <div class="ga-deck-actions">
-  <button type="button" onclick="gaEditSavedDeck()">EDIT 8-CARD DECK</button>
-  <button type="button" onclick="gaClearSavedDeck()">CLEAR</button>
- </div>
-</div>
 <div class="mode-chooser">
  <button class="mode-choice" type="button" onclick="openBattleMode()"><small>MAIN MODE</small><b>BATTLE</b><span>3v3 AUTO BATTLE</span></button>
- <button class="mode-choice" type="button" onclick="gaOpenPicker()"><small>BETA</small><b>GOLDEN ARENA</b><span>4-CARD ARENA</span></button>
+ <button class="mode-choice" type="button" onclick="gaOpenLobby()"><small>BETA</small><b>GOLDEN ARENA</b><span>8-CARD ARENA</span></button>
 </div>
 <div id="battleModePanel" style="display:none">
  <div class="battle-leave-warning">WARNING: LEAVING AN ACTIVE BATTLE COSTS 20,000 COINS. IF YOU HAVE LESS THAN 20,000, YOUR BALANCE DROPS TO 0.</div>
@@ -368,6 +374,20 @@ button{font:inherit;cursor:pointer}
 <div class="sub-section-title">BENCH</div><div id="subBenchChoices" class="sub-choice-grid"></div>
 <div class="sub-actions"><button id="subSwapBtn" onclick="confirmSubChoice()" disabled>SWAP</button><button onclick="finishSubBreak()">DONE</button></div>
 </div></div>
+
+<div id="gaLobby">
+ <div class="ga-lobby-card">
+  <div class="ga-lobby-top"><div><span class="tag">BETA</span><h2>GOLDEN ARENA</h2></div><button type="button" onclick="gaCloseLobby()">BACK</button></div>
+  <p>Your 8-card Arena deck is saved separately from normal Battle.</p>
+  <div class="ga-deck-title"><span>YOUR 8-CARD DECK</span><span id="gaDeckStatus">0 / 8</span></div>
+  <div id="gaDeckSlots"></div>
+  <div class="ga-lobby-actions">
+   <button type="button" onclick="gaEditSavedDeck()">EDIT DECK</button>
+   <button type="button" onclick="gaLobbyPlay()">PLAY</button>
+  </div>
+ </div>
+</div>
+
 <div id="gaPicker">
  <div class="ga-picker-head"><div class="ga-picker-row"><div><b>BETA · CHOOSE 4 CARDS</b> <span id="gaCount">0 / 4</span></div><button type="button" onclick="gaClosePicker()">CANCEL</button></div></div>
  <div id="gaGrid"></div>
@@ -1836,6 +1856,18 @@ const GA_SCALE={
 };
 const GA_POWER_NAMES=["GUARDIAN","BERSERKER","SPRINTER","DRAIN","SPLASH","SHIELD"];
 const GA={deck:[],cycle:[],hand:[],next:null,botDeck:[],botCycle:[],botHand:[],botNext:null,energy:10,botEnergy:10,units:[],towers:null,selected:null,running:false,start:0,overtime:false,loops:[],lastBotPlay:0};
+const GA_RIVER_TOP=45;
+const GA_RIVER_BOTTOM=54;
+const GA_BRIDGES=[{id:"L",x:29},{id:"R",x:70}];
+
+function gaOpenLobby(){gaRenderSavedDeck();$("#gaLobby")?.classList.add("show")}
+function gaCloseLobby(){$("#gaLobby")?.classList.remove("show")}
+function gaLobbyPlay(){
+ const saved=gaSavedDeck();
+ if(saved.length!==8){toast("Build your 8-card Arena deck first");gaEditSavedDeck();return}
+ gaCloseLobby();gaStart();
+}
+
 
 function gaCost(c){return GA_COST[c.rarity]||3}
 function gaRank(c){return GA_RANK[c.rarity]||1}
@@ -1853,7 +1885,7 @@ function gaRenderSavedDeck(){
  }).join("");
 }
 function gaClearSavedDeck(){state.gaDeck=[];save();gaRenderSavedDeck();toast("Golden Arena deck cleared")}
-function gaEditSavedDeck(){GA.deck=gaSavedDeck();gaOpenPicker(true)}
+function gaEditSavedDeck(){GA.deck=gaSavedDeck();gaCloseLobby();gaOpenPicker(true)}
 
 function gaOpenPicker(editing=false){
  const saved=gaSavedDeck();
@@ -1876,7 +1908,7 @@ function gaTogglePick(id){
  document.querySelectorAll(".ga-pick").forEach(x=>x.classList.remove("selected"));
  GA.deck.forEach(x=>$("#gaPick"+x)?.classList.add("selected"));
  $("#gaCount").textContent=GA.deck.length+" / 8";
- if(GA.deck.length===8){gaSaveDeck(GA.deck);setTimeout(()=>{gaClosePicker();toast("8-card Arena deck saved")},180)}
+ if(GA.deck.length===8){gaSaveDeck(GA.deck);setTimeout(()=>{gaClosePicker();gaOpenLobby();toast("8-card Arena deck saved")},180)}
 }
 function gaBuildMatchedBotDeck(){
  const player=GA.deck.map(id=>CARDS.find(c=>c.id===id)).filter(Boolean);
@@ -1930,7 +1962,12 @@ function gaRenderHand(){
 function gaLaneForX(x){return x<52?"left":"right"}
 function gaEnemyLaneOpenForPlayer(lane){return lane==="left"?GA.towers.eL.hp<=0:GA.towers.eR.hp<=0}
 function gaPlayerLaneOpenForEnemy(lane){return lane==="left"?GA.towers.pL.hp<=0:GA.towers.pR.hp<=0}
-function gaPlayerDeployAllowed(x,y){if(y>=52)return true;const lane=gaLaneForX(x);if(!gaEnemyLaneOpenForPlayer(lane))return false;return lane==="left"?x<52:x>=52}
+function gaPlayerDeployAllowed(x,y){
+ const lane=gaLaneForX(x);
+ if(y>=GA_RIVER_TOP)return true;
+ if(!gaEnemyLaneOpenForPlayer(lane))return false;
+ return y>=20&&(lane==="left"?x<52:x>=52);
+}
 function gaDeploy(e){
  if(!GA.running||GA.selected===null)return;
  const r=$("#gaField").getBoundingClientRect(),x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100;
@@ -1977,28 +2014,68 @@ function gaBotThink(){
 function gaEnemyUnits(side){return GA.units.filter(u=>u.side!==side&&u.hp>0)}
 function gaLaneTargetTower(u){const lane=gaLaneForX(u.x);if(u.side==="player"){const t=lane==="left"?GA.towers.eL:GA.towers.eR;return t.hp>0?t:GA.towers.eK}else{const t=lane==="left"?GA.towers.pL:GA.towers.pR;return t.hp>0?t:GA.towers.pK}}
 function gaAggroTarget(u){const lane=gaLaneForX(u.x),c=gaEnemyUnits(u.side).filter(v=>gaLaneForX(v.x)===lane&&Math.hypot(u.x-v.x,u.y-v.y)<=14);return c.sort((a,b)=>Math.hypot(u.x-a.x,u.y-a.y)-Math.hypot(u.x-b.x,u.y-b.y))[0]||null}
+
+function gaRegion(y){
+ if(y<GA_RIVER_TOP)return "enemy";
+ if(y>GA_RIVER_BOTTOM)return "player";
+ return "river";
+}
+function gaBridgeCost(u,target,b){
+ const ur=gaRegion(u.y),tr=gaRegion(target.y);
+ const entryY=ur==="player"?GA_RIVER_BOTTOM:ur==="enemy"?GA_RIVER_TOP:u.y;
+ const exitY=tr==="player"?GA_RIVER_BOTTOM:tr==="enemy"?GA_RIVER_TOP:target.y;
+ return Math.hypot(u.x-b.x,u.y-entryY)+Math.abs(GA_RIVER_BOTTOM-GA_RIVER_TOP)+Math.hypot(target.x-b.x,target.y-exitY);
+}
+function gaPickBridge(u,target){
+ const l=GA_BRIDGES[0],r=GA_BRIDGES[1];
+ return gaBridgeCost(u,target,l)<=gaBridgeCost(u,target,r)?l:r;
+}
+function gaStepToward(u,x,y){
+ const d=Math.max(.01,Math.hypot(x-u.x,y-u.y));
+ u.x+=(x-u.x)/d*u.speed;u.y+=(y-u.y)/d*u.speed;
+}
+function gaMoveToward(u,target){
+ const ur=gaRegion(u.y),tr=gaRegion(target.y);
+ if(ur===tr&&ur!=="river"){u.bridge=null;gaStepToward(u,target.x,target.y);return}
+ if(!u.bridge)u.bridge=gaPickBridge(u,target).id;
+ const b=GA_BRIDGES.find(x=>x.id===u.bridge)||gaPickBridge(u,target);
+ if(ur==="player"){gaStepToward(u,b.x,GA_RIVER_BOTTOM);return}
+ if(ur==="enemy"){gaStepToward(u,b.x,GA_RIVER_TOP);return}
+ if(target.y<GA_RIVER_TOP)gaStepToward(u,b.x,GA_RIVER_TOP-.4);
+ else if(target.y>GA_RIVER_BOTTOM)gaStepToward(u,b.x,GA_RIVER_BOTTOM+.4);
+ else gaStepToward(u,b.x,target.y);
+ if(gaRegion(u.y)!=="river")u.bridge=null;
+}
+
 function gaIncomingDamage(u,n){if(u.shield>0){u.shield--;return Math.max(1,Math.round(n*.5))}return n}
 function gaUnitAttack(a,t){let d=a.atk;if(a.power==="BERSERKER"&&a.hp<=a.max*.5)d=Math.round(d*1.35);d=gaIncomingDamage(t,d);t.hp-=d;if(a.power==="DRAIN")a.hp=Math.min(a.max,a.hp+Math.max(1,Math.round(d*.25)));if(a.power==="SPLASH")gaEnemyUnits(a.side).filter(v=>v!==t&&Math.hypot(v.x-t.x,v.y-t.y)<=5).forEach(v=>v.hp-=gaIncomingDamage(v,Math.max(1,Math.round(d*.45))))}
 function gaTick(){
  if(!GA.running)return;
  for(const u of GA.units){if(u.hp<=0)continue;u.cool=Math.max(0,u.cool-1);const foe=gaAggroTarget(u);
-  if(foe){const d=Math.hypot(u.x-foe.x,u.y-foe.y);if(d<4.8){if(!u.cool){gaUnitAttack(u,foe);u.cool=7}}else{u.x+=(foe.x-u.x)/d*u.speed;u.y+=(foe.y-u.y)/d*u.speed}continue}
+  if(foe){const d=Math.hypot(u.x-foe.x,u.y-foe.y);if(d<4.8){if(!u.cool){gaUnitAttack(u,foe);u.cool=7}}else{gaMoveToward(u,foe)}continue}
   const t=gaLaneTargetTower(u);if(!t||t.hp<=0)continue;const d=Math.hypot(u.x-t.x,u.y-t.y);
   if(d<5.7){if(!u.cool){let dmg=u.atk;if(u.power==="BERSERKER"&&u.hp<=u.max*.5)dmg=Math.round(dmg*1.35);t.hp=Math.max(0,t.hp-dmg);if(u.power==="DRAIN")u.hp=Math.min(u.max,u.hp+Math.max(1,Math.round(dmg*.12)));u.cool=8}}
-  else{u.x+=(t.x-u.x)/d*u.speed;u.y+=(t.y-u.y)/d*u.speed}
+  else{gaMoveToward(u,t)}
  }
  for(const t of Object.values(GA.towers)){if(t.hp<=0)continue;const a=GA.units.filter(u=>u.side!==t.side&&u.hp>0&&Math.hypot(u.x-t.x,u.y-t.y)<15).sort((a,b)=>Math.hypot(a.x-t.x,a.y-t.y)-Math.hypot(b.x-t.x,b.y-t.y));if(a.length&&Math.random()<.14)a[0].hp-=gaIncomingDamage(a[0],11)}
  GA.units=GA.units.filter(u=>u.hp>0);gaDraw();gaCheck();
 }
 function gaPlacementOverlay(){
  if(GA.selected===null)return "";
- let s=`<div class="ga-place-mask" style="left:0;right:0;top:0;height:52%"></div><div class="ga-place-line" style="left:0;right:0;top:52%"></div>`;
- if(gaEnemyLaneOpenForPlayer("left"))s+=`<div style="position:absolute;z-index:15;left:0;top:20%;width:52%;height:32%;background:#0000"></div><div class="ga-place-line" style="left:0;width:52%;top:20%"></div>`;
- if(gaEnemyLaneOpenForPlayer("right"))s+=`<div class="ga-place-line" style="left:52%;right:0;top:20%"></div>`;
- s+=`<div class="ga-place-label" style="left:42%;top:49%">DEPLOY LIMIT</div>`;return s;
+ const leftOpen=gaEnemyLaneOpenForPlayer("left"),rightOpen=gaEnemyLaneOpenForPlayer("right");
+ let s="";
+ const leftTop=leftOpen?20:GA_RIVER_TOP,rightTop=rightOpen?20:GA_RIVER_TOP;
+ s+=`<div class="ga-place-mask" style="left:0;width:52%;top:0;height:${leftTop}%"></div>`;
+ s+=`<div class="ga-place-line" style="left:0;width:52%;top:${leftTop}%"></div>`;
+ s+=`<div class="ga-place-mask" style="left:52%;right:0;top:0;height:${rightTop}%"></div>`;
+ s+=`<div class="ga-place-line" style="left:52%;right:0;top:${rightTop}%"></div>`;
+ s+=`<div class="ga-place-label" style="left:42%;top:${Math.min(leftTop,rightTop)-3}%">DEPLOY LIMIT</div>`;
+ return s;
 }
 function gaDraw(){
  if(!GA.towers)return;let out=gaPlacementOverlay();
+ out+=`<div class="ga-bridge-hint" style="left:${GA_BRIDGES[0].x}%;top:${(GA_RIVER_TOP+GA_RIVER_BOTTOM)/2}%"></div>`;
+ out+=`<div class="ga-bridge-hint" style="left:${GA_BRIDGES[1].x}%;top:${(GA_RIVER_TOP+GA_RIVER_BOTTOM)/2}%"></div>`;
  for(const t of Object.values(GA.towers)){out+=`<div class="ga-tower ${t.side==="enemy"?"enemy":""}" style="left:${t.x}%;top:${t.y-5}%"><i style="width:${Math.max(0,t.hp/t.max*100)}%"></i></div>`;if(t.hp<=0)out+=`<div class="ga-dead" style="left:${t.x}%;top:${t.y}%">✕</div>`}
  for(const u of GA.units)out+=`<div class="ga-unit-hp" style="left:${u.x}%;top:${u.y-3}%"><i style="width:${Math.max(0,u.hp/u.max*100)}%"></i></div><img class="ga-unit ${u.side}" src="${u.c.image}" style="--r:${R[u.c.rarity].color};left:${u.x}%;top:${u.y}%">`;
  $("#gaField").innerHTML=out;
@@ -2007,7 +2084,7 @@ function gaClock(){if(!GA.running)return;const e=Math.floor((Date.now()-GA.start
 function gaScore(side){return Object.values(GA.towers).filter(t=>t.side!==side&&t.hp<=0).length}
 function gaCheck(){if(GA.towers.eK.hp<=0)return gaFinish(true);if(GA.towers.pK.hp<=0)return gaFinish(false);if(GA.overtime){const p=gaScore("player"),e=gaScore("enemy");if(p!==e)return gaFinish(p>e)}}
 function gaFinish(win){GA.running=false;gaStopLoops();$("#gaGame").classList.remove("show");const towers=gaScore("player"),reward=win?1500+towers*500:0;if(win){state.coins+=reward;save()}$("#gaResultTitle").textContent=win?"VICTORY":"DEFEAT";$("#gaResultText").textContent=win?`Destroyed ${towers} tower${towers===1?"":"s"} · +${reward.toLocaleString()} coins`:"The black side won the arena.";$("#gaResult").classList.add("show")}
-function gaCloseResult(){$("#gaResult")?.classList.remove("show");render();gaRenderSavedDeck()}
+function gaCloseResult(){$("#gaResult")?.classList.remove("show");render();gaOpenLobby()}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",gaRenderSavedDeck);else gaRenderSavedDeck();
 
 </script>

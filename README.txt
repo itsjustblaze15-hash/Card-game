@@ -333,3 +333,12 @@ V9.16 GOLDEN ARENA AI + DECK UPDATE
 - Placement limit overlay appears when a card is selected.
 - Destroyed outer tower opens only that lane deeper into enemy territory.
 - Existing original-rarity Arena rules remain.
+
+V9.17 GOLDEN ARENA
+- Arena deck editor removed from the main Play screen.
+- Selecting Golden Arena opens its own lobby with saved deck, Edit Deck, and Play.
+- Normal red deployment line moved to the river/bridge edge.
+- Destroying one outer tower advances only that half's deployment boundary.
+- Units cannot cross the river through open water.
+- Units cross through one of the two bridges.
+- Bridge choice is dynamic: whichever bridge gives the shorter route to the current target.
