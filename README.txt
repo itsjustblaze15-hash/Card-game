@@ -342,3 +342,25 @@ V9.17 GOLDEN ARENA
 - Units cannot cross the river through open water.
 - Units cross through one of the two bridges.
 - Bridge choice is dynamic: whichever bridge gives the shorter route to the current target.
+
+V9.18
+- 20K leaving penalty removed from normal 3v3 and moved to Golden Arena only.
+- Arena warns before start and before exit; under 20K drops to zero.
+- Player units have a visible yellow inner frame; bot units a black inner frame.
+- Final regulation minute begins after 2:00 elapsed: pulsing urgency UI and 2x energy.
+- At 3:00, non-ties end. Ties enter Sudden Death with 3x energy.
+- In Sudden Death, the first NEW tower destroyed immediately wins.
+
+V9.19 GOLDEN ARENA TIMER CORRECTION
+- Regulation is now exactly 2:00 at normal 1x energy.
+- At 2:00, if one side is ahead in destroyed towers, that side wins.
+- If the tower score is tied at 2:00, including 0-0, Sudden Death starts immediately.
+- Sudden Death uses 2x energy and the intense red/pulsing overtime UI.
+- The first NEW tower destroyed in Sudden Death instantly wins.
+- Removed the old 3-minute/final-minute structure.
+
+V9.20 GOLDEN ARENA RESULTS
+- Added animated Victory and Defeat result sequences.
+- Victory gets gold burst, crown pop, glow, vibration, and rising victory sound sting.
+- Defeat gets red impact, skull, drop/shake animation, vibration, and falling defeat sound sting.
+- Sounds are generated in-browser, so no new audio assets are required.
