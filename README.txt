@@ -286,3 +286,14 @@ V9.11 UPDATE BUTTON + FINAL BOSS FIX
 - Artlander now displays COMPLETED after it is defeated.
 - Removed the FIGHT AGAIN option for Artlander.
 - Golden Arena is not included in this build. Normal Battle stays on the confirmed-working V9 base.
+
+V9.12 GOLDEN ARENA FULL REWRITE
+- Golden Arena rewritten from scratch with a separate ga2 namespace/state.
+- Normal 3v3 startBattle() remains byte-for-byte unchanged.
+- Golden Arena launch button uses explicit DOM event binding.
+- Golden Arena uses existing assets/beta_arena.png already in the repo.
+- 4-card deck; Common 1, Uncommon 3, Rare 5, Epic 7, Legendary 9, Exotic 10 energy.
+- Tiny units deploy on yellow side, auto-move, fight, attack towers; towers fight back.
+- 3-minute regulation, 2x energy overtime.
+- Golden Arena wins award coins only.
+- Golden Arena does NOT change normal Battle records, win streaks, or boss unlock progress.
