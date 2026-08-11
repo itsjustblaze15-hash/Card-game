@@ -185,6 +185,30 @@ button{font:inherit;cursor:pointer}
 .whatsnew-box button,.secret-reward-box button{width:100%;border:0;border-radius:13px;padding:12px;background:#241a00;color:#ffd84d;font-weight:1000}
 
 .max-tier-note{margin:8px 0;padding:9px 10px;border-radius:11px;background:#c9ffff;color:#07383b;border:2px solid #68e9ef;font-size:11px;font-weight:1000;text-align:center}
+
+/* V9 substitute system */
+.sub-label{font-size:11px;font-weight:1000;margin:6px 0 5px;color:#5d4300}
+.sub-pick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,105px));gap:8px;margin:0 0 12px}
+.sub-pick-grid .slot{min-height:92px;padding:5px;opacity:.94}
+.sub-pick-grid .slot img{aspect-ratio:3/4}.sub-pick-grid .slot b{font-size:8px}.sub-pick-grid .statline,.sub-pick-grid .ability{display:none}
+.arena-bench{display:flex;justify-content:center;gap:5px;min-height:45px;position:relative;z-index:1}
+.bench-card{width:52px;border:2px solid var(--rarity);border-radius:9px;padding:3px;background:color-mix(in srgb,var(--rarity) 20%,#fff);opacity:.86;box-shadow:0 3px 8px #0004}
+.bench-card img{width:100%;height:42px;object-fit:cover;border-radius:5px}.bench-card b{display:block;font-size:6px;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bench-card.used{filter:grayscale(1);opacity:.25}
+.enemy-bench{margin-bottom:-4px}.player-bench{margin-top:-4px}
+.arena-card{transform:scale(.94)}.arena-card.active{transform:translateY(-7px) scale(.98)}
+.sub-overlay{position:fixed;inset:0;z-index:100001;background:#000d;display:none;align-items:center;justify-content:center;padding:16px}.sub-overlay.show{display:flex}
+.sub-box{width:min(430px,100%);max-height:88dvh;overflow:auto;background:#fff7d6;color:#201700;border:4px solid #f3c933;border-radius:22px;padding:16px;box-shadow:0 25px 60px #0008}
+.sub-box h2{margin:0 0 5px}.sub-box p{font-size:11px;font-weight:800;margin:0 0 12px;color:#5d4300}
+.sub-section-title{font-size:10px;font-weight:1000;margin:10px 0 5px}
+.sub-choice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.sub-choice{border:3px solid var(--rarity);border-radius:12px;padding:5px;background:color-mix(in srgb,var(--rarity) 20%,white);text-align:center;font-size:8px;font-weight:1000}
+.sub-choice img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:7px}.sub-choice.selected{box-shadow:0 0 0 3px #201700;transform:scale(.96)}
+.sub-choice.disabled{filter:grayscale(1);opacity:.35;pointer-events:none}
+.sub-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.sub-actions button{border:0;border-radius:12px;padding:12px;font-weight:1000;background:#241a00;color:#ffd84d}.sub-actions button:disabled{opacity:.35}
+
+
+.new-card-badge{position:absolute;z-index:5;top:12px;right:12px;background:#19c85a;color:white;border:3px solid #eaffef;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:1000;letter-spacing:.7px;box-shadow:0 4px 12px #0005;text-shadow:0 1px 2px #0004}
 </style>
 </head>
 <body>
@@ -217,6 +241,7 @@ button{font:inherit;cursor:pointer}
 <div class="hero"><h1>BATTLE</h1><p>Pick 3 owned cards and fight a random bot. Wins power up the cards you used.</p></div><div class="streak-box"><div><b>WIN STREAK</b><div style="font-size:11px">Every 2 wins: +1,500 bonus · 5 wins: Uncommon pack · 10 wins: Rare pack</div></div><div class="streak-num" id="streakNum">0</div></div>
 <div class="panel"><b>BOT DIFFICULTY</b><div class="bot-stars" id="stars">TEAM-BASED MATCHMAKING</div><div style="font-size:12px;font-weight:900;text-align:center;margin-top:8px">Bot strength is matched around your team rating, with some easier and harder opponents.</div></div>
 <div id="teamRatingBox" class="team-rating-box" style="--team-color:#9b9b9b"><span>YOUR TEAM: <b id="teamRatingName">GRAY</b></span><span id="teamRatingStars" class="team-rating-stars">★</span></div><div class="battle-grid" id="teamSlots"></div>
+<div class="sub-label">SUBSTITUTES</div><div class="sub-pick-grid" id="subSlots"></div>
 <button class="primary" onclick="startBattle()">PLAY</button>
 </section>
 
@@ -256,7 +281,7 @@ button{font:inherit;cursor:pointer}
   <div class="opening">
     <div id="packStage"><div class="packbag" id="packbag"><div><div id="bagName">RARE PACK</div><small>TAP TO TEAR OPEN</small></div></div></div>
     <div class="reveal" id="reveal">
-      <div class="reveal-card" id="revealCard"><img id="revealImg"><h2 id="revealName"></h2><p id="revealRarity"></p></div>
+      <div class="reveal-card" id="revealCard"><div id="newCardBadge" class="new-card-badge">NEW</div><img id="revealImg"><h2 id="revealName"></h2><p id="revealRarity"></p></div>
       <div class="tap" id="revealTap">SWIPE LEFT OR TAP FOR NEXT</div>
       <button class="close" id="doneBtn" style="display:none">ADD TO COLLECTION</button>
     </div>
@@ -264,14 +289,19 @@ button{font:inherit;cursor:pointer}
 </div>
 <div class="pick-overlay" id="pickOverlay"><div class="picker"><div class="picker-head"><h2>CHOOSE A CARD</h2><button class="picker-cancel" onclick="closePicker()">CANCEL</button></div><div class="cards" id="pickCards"></div></div></div>
 <div class="battle-modal" id="battleModal"><div class="battle-arena">
-<div class="arena-top"><div id="arenaStars" class="arena-stars"></div><div id="enemyArena" class="arena-team"></div></div>
+<div class="arena-top"><div id="arenaStars" class="arena-stars"></div><div id="enemyBench" class="arena-bench enemy-bench"></div><div id="enemyArena" class="arena-team"></div></div>
 <div class="arena-center"><div id="centerFighter" class="center-fighter"></div><div id="arenaLog" class="arena-log">FIGHT!</div></div>
-<div class="arena-bottom"><div id="playerArena" class="arena-team"></div></div>
+<div class="arena-bottom"><div id="playerArena" class="arena-team"></div><div id="playerBench" class="arena-bench player-bench"></div></div>
 </div></div>
 <div class="result-screen" id="resultScreen"><div><h1 id="resultTitle">WIN</h1><p id="resultText"></p><button onclick="closeResult()">BACK</button><button onclick="closeResult();startBattle()">PLAY AGAIN</button></div></div>
 <div id="whatsNewOverlay" class="whatsnew-overlay" style="display:none"><div class="whatsnew-box"><h2>WHAT'S NEW IN V9</h2><ul><li>30 new cards added.</li><li>Secret card for completing the collection.</li><li>Prize Wheel redesigned.</li><li>More varied matchmaking.</li><li>Boss cards cannot be sold.</li><li>Boss battles rebalanced.</li></ul><button onclick="closeWhatsNew()">OK</button></div></div>
 <div id="secretRewardOverlay" class="secret-reward-overlay"><div class="secret-reward-box"><h2>SECRET CARD UNLOCKED</h2><p>You collected every card in the game. You have earned a hidden Random card.</p><button onclick="closeSecretReward();render()">CLAIM</button></div></div>
-<div class="toast" id="toast"></div>
+<div id="subOverlay" class="sub-overlay"><div class="sub-box">
+<h2>SWITCH SUBS?</h2><p>Choose a surviving starter, then choose a substitute. A card that leaves cannot return, and a sub that enters is locked in.</p>
+<div class="sub-section-title">ACTIVE</div><div id="subActiveChoices" class="sub-choice-grid"></div>
+<div class="sub-section-title">BENCH</div><div id="subBenchChoices" class="sub-choice-grid"></div>
+<div class="sub-actions"><button id="subSwapBtn" onclick="confirmSubChoice()" disabled>SWAP</button><button onclick="finishSubBreak()">DONE</button></div>
+</div></div><div class="toast" id="toast"></div>
 <div class="confirm-overlay" id="dangerOverlay"><div class="confirm-box">
 <h2 id="dangerTitle">ARE YOU SURE?</h2><p id="dangerText"></p>
 <button id="holdYes" class="hold-confirm"><span>HOLD YES FOR 3 SECONDS</span></button>
@@ -318,6 +348,7 @@ if(!state.cardCooldown) state.cardCooldown={};
 if(!state.battleWins) state.battleWins=0;
 if(!state.battleLosses) state.battleLosses=0;
 if(!state.team) state.team=[];
+if(!state.subs) state.subs=[];
 if(state.winStreak===undefined) state.winStreak=0;
 if(state.bestWinStreak===undefined) state.bestWinStreak=0;
 if(state.bossWins===undefined) state.bossWins=0;
@@ -379,7 +410,7 @@ if(!state.progressionMigrationV2Done){
   state.progressionMigrationV2Done=true;
 }
 
-let current=[],idx=0,packSource="paid",ownedFilter="ALL",indexFilter="ALL",spinning=false,pendingWheelPrize=null;
+let current=[],idx=0,packSource="paid",packOwnedBefore=new Set(),ownedFilter="ALL",indexFilter="ALL",spinning=false,pendingWheelPrize=null;
 let collectionSearch="",indexSearch="",dangerAction=null,holdTimer=null,holdStart=0;
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 
@@ -391,7 +422,8 @@ function save(){
  render();
 }
 function cleanTeam(){
- state.team=(state.team||[]).filter(id=>(state.owned[id]||0)>0);
+ state.team=(state.team||[]).slice(0,3).filter(id=>(state.owned[id]||0)>0);
+ state.subs=(state.subs||[]).slice(0,2).filter(id=>(state.owned[id]||0)>0 && !state.team.includes(id));
 }
 function toast(t){$("#toast").textContent=t;$("#toast").classList.add("show");setTimeout(()=>$("#toast").classList.remove("show"),1700)}
 
@@ -419,6 +451,25 @@ function fmt(n){return Math.round(n).toLocaleString()}
 function wait(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
 function pickRarity(odds){let x=Math.random()*100,a=0;for(const k of Object.keys(odds)){a+=odds[k];if(x<a)return k}return "Common"}
 function pickCard(r){let pool=CARDS.filter(c=>c.rarity===r&&!c.bossExclusive&&!c.secretExclusive);if(!pool.length)pool=CARDS.filter(c=>!c.bossExclusive&&!c.secretExclusive);return pool[Math.floor(Math.random()*pool.length)]}
+function pickUniquePackCard(r,used){
+ let pool=CARDS.filter(c=>c.rarity===r&&!c.bossExclusive&&!c.secretExclusive&&!used.has(c.id));
+ if(!pool.length){
+   pool=CARDS.filter(c=>!c.bossExclusive&&!c.secretExclusive&&!used.has(c.id));
+ }
+ if(!pool.length)return null;
+ const c=pool[Math.floor(Math.random()*pool.length)];
+ used.add(c.id);
+ return c;
+}
+function buildUniquePack(p){
+ const used=new Set(),cards=[];
+ for(let i=0;i<5;i++){
+   const rarity=pickRarity(p.odds);
+   const c=pickUniquePackCard(rarity,used);
+   if(c)cards.push(c);
+ }
+ return cards;
+}
 
 function cardSellValue(c,q=1){
  const tier=tierFor(c);
@@ -555,7 +606,7 @@ function openPack(name,source="paid"){
    state.welcome--;
  }
  // reward/free source never touches welcome packs.
- current=Array.from({length:5},()=>pickCard(pickRarity(p.odds)));idx=0;packSource=source;
+ packOwnedBefore=new Set(CARDS.filter(c=>(state.owned[c.id]||0)>0).map(c=>c.id));current=buildUniquePack(p);idx=0;packSource=source;
  save();
  $("#modal").classList.add("show");$("#packStage").style.display="block";$("#reveal").style.display="none";
  $("#packbag").style.setProperty("--packcolor",R[name].color);$("#bagName").textContent=name.toUpperCase()+" PACK";$("#packbag").classList.remove("tearing");$("#packbag").classList.add("opening-pop");
@@ -574,7 +625,7 @@ $("#packbag").onclick=()=>{
  setTimeout(()=>{$("#packStage").style.display="none";$("#reveal").style.display="block";showCard()},620);
 }
 function showCard(){
- let c=current[idx], rc=$("#revealCard");
+ let c=current[idx], rc=$("#revealCard");const newBadge=$("#newCardBadge");if(newBadge)newBadge.style.display=packOwnedBefore.has(c.id)?"none":"block";
  rc.classList.remove("card-enter","card-exit");
  rc.style.setProperty("--rarity",R[c.rarity].color);
  $("#revealImg").src=c.image;$("#revealName").textContent=c.name;$("#revealRarity").textContent=c.rarity.toUpperCase()+" · "+(idx+1)+" / 5";$("#revealTap").style.display=idx===4?"none":"block";$("#doneBtn").style.display=idx===4?"block":"none";
@@ -663,7 +714,7 @@ function spinWheel(){
 
 
 const TIERS=["Common","Uncommon","Rare","Epic","Legendary","Exotic"];
-let pickSlot=0,battleBusy=false;
+let pickSlot=0,pickKind="starter",battleBusy=false;
 function tierFor(c){return state.cardTier[c.id]||c.rarity}
 function winsNeeded(c){
  const tier=tierFor(c);
@@ -723,40 +774,56 @@ function abilityPower(c,roundIndex,teamScore,enemyScore){
 }
 function renderBattle(){
  cleanTeam();
- if($("#stars")) $("#stars").textContent="TEAM-BASED MATCHMAKING";
+ if($("#stars"))$("#stars").textContent="TEAM-BASED MATCHMAKING";
  if(!$("#teamSlots"))return;
+
  $("#teamSlots").innerHTML=[0,1,2].map(i=>{
    const id=state.team[i],c=CARDS.find(x=>x.id===id);
-   if(!c)return `<div class="slot" onclick="openPicker(${i})"><b>+ CHOOSE CARD</b></div>`;
-   const s=stats(c);return `<div class="slot" style="border-color:${R[tierFor(c)].color};background:color-mix(in srgb,${R[tierFor(c)].color} 25%,white)" onclick="openPicker(${i})"><img src="${c.image}"><b>${c.name} · OVR ${overall(c)}</b><div class="statline"><span>A ${s.atk}</span><span>D ${s.def}</span><span>S ${s.spd}</span></div><div class="ability">${abilityFor(c).name}</div></div>`;
+   if(!c)return `<div class="slot" onclick="openPicker(${i},'starter')"><b>+ CHOOSE CARD</b></div>`;
+   const s=stats(c);
+   return `<div class="slot" style="border-color:${R[tierFor(c)].color};background:color-mix(in srgb,${R[tierFor(c)].color} 25%,white)" onclick="openPicker(${i},'starter')"><img src="${c.image}"><b>${c.name} · OVR ${overall(c)}</b><div class="statline"><span>A ${s.atk}</span><span>D ${s.def}</span><span>S ${s.spd}</span></div><div class="ability">${abilityFor(c).name}</div></div>`;
+ }).join("");
+
+ $("#subSlots").innerHTML=[0,1].map(i=>{
+   const id=state.subs[i],c=CARDS.find(x=>x.id===id);
+   if(!c)return `<div class="slot" onclick="openPicker(${i},'sub')"><b>+ CHOOSE SUB</b></div>`;
+   const s=stats(c);
+   return `<div class="slot" style="border-color:${R[tierFor(c)].color};background:color-mix(in srgb,${R[tierFor(c)].color} 22%,white)" onclick="openPicker(${i},'sub')"><img src="${c.image}"><b>${c.name}</b><div class="statline"><span>A ${s.atk}</span><span>D ${s.def}</span><span>S ${s.spd}</span></div><div class="ability">${abilityFor(c).name}</div></div>`;
  }).join("");
 
  updateTeamRatingUI();
 }
-function openPicker(i){
- pickSlot=i;
+function openPicker(i,kind="starter"){
+ pickSlot=i;pickKind=kind;
  const owned=CARDS.filter(c=>(state.owned[c.id]||0)>0).sort((a,b)=>{
    const order={Exotic:6,Legendary:5,Epic:4,Rare:3,Uncommon:2,Common:1};
    return (order[tierFor(b)]||0)-(order[tierFor(a)]||0);
  });
- $("#pickCards").innerHTML=owned.map(c=>`<div class="card" style="--rarity:${R[tierFor(c)].color};background:color-mix(in srgb,${R[tierFor(c)].color} 28%,white)" onclick="chooseTeamCard(${c.id})"><img src="${c.image}"><div class="nm">${c.name} · OVR ${overall(c)}</div><div class="meta"><span>${tierFor(c)}</span><span>+${Math.min(state.cardXP[c.id]||0,winsNeeded(c))}/${winsNeeded(c)}</span></div><div class="ability">${abilityFor(c).name}</div></div>`).join("");
+ $("#pickCards").innerHTML=owned.map(c=>`<div class="card" style="--rarity:${R[tierFor(c)].color};background:color-mix(in srgb,${R[tierFor(c)].color} 28%,white)" onclick="chooseTeamCard(${c.id})"><img src="${c.image}"><div class="nm">${c.name} · OVR ${overall(c)}</div><div class="meta"><span>${tierFor(c)}</span><span>${tierFor(c)==="Exotic"?"MAX":Math.min(state.cardXP[c.id]||0,winsNeeded(c))+"/"+winsNeeded(c)}</span></div><div class="ability">${abilityFor(c).name}</div></div>`).join("");
  $("#pickOverlay").classList.add("show");
 }
 function closePicker(){$("#pickOverlay").classList.remove("show")}
 function chooseTeamCard(id){
  cleanTeam();
- const slots=[state.team[0],state.team[1],state.team[2]];
- const oldAtTarget=slots[pickSlot];
- const existing=slots.indexOf(id);
+ const starters=[state.team[0],state.team[1],state.team[2]];
+ const subs=[state.subs[0],state.subs[1]];
+ const target=pickKind==="sub"?subs:starters;
+ const other=pickKind==="sub"?starters:subs;
+ const old=target[pickSlot];
 
- // If selected card already exists elsewhere, swap the two fixed slots.
- if(existing>=0 && existing!==pickSlot){
-   slots[existing]=oldAtTarget;
+ let existing=target.indexOf(id);
+ if(existing>=0&&existing!==pickSlot){
+   target[existing]=old;
+ }else{
+   existing=other.indexOf(id);
+   if(existing>=0){
+     other[existing]=old;
+   }
  }
- slots[pickSlot]=id;
+ target[pickSlot]=id;
 
- // Preserve slot order exactly. No insert/splice shifting.
- state.team=slots.filter(x=>x!==undefined && x!==null);
+ state.team=starters.filter(x=>x!==undefined&&x!==null).slice(0,3);
+ state.subs=subs.filter(x=>x!==undefined&&x!==null&&!state.team.includes(x)).slice(0,2);
  save();
  closePicker();
  renderBattle();
@@ -770,7 +837,6 @@ function fairBotDeck(level){
  const clamped=Math.max(1,Math.min(6,level));
  const r=Math.random();
  let n=clamped;
-
  if(r<.52)n=clamped;
  else if(r<.72)n=Math.max(1,clamped-1);
  else if(r<.86)n=Math.min(6,clamped+1);
@@ -788,14 +854,16 @@ function fairBotDeck(level){
    if(c)used.add(c.id);
    return c;
  }
- if(n===6)return {level:6,cards:[uniqueCard(6),uniqueCard(6),uniqueCard(6)].filter(Boolean)};
- const patterns={
-   1:[[1,1,1],[1,1,2]],2:[[2,2,2],[1,2,2],[2,2,3]],
-   3:[[3,3,3],[2,3,3],[3,3,4]],4:[[4,4,4],[3,4,4],[4,4,5]],
-   5:[[5,5,5],[4,5,5]]
- };
- const p=patterns[n][Math.floor(Math.random()*patterns[n].length)];
- return {level:n,cards:p.map(uniqueCard).filter(Boolean)};
+ let ranks;
+ if(n===6)ranks=[6,6,6,6,6];
+ else{
+   const patterns={1:[[1,1,1],[1,1,2]],2:[[2,2,2],[1,2,2],[2,2,3]],3:[[3,3,3],[2,3,3],[3,3,4]],4:[[4,4,4],[3,4,4],[4,4,5]],5:[[5,5,5],[4,5,5]]};
+   const starters=patterns[n][Math.floor(Math.random()*patterns[n].length)];
+   const subRank1=Math.max(1,Math.min(5,n+(Math.random()<.25?-1:Math.random()>.8?1:0)));
+   const subRank2=Math.max(1,Math.min(5,n+(Math.random()<.25?-1:Math.random()>.8?1:0)));
+   ranks=[...starters,subRank1,subRank2];
+ }
+ return {level:n,cards:ranks.map(uniqueCard).filter(Boolean)};
 }
 function starColor(d){return ["#9b9b9b","#27c45b","#2587ff","#a34cff","#f0ad16"][d-1]}
 function starClass(d){return "s"+d}
@@ -817,12 +885,110 @@ function arenaCard(c,hp,max,active=false){
  <img src="${c.image}"><b>${c.name}<br>${tier} · OVR ${overall(c)}</b>
  <div class="hp"><i style="width:${pct}%"></i></div><div class="hp-txt">${Math.max(0,hp)} / ${max} HP</div></div>`;
 }
+
+let battlePlayerBench=[],battleEnemyBench=[];
+let subResolve=null,subActivePick=-1,subBenchPick=-1,subPromptCtx=null;
+
+function benchCard(c,used=false){
+ if(!c)return "";
+ const t=tierFor(c);
+ return `<div class="bench-card ${used?"used":""}" style="--rarity:${R[t].color}"><img src="${c.image}"><b>${c.name}</b></div>`;
+}
+function drawBattleBenches(){
+ if($("#playerBench"))$("#playerBench").innerHTML=battlePlayerBench.map(c=>benchCard(c,!c)).join("");
+ if($("#enemyBench"))$("#enemyBench").innerHTML=battleEnemyBench.map(c=>benchCard(c,!c)).join("");
+}
+function legalSubSlots(hp,locked){return hp.map((v,i)=>v>0&&!locked[i]?i:-1).filter(i=>i>=0)}
+function availableBenchIndexes(bench){return bench.map((c,i)=>c?i:-1).filter(i=>i>=0)}
+
+function renderSubPrompt(){
+ const ctx=subPromptCtx;if(!ctx)return;
+ $("#subActiveChoices").innerHTML=ctx.team.map((c,i)=>{
+   const disabled=ctx.php[i]<=0||ctx.locked[i];
+   const t=tierFor(c);
+   return `<div class="sub-choice ${disabled?"disabled":""} ${subActivePick===i?"selected":""}" style="--rarity:${R[t].color}" onclick="chooseSubActive(${i})"><img src="${c.image}">${c.name}<br>${disabled?(ctx.php[i]<=0?"KNOCKED OUT":"LOCKED IN"):`${ctx.php[i]} HP`}</div>`;
+ }).join("");
+ $("#subBenchChoices").innerHTML=ctx.bench.map((c,i)=>{
+   if(!c)return `<div class="sub-choice disabled">USED</div>`;
+   const t=tierFor(c);
+   return `<div class="sub-choice ${subBenchPick===i?"selected":""}" style="--rarity:${R[t].color}" onclick="chooseSubBench(${i})"><img src="${c.image}">${c.name}<br>OVR ${overall(c)}</div>`;
+ }).join("");
+ $("#subSwapBtn").disabled=!(subActivePick>=0&&subBenchPick>=0);
+}
+function chooseSubActive(i){if(!subPromptCtx||subPromptCtx.php[i]<=0||subPromptCtx.locked[i])return;subActivePick=i;renderSubPrompt()}
+function chooseSubBench(i){if(!subPromptCtx||!subPromptCtx.bench[i])return;subBenchPick=i;renderSubPrompt()}
+function confirmSubChoice(){
+ if(!subResolve||subActivePick<0||subBenchPick<0)return;
+ const r=subResolve;subResolve=null;
+ $("#subOverlay").classList.remove("show");
+ r({slot:subActivePick,bench:subBenchPick});
+}
+function finishSubBreak(){
+ if(!subResolve)return;
+ const r=subResolve;subResolve=null;
+ $("#subOverlay").classList.remove("show");
+ r(null);
+}
+function promptSubChoice(team,bench,php,locked){
+ if(!legalSubSlots(php,locked).length||!availableBenchIndexes(bench).length)return Promise.resolve(null);
+ subPromptCtx={team,bench,php,locked};subActivePick=-1;subBenchPick=-1;
+ renderSubPrompt();$("#subOverlay").classList.add("show");
+ return new Promise(resolve=>subResolve=resolve);
+}
+async function animateSubSwap(outCard,inCard,side){
+ showCenter(outCard,side);
+ $("#arenaLog").textContent=`${outCard.name} OUT`;
+ await wait(380);hideCenter();await wait(120);
+ showCenter(inCard,side);
+ $("#arenaLog").textContent=`${inCard.name} IN`;
+ await wait(520);hideCenter();await wait(160);
+}
+async function playerSubBreak(team,bench,php,pmax,locked,enemy,ehp,emax,difficulty,participants){
+ let swaps=0;
+ while(swaps<2){
+   const choice=await promptSubChoice(team,bench,php,locked);
+   if(!choice)break;
+   const out=team[choice.slot],incoming=bench[choice.bench];
+   if(!out||!incoming)continue;
+   await animateSubSwap(out,incoming,"player");
+   team[choice.slot]=incoming;
+   pmax[choice.slot]=maxHP(incoming);
+   php[choice.slot]=pmax[choice.slot];
+   locked[choice.slot]=true;
+   bench[choice.bench]=null;
+   battlePlayerBench=bench;
+   participants.add(incoming.id);
+   drawArena(team,enemy,php,ehp,pmax,emax,-1,-1,difficulty);
+   swaps++;
+ }
+}
+async function botSubBreak(enemy,bench,ehp,emax,locked,team,php,pmax,difficulty){
+ let swaps=0;
+ while(swaps<2&&Math.random()<.7){
+   const legal=legalSubSlots(ehp,locked),avail=availableBenchIndexes(bench);
+   if(!legal.length||!avail.length)break;
+   const slot=legal.sort((a,b)=>ehp[a]-ehp[b])[0];
+   const bi=avail.sort((a,b)=>overall(bench[b])-overall(bench[a]))[0];
+   const out=enemy[slot],incoming=bench[bi];
+   await animateSubSwap(out,incoming,"enemy");
+   enemy[slot]=incoming;
+   emax[slot]=maxHP(incoming,difficulty);
+   ehp[slot]=emax[slot];
+   locked[slot]=true;
+   bench[bi]=null;
+   battleEnemyBench=bench;
+   drawArena(team,enemy,php,ehp,pmax,emax,-1,-1,difficulty);
+   swaps++;
+ }
+}
+
 function drawArena(team,enemy,php,ehp,pmax,emax,pa=-1,ea=-1,d=1){
  $("#arenaStars").className="arena-stars "+starClass(d);
  $("#arenaStars").style.color=starColor(d);
  $("#arenaStars").textContent="★".repeat(d);
  $("#playerArena").innerHTML=team.map((c,i)=>arenaCard(c,php[i],pmax[i],i===pa)).join("");
  $("#enemyArena").classList.remove("boss-single-center");$("#enemyArena").innerHTML=enemy.map((c,i)=>arenaCard(c,ehp[i],emax[i],i===ea)).join("");
+ drawBattleBenches();
 }
 function aliveIndexes(hp){return hp.map((x,i)=>x>0?i:-1).filter(i=>i>=0)}
 function nextAliveFrom(hp,start){
@@ -894,18 +1060,27 @@ async function sweepAttack(attacker,side,attackerIndex,team,enemy,php,ehp,pmax,e
 async function startBattle(){
  cleanTeam();
  if(battleBusy)return;
- if(state.team.length<3){toast("Choose 3 cards first");return}
+ if(state.team.length<3){toast("Choose 3 starters first");return}
+ if(state.subs.length<2){toast("Choose 2 substitutes first");return}
 
  const team=state.team.map(id=>CARDS.find(c=>c.id===id)).filter(Boolean);
- if(team.length<3){toast("Choose 3 owned cards first");return}
+ const playerBench=state.subs.map(id=>CARDS.find(c=>c.id===id)).filter(Boolean);
+ if(team.length<3||playerBench.length<2){toast("Choose 3 starters and 2 substitutes");return}
 
  const playerLevel=teamRating(team);
  const match=fairBotDeck(playerLevel);
  const difficulty=match.level;
- const enemy=match.cards;
- const pmax=team.map(c=>maxHP(c));
- const emax=enemy.map(c=>maxHP(c,difficulty));
+ const enemy=match.cards.slice(0,3);
+ const enemyBench=match.cards.slice(3,5);
+ if(enemy.length<3||enemyBench.length<2){toast("Could not build opponent team");return}
+
+ const pmax=team.map(c=>maxHP(c)),emax=enemy.map(c=>maxHP(c,difficulty));
  const php=pmax.slice(),ehp=emax.slice();
+ const pLocked=[false,false,false],eLocked=[false,false,false];
+ const participants=new Set(team.map(c=>c.id));
+
+ battlePlayerBench=playerBench.slice();
+ battleEnemyBench=enemyBench.slice();
 
  battleBusy=true;
  $("#battleModal").style.display="flex";$("#battleModal").classList.add("show");
@@ -913,30 +1088,54 @@ async function startBattle(){
  drawArena(team,enemy,php,ehp,pmax,emax,-1,-1,difficulty);
  await wait(650);
 
- let playerTurn=Math.random()<.5;
+ let playerFirst=Math.random()<.5;
  let pAttacker=0,eAttacker=0;
- let safety=0;
+ let exchange=0,safety=0;
 
  while(!allDead(php)&&!allDead(ehp)&&safety<150){
-   if(playerTurn){
+   // One exchange = one card from each team gets a turn.
+   const doPlayer=async()=>{
      const ai=nextAliveFrom(php,pAttacker);
-     if(ai<0)break;
+     if(ai<0)return;
      await sweepAttack(team[ai],"player",ai,team,enemy,php,ehp,pmax,emax,difficulty);
      pAttacker=(ai+1)%3;
-   }else{
+   };
+   const doEnemy=async()=>{
      const ai=nextAliveFrom(ehp,eAttacker);
-     if(ai<0)break;
+     if(ai<0)return;
      await sweepAttack(enemy[ai],"enemy",ai,team,enemy,php,ehp,pmax,emax,difficulty);
      eAttacker=(ai+1)%3;
+   };
+
+   if(playerFirst){
+     await doPlayer();if(allDead(ehp))break;
+     await doEnemy();
+   }else{
+     await doEnemy();if(allDead(php))break;
+     await doPlayer();
    }
-   playerTurn=!playerTurn;
-   safety++;
+
+   exchange++;safety++;
+   playerFirst=!playerFirst;
+
+   // After every two complete exchanges, pause for substitutions.
+   if(exchange%2===0&&!allDead(php)&&!allDead(ehp)){
+     $("#arenaLog").textContent="SUBSTITUTION BREAK";
+     await wait(350);
+     await playerSubBreak(team,battlePlayerBench,php,pmax,pLocked,enemy,ehp,emax,difficulty,participants);
+     if(!allDead(php)&&!allDead(ehp)){
+       $("#arenaLog").textContent="OPPONENT SUBSTITUTIONS";
+       await botSubBreak(enemy,battleEnemyBench,ehp,emax,eLocked,team,php,pmax,difficulty);
+     }
+     drawArena(team,enemy,php,ehp,pmax,emax,-1,-1,difficulty);
+     await wait(400);
+   }
  }
 
  const won=allDead(ehp)&&!allDead(php);
  $("#battleModal").classList.remove("show");
  $("#battleModal").style.display="none";
- hideCenter();
+ hideCenter();battlePlayerBench=[];battleEnemyBench=[];
  battleBusy=false;
 
  if(won){
@@ -953,24 +1152,15 @@ async function startBattle(){
    }
    state.winStreak=(state.winStreak||0)+1;
    state.bestWinStreak=Math.max(state.bestWinStreak||0,state.winStreak);
-
    let bonus=500;
-   if(state.winStreak>0 && state.winStreak%2===0){
-     bonus+=1500;
-     toast("2-WIN BONUS! +1,500 coins");
-   }
+   if(state.winStreak>0&&state.winStreak%2===0){bonus+=1500;toast("2-WIN BONUS! +1,500 coins")}
    state.coins+=bonus;
-   team.forEach(gainCardWin);
+   [...participants].map(id=>CARDS.find(c=>c.id===id)).filter(Boolean).forEach(gainCardWin);
    save();
-
-   // Explicitly restore the green victory screen after battle.
    showResult(true,`Enemy team eliminated! +${fmt(bonus)} coins`);
  }else{
    state.battleLosses=(state.battleLosses||0)+1;
-   state.winStreak=0;
-   save();
-
-   // Explicitly restore the red defeat screen after battle.
+   state.winStreak=0;save();
    showResult(false,"Your whole team was eliminated.");
  }
 }
@@ -1368,7 +1558,7 @@ async function checkForUpdate(){
  try{
    const r=await fetch("./version.json?t="+Date.now(),{cache:"no-store"});
    const remote=await r.json();
-   const local=9.01;
+   const local=9.03;
    if(Number(remote.version)>local){
      b.textContent=`V${remote.version} READY`;
      b.classList.add("update-ready");
@@ -1385,7 +1575,7 @@ async function passiveUpdateCheck(){
  try{
    const r=await fetch("./version.json?t="+Date.now(),{cache:"no-store"});
    const remote=await r.json();
-   if(Number(remote.version)>9.01){
+   if(Number(remote.version)>9.03){
      const b=$("#updateBtn");
      b.textContent=`V${remote.version} READY`;
      b.classList.add("update-ready");

@@ -1,4 +1,4 @@
-const CACHE="golden-pulls-v9-hotfix-901";
+const CACHE="golden-pulls-v9-pack-unique-903";
 self.addEventListener("install",()=>self.skipWaiting());
 self.addEventListener("activate",e=>e.waitUntil((async()=>{for(const k of await caches.keys())if(k!==CACHE)await caches.delete(k);await self.clients.claim()})()));
 self.addEventListener("message",e=>{if(e.data&&e.data.type==="SKIP_WAITING")self.skipWaiting()});

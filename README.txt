@@ -194,3 +194,22 @@ V9 FORCED HOTFIX
 - Internal update version is 9.01 so existing V9 installs actually detect and install this patch.
 - Exotic cards show MAX TIER only: no 50/50 wins, no progress bar, no evolution cooldown.
 - Team card selection replaces the exact tapped slot instead of inserting/shifting cards.
+
+V9 SUBSTITUTE BATTLE UPDATE
+- Pick 3 starters and 2 substitutes before a normal battle.
+- Both player and bot benches are visible behind the active team in smaller cards.
+- After every 2 complete attack exchanges, the battle pauses for substitutions.
+- You may swap up to 2 subs during a substitution break.
+- Knocked-out cards cannot be swapped.
+- A card removed from the active lineup cannot return.
+- A substitute that enters is locked in and cannot be taken back out.
+- Bot has 2 substitutes and follows the same lock-in rule.
+- Player swaps animate first, then bot swaps are shown.
+- Internal build is 9.02 so existing V9 installs detect the update; visible version stays V9.
+
+V9 PACK DUPLICATE + NEW CARD FIX
+- A 5-card pack can no longer contain the same exact card twice.
+- Each card ID can appear only once within a single pack opening.
+- Cards the player did not own before opening the pack display a NEW badge during the reveal.
+- Cards already owned do not display NEW.
+- Visible version remains V9; internal build is 9.03 so existing V9.02 installs detect the update.
