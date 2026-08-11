@@ -437,3 +437,33 @@ VERSION 10 RELEASE
 - Internal version is now 10.
 - version.json now reports Version 10.
 - Future updates should advertise the next available version separately from the installed V10 badge.
+
+V10.01 NEW CARDS
+- Added Random using the exact uploaded image at assets/Random.jpg. No image editing or generation.
+- Random is Rare / blue. Card ID 150.
+- Added HarOUT using the exact uploaded image at assets/HarOUT.jpg. No image editing or generation.
+- HarOUT is Epic / purple. Card ID 151.
+- Both cards are included in the main CARDS database and use the game's existing pack, collection, 3v3, and Golden Arena systems.
+- Visible version remains V10.
+
+V10.02 NEW CARD HOTFIX
+- Random (ID 150, Rare/blue) and HarOUT (ID 151, Epic/purple) remain in the main card database.
+- Both exact uploaded images remain included at assets/Random.jpg and assets/HarOUT.jpg.
+- Added explicit image preloads and service-worker cache entries for both new assets.
+- Added NEW badges to Random and HarOUT in the Card Index (and Collection once owned).
+- The two cards are not automatically granted; they are normal pack-obtainable cards.
+- Visible version remains V10.
+
+V10.03 OVERTIME TOWER FINISH
+- In Golden Arena overtime, destroying the winning tower no longer cuts instantly to Victory/Defeat.
+- The destroyed tower now gets a bright explosion, expanding blast rings, debris, arena shake, and vibration.
+- The full explosion plays first.
+- After the explosion finishes, there is a deliberate ~0.65 second relief beat.
+- Only then does the normal cinematic Victory/Defeat screen appear.
+- This specifically makes sudden-death wins readable and satisfying instead of instant.
+
+V10.04 GOLDEN ARENA DECK CANCEL FIX
+- Cancel while browsing/editing Golden Arena cards now returns to Golden Arena -> Deck.
+- It no longer sends the player back to the main Battle / Golden Arena mode-selection screen.
+- Replacing a slot and adding a card also return to the Golden Arena Deck tab.
+- Visible version remains V10.
