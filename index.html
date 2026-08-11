@@ -1852,7 +1852,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.04;
+const APP_INTERNAL_VERSION=10.05;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
@@ -1984,7 +1984,7 @@ const GA_SCALE={
  Legendary:{hp:1.40,atk:1.27,spd:1.06},Exotic:{hp:1.55,atk:1.36,spd:1.08}
 };
 const GA_POWER_NAMES=["GUARDIAN","BERSERKER","SPRINTER","DRAIN","SPLASH","SHIELD"];
-const GA={deck:[],cycle:[],hand:[],next:null,botDeck:[],botCycle:[],botHand:[],botNext:null,energy:10,botEnergy:10,units:[],towers:null,selected:null,running:false,start:0,overtime:false,otPlayerScore:0,otEnemyScore:0,penaltyArmed:false,lastPlayerPlay:0,projectiles:[],deaths:[],loops:[],lastBotPlay:0,lastRegen:0,energyMult:1,phase30:false,lastCountdown:-1,pendingReward:0,pendingWin:false,lastTowerHP:{},finishing:false};
+const GA={deck:[],cycle:[],hand:[],next:null,botDeck:[],botCycle:[],botHand:[],botNext:null,energy:10,botEnergy:10,units:[],towers:null,selected:null,running:false,start:0,overtime:false,otPlayerScore:0,otEnemyScore:0,penaltyArmed:false,lastPlayerPlay:0,projectiles:[],deaths:[],loops:[],lastBotPlay:0,lastRegen:0,energyMult:1,phase30:false,lastCountdown:-1,pendingReward:0,pendingWin:false,lastTowerHP:{},finishing:false,overtimeStart:0,overtime5x:false};
 const GA_RIVER_TOP=45;
 const GA_RIVER_BOTTOM=54;
 const GA_BRIDGES=[{id:"L",x:29},{id:"R",x:70}];
@@ -2190,7 +2190,7 @@ function gaFreshTowers(){return {
 function gaStart(){
  const saved=gaSavedDeck();if(saved.length!==8){gaOpenPicker(true);toast("Build an 8-card Arena deck first");return}
  GA.deck=[...saved];GA.botDeck=gaBuildMatchedBotDeck();gaInitCycle(GA.deck,false);gaInitCycle(GA.botDeck,true);
- GA.energy=10;GA.botEnergy=10;GA.units=[];GA.projectiles=[];GA.deaths=[];GA.towers=gaFreshTowers();GA.lastTowerHP={};for(const [k,t] of Object.entries(GA.towers))GA.lastTowerHP[k]=t.hp;GA.finishing=false;GA.selected=null;GA.running=true;GA.start=Date.now();GA.overtime=false;GA.otPlayerScore=0;GA.otEnemyScore=0;GA.penaltyArmed=true;GA.lastPlayerPlay=0;GA.lastBotPlay=0;GA.lastRegen=Date.now();GA.energyMult=1;GA.phase30=false;GA.lastCountdown=-1;GA.pendingReward=0;GA.pendingWin=false;
+ GA.energy=10;GA.botEnergy=10;GA.units=[];GA.projectiles=[];GA.deaths=[];GA.towers=gaFreshTowers();GA.lastTowerHP={};for(const [k,t] of Object.entries(GA.towers))GA.lastTowerHP[k]=t.hp;GA.finishing=false;GA.selected=null;GA.running=true;GA.start=Date.now();GA.overtime=false;GA.otPlayerScore=0;GA.otEnemyScore=0;GA.penaltyArmed=true;GA.lastPlayerPlay=0;GA.lastBotPlay=0;GA.lastRegen=Date.now();GA.energyMult=1;GA.phase30=false;GA.lastCountdown=-1;GA.pendingReward=0;GA.pendingWin=false;GA.overtimeStart=0;GA.overtime5x=false;
  $("#gaTimer").textContent="2:00";$("#gaBoost").textContent="";$("#gaGame").classList.remove("ga-overtime");$("#gaGame").classList.add("show");
  gaRenderHand();gaDraw();gaUpdateEnergy();
  GA.loops=[setInterval(gaRegen,100),setInterval(gaTick,100),setInterval(gaBotThink,350),setInterval(gaClock,100)];
@@ -2237,7 +2237,7 @@ function gaSpawn(c,side,x,y){
  const s=stats(c),tier=c.rarity,scale=GA_SCALE[tier]||GA_SCALE.Common,power=gaPower(c),speedVariance=.88+((Number(c.id)||0)%7)*.04;
  let hp=Math.round((70+s.def*.42)*scale.hp),atk=Math.max(6,Math.round((s.atk*.095)*scale.atk)),speed=(.105+s.spd*.00048)*scale.spd*speedVariance;
  if(power==="GUARDIAN"){hp=Math.round(hp*1.35);speed*=.88}if(power==="SPRINTER")speed*=1.32;
- const towerRush=gaTowerRush(c);if(towerRush){speed*=1.08;atk=Math.round(atk*1.10)}GA.units.push({uid:Date.now()+Math.random(),c,side,x,y,hp,max:hp,atk,speed,cool:0,power,towerRush,shield:power==="SHIELD"?1:0});
+ const towerRush=gaTowerRush(c);if(towerRush){speed*=1.08;atk=Math.round(atk*1.10)}speed*=1.15;GA.units.push({uid:Date.now()+Math.random(),c,side,x,y,hp,max:hp,atk,speed,cool:0,power,towerRush,shield:power==="SHIELD"?1:0});
 }
 function gaRegen(){
  if(!GA.running)return;
@@ -2404,7 +2404,7 @@ function gaClock(){
   if(e>=120){
    const p=gaScore("player"),b=gaScore("enemy");
    if(p!==b){gaFinish(p>b);return}
-   GA.overtime=true;GA.otPlayerScore=p;GA.otEnemyScore=b;GA.energyMult=3;GA.lastRegen=Date.now();
+   GA.overtime=true;GA.otPlayerScore=p;GA.otEnemyScore=b;GA.energyMult=3;GA.lastRegen=Date.now();GA.overtimeStart=Date.now();GA.overtime5x=false;
    $("#gaGame").classList.add("ga-overtime");
    $("#gaTimer").textContent="OVERTIME";
    $("#gaBoost").textContent="3× ENERGY · NEXT TOWER WINS";
@@ -2412,6 +2412,13 @@ function gaClock(){
   }
  }else{
   $("#gaTimer").textContent="OVERTIME";
+  if(!GA.overtime5x && GA.overtimeStart && Date.now()-GA.overtimeStart>=90000){
+    GA.overtime5x=true;
+    GA.energyMult=5;
+    GA.lastRegen=Date.now();
+    $("#gaBoost").textContent="5× ENERGY · NEXT TOWER WINS";
+    gaPhaseMessage("5× ENERGY");
+  }
  }
 }
 function gaScore(side){return Object.values(GA.towers).filter(t=>t.side!==side&&t.hp<=0).length}

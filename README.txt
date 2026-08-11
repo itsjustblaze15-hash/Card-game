@@ -467,3 +467,13 @@ V10.04 GOLDEN ARENA DECK CANCEL FIX
 - It no longer sends the player back to the main Battle / Golden Arena mode-selection screen.
 - Replacing a slot and adding a card also return to the Golden Arena Deck tab.
 - Visible version remains V10.
+
+V10.05 GOLDEN ARENA OVERTIME + SPEED UPDATE
+- Regulation remains 2:00 with the existing final 5-4-3-2-1 countdown.
+- Tied matches still enter Overtime at 3x energy.
+- Overtime now has a hidden 90-second timer.
+- If nobody wins during those 90 seconds, energy automatically increases from 3x to 5x.
+- A small 5x ENERGY message appears when the escalation happens.
+- Sudden-death rule remains unchanged: the next tower destroyed wins.
+- All Golden Arena units now move about 15% faster to reduce sluggish gameplay while preserving individual speed differences.
+- Visible version remains V10.
