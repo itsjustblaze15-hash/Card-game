@@ -183,6 +183,8 @@ button{font:inherit;cursor:pointer}
 .whatsnew-box,.secret-reward-box{width:min(390px,100%);background:#fff7d6;color:#201700;border:4px solid #f3c933;border-radius:22px;padding:20px;box-shadow:0 22px 55px #0008}
 .whatsnew-box h2,.secret-reward-box h2{margin:0 0 10px}.whatsnew-box ul{padding-left:20px;margin:10px 0 16px}.whatsnew-box li{margin:6px 0;font-weight:800;font-size:12px}
 .whatsnew-box button,.secret-reward-box button{width:100%;border:0;border-radius:13px;padding:12px;background:#241a00;color:#ffd84d;font-weight:1000}
+
+.max-tier-note{margin:8px 0;padding:9px 10px;border-radius:11px;background:#c9ffff;color:#07383b;border:2px solid #68e9ef;font-size:11px;font-weight:1000;text-align:center}
 </style>
 </head>
 <body>
@@ -267,7 +269,7 @@ button{font:inherit;cursor:pointer}
 <div class="arena-bottom"><div id="playerArena" class="arena-team"></div></div>
 </div></div>
 <div class="result-screen" id="resultScreen"><div><h1 id="resultTitle">WIN</h1><p id="resultText"></p><button onclick="closeResult()">BACK</button><button onclick="closeResult();startBattle()">PLAY AGAIN</button></div></div>
-<div id="whatsNewOverlay" class="whatsnew-overlay"><div class="whatsnew-box"><h2>WHAT'S NEW IN V9</h2><ul><li>30 new cards.</li><li>Secret collection-completion card.</li><li>Prize Wheel redesigned.</li><li>Matchmaking has more variety.</li><li>Boss cards are unsellable.</li><li>Boss damage rebalanced.</li></ul><button onclick="closeWhatsNew()">OK</button></div></div>
+<div id="whatsNewOverlay" class="whatsnew-overlay" style="display:none"><div class="whatsnew-box"><h2>WHAT'S NEW IN V9</h2><ul><li>30 new cards added.</li><li>Secret card for completing the collection.</li><li>Prize Wheel redesigned.</li><li>More varied matchmaking.</li><li>Boss cards cannot be sold.</li><li>Boss battles rebalanced.</li></ul><button onclick="closeWhatsNew()">OK</button></div></div>
 <div id="secretRewardOverlay" class="secret-reward-overlay"><div class="secret-reward-box"><h2>SECRET CARD UNLOCKED</h2><p>You collected every card in the game. You have earned a hidden Random card.</p><button onclick="closeSecretReward();render()">CLAIM</button></div></div>
 <div class="toast" id="toast"></div>
 <div class="confirm-overlay" id="dangerOverlay"><div class="confirm-box">
@@ -742,9 +744,25 @@ function openPicker(i){
 }
 function closePicker(){$("#pickOverlay").classList.remove("show")}
 function chooseTeamCard(id){
- state.team=state.team.filter(x=>x!==id);
- state.team.splice(pickSlot,0,id);state.team=state.team.slice(0,3);
- save();closePicker();renderBattle();
+ cleanTeam();
+ const current=state.team.slice(0,3);
+
+ // If this card already exists in another slot, swap it with the tapped slot
+ // instead of creating duplicates or shifting the lineup.
+ const existing=current.indexOf(id);
+ if(existing>=0 && existing!==pickSlot){
+   const old=current[pickSlot];
+   current[pickSlot]=id;
+   if(old!==undefined)current[existing]=old;
+   else current.splice(existing,1);
+ }else{
+   current[pickSlot]=id;
+ }
+
+ state.team=current.filter(x=>x!==undefined).slice(0,3);
+ save();
+ closePicker();
+ renderBattle();
 }
 function rarityRank(c){return {Common:1,Uncommon:2,Rare:3,Epic:4,Legendary:5,Exotic:6}[tierFor(c)]||1}
 function ratingMeta(n){return {1:["GRAY","★","#9b9b9b"],2:["GREEN","★★","#27c45b"],3:["BLUE","★★★","#2587ff"],4:["PURPLE","★★★★","#a34cff"],5:["GOLD","★★★★★","#f0ad16"],6:["EXOTIC","★★★★★★","#55eaff"]}[n]||["GRAY","★","#9b9b9b"]}
@@ -984,17 +1002,20 @@ function renderUpgrades(){
  const now=Date.now(),owned=CARDS.filter(c=>(state.owned[c.id]||0)>0).sort((a,b)=>{
    const order={Exotic:6,Legendary:5,Epic:4,Rare:3,Uncommon:2,Common:1};
    const diff=(order[tierFor(b)]||0)-(order[tierFor(a)]||0);
-   if(diff!==0) return diff;
+   if(diff!==0)return diff;
    const xpDiff=(state.cardXP[b.id]||0)-(state.cardXP[a.id]||0);
-   if(xpDiff!==0) return xpDiff;
+   if(xpDiff!==0)return xpDiff;
    return (a.name||"").localeCompare(b.name||"");
  });
  $("#upgradeList").innerHTML=owned.length?owned.map(c=>{
-   const tier=tierFor(c),xp=Math.min(state.cardXP[c.id]||0,winsNeeded(c)),needed=winsNeeded(c),left=Math.max(0,(state.cardCooldown[c.id]||0)-now);
-   let cd="";if(left){let h=Math.ceil(left/3600000);cd=`<div class="cooldown">Evolution cooldown: about ${h}h remaining</div>`}
-   const s=stats(c);
-   return `<div class="upgrade-card" style="--rarity:${R[tier].color}"><div class="upgrade-row"><img src="${c.image}"><div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>${c.name}</b><b style="font-size:20px;color:${R[tier].color}">OVR ${overall(c)}</b></div><div>${tier} · ${xp}/${needed} wins</div><div class="progress"><i style="width:${Math.min(100,xp/needed*100)}%"></i></div>${cd}<div class="statline"><span>ATK ${s.atk}</span><span>DEF ${s.def}</span><span>SPD ${s.spd}</span></div><div class="ability">${abilityFor(c).name}: ${abilityFor(c).desc}</div></div></div></div>`
- }).join(""):`<div class="panel">Collect some cards first.</div>`;
+   const tier=tierFor(c),s=stats(c);
+   if(tier==="Exotic"){
+     return `<div class="upgrade-card" style="--rarity:${R[tier].color}"><div class="upgrade-row"><img src="${c.image}"><div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>${c.name}</b><b style="font-size:20px;color:${R[tier].color}">OVR ${overall(c)}</b></div><div>${tier}</div><div class="max-tier-note">MAX TIER · EXOTIC</div><div class="statline"><span>ATK ${s.atk}</span><span>DEF ${s.def}</span><span>SPD ${s.spd}</span></div><div class="ability">${abilityFor(c).name}</div></div></div></div>`;
+   }
+   const xp=Math.min(state.cardXP[c.id]||0,winsNeeded(c)),needed=winsNeeded(c),left=Math.max(0,(state.cardCooldown[c.id]||0)-now);
+   let cd="";if(left){let hh=Math.ceil(left/3600000);cd=`<div class="cooldown">Evolution cooldown: about ${hh}h remaining</div>`}
+   return `<div class="upgrade-card" style="--rarity:${R[tier].color}"><div class="upgrade-row"><img src="${c.image}"><div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>${c.name}</b><b style="font-size:20px;color:${R[tier].color}">OVR ${overall(c)}</b></div><div>${tier} · ${xp}/${needed} wins</div><div class="progress"><i style="width:${Math.min(100,xp/needed*100)}%"></i></div>${cd}<div class="statline"><span>ATK ${s.atk}</span><span>DEF ${s.def}</span><span>SPD ${s.spd}</span></div><div class="ability">${abilityFor(c).name}</div></div></div></div>`;
+ }).join(""):`<div style="text-align:center;padding:30px;font-weight:900">No cards owned yet.</div>`;
 }
 setInterval(()=>{if($("#upgrade").classList.contains("active"))renderUpgrades()},60000);
 
@@ -1293,12 +1314,26 @@ $("#holdYes").addEventListener("pointerdown",startHold);
 ["pointerup","pointercancel","pointerleave"].forEach(ev=>$("#holdYes").addEventListener(ev,stopHold));
 
 function closeWhatsNew(){
- const o=$("#whatsNewOverlay");if(o)o.classList.remove("show");
- localStorage.setItem("goldenPullsV9WhatsNewSeen","1");
+ const o=$("#whatsNewOverlay");
+ if(o){
+   o.classList.remove("show");
+   o.style.display="none";
+ }
+ localStorage.setItem("goldenPullsWhatsNewSeen_v9_popupfix","1");
 }
 function maybeShowWhatsNew(){
- if(localStorage.getItem("goldenPullsV9WhatsNewSeen")!=="1"){
-   const o=$("#whatsNewOverlay");if(o)setTimeout(()=>o.classList.add("show"),250);
+ if(localStorage.getItem("goldenPullsWhatsNewSeen_v9_popupfix")==="1")return;
+ const show=()=>{
+   const o=$("#whatsNewOverlay");
+   if(!o)return;
+   o.style.display="flex";
+   o.classList.add("show");
+   o.style.zIndex="100000";
+ };
+ if(document.readyState==="loading"){
+   document.addEventListener("DOMContentLoaded",()=>setTimeout(show,350),{once:true});
+ }else{
+   setTimeout(show,350);
  }
 }
 async function checkForUpdate(){

@@ -170,3 +170,21 @@ GOLDEN PULLS V9
 - Boss HP unchanged from the current V8 build.
 - Boss damage increased moderately for team-turn boss fights.
 - No submitted V9 photos were generated or edited.
+
+V9 POPUP FIX
+- Fixed the one-time What's New popup so it reliably appears on the first load of this V9 build.
+- After pressing OK once, it stays dismissed.
+- No gameplay, card, asset, matchmaking, wheel, or boss-balance logic changed.
+
+V9 EXOTIC MAX-TIER FIX
+- Exotic upgrade cards show MAX TIER only.
+- Removed Exotic wins progress, evolution progress bar, and cooldown display.
+- V9 popup fix preserved.
+
+V9 FINAL SLOT FIX
+- Tapping slot 1 replaces only slot 1.
+- Tapping slot 2 replaces only slot 2.
+- Tapping slot 3 replaces only slot 3.
+- Cards no longer shift across the lineup when a slot is changed.
+- If a selected card is already in another slot, the two slots swap instead of duplicating.
+- All prior V9 fixes remain included.
