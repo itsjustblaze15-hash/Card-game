@@ -301,3 +301,13 @@ V9.13 RUNTIME INITIALIZATION FIX
 - The same crash could also prevent the Update button's internal version state from initializing correctly.
 - Golden Arena code remains isolated from normal 3v3 Battle.
 - Visible version remains V9.
+
+V9.14 GOLDEN ARENA COMBAT UPDATE
+- Arena card picker is sorted Exotic -> Legendary -> Epic -> Rare -> Uncommon -> Common.
+- Destroying an outer tower opens only that lane for advanced enemy-side deployment.
+- The bot follows the same rule on the player's side.
+- Units prioritize nearby enemy units before continuing to towers.
+- Card rarity now scales Arena HP, damage, and speed.
+- Cards have varied movement speeds.
+- Every Arena card gets one consistent ability: Guardian, Berserker, Sprinter, Drain, Splash, or Shield.
+- Normal 3v3 Battle code remains unchanged.

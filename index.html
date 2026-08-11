@@ -232,6 +232,8 @@ button{font:inherit;cursor:pointer}
 #gaGame{position:fixed;inset:0;z-index:100090;background:#080808;color:#fff;display:none;flex-direction:column;overflow:hidden}#gaGame.show{display:flex}.ga-top{height:48px;flex:0 0 48px;background:#111;border-bottom:2px solid #ffd52a;display:flex;align-items:center;justify-content:space-between;padding:0 9px;gap:8px}.ga-top button{border:0;border-radius:9px;padding:7px 9px;background:#ffd52a;color:#111;font-weight:1000}.ga-map{position:relative;flex:1;min-height:0;overflow:hidden;background:linear-gradient(#151515 0 49%,#d2b100 49% 51%,#786500 51%)}.ga-map>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;user-select:none}#gaField{position:absolute;inset:0}.ga-zone{position:absolute;left:50%;transform:translateX(-50%);z-index:2;font-weight:1000;font-size:8px;letter-spacing:1.5px}.ga-zone.enemy{top:2%;color:#ddd}.ga-zone.player{bottom:2%;color:#ffd52a}.ga-unit{position:absolute;width:28px;height:36px;object-fit:cover;border:3px solid var(--r);border-radius:7px;transform:translate(-50%,-50%);z-index:8;box-shadow:0 3px 8px #000a}.ga-unit.player{background:#ffd52a}.ga-unit.enemy{background:#050505}.ga-unit-hp{position:absolute;width:29px;height:4px;background:#111;border-radius:99px;overflow:hidden;transform:translate(-50%,-50%);z-index:9}.ga-unit-hp i{display:block;height:100%;background:#42d46b}.ga-tower{position:absolute;width:54px;height:7px;background:#111;border:1px solid #fff5;border-radius:99px;overflow:hidden;transform:translateX(-50%);z-index:5}.ga-tower i{display:block;height:100%;background:#ffd52a}.ga-tower.enemy i{background:#555}.ga-dead{position:absolute;z-index:4;font-size:22px;transform:translate(-50%,-50%);color:#fff}.ga-bottom{background:#111;border-top:2px solid #ffd52a;padding:7px 7px 9px}.ga-energy-row{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:1000}.ga-energy{flex:1;height:9px;background:#333;border-radius:99px;overflow:hidden}.ga-energy i{display:block;height:100%;background:#ffd52a;transition:width .15s}#gaHand{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:7px}.ga-hand-card{position:relative;background:#ffd52a;color:#111;border:3px solid var(--r);border-radius:10px;padding:3px;text-align:center;min-width:0;touch-action:manipulation}.ga-hand-card img{width:100%;height:50px;object-fit:cover;border-radius:6px}.ga-hand-card span{display:block;font-size:7px;font-weight:1000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ga-hand-card.disabled{opacity:.35}.ga-hand-card.selected{box-shadow:0 0 0 3px #fff}.ga-cost{position:absolute;right:2px;top:2px;background:#111;color:#ffd52a;border-radius:99px;padding:2px 5px;font-size:9px}
 #gaResult{position:fixed;inset:0;z-index:100110;background:#000d;display:none;align-items:center;justify-content:center;text-align:center;color:#fff;padding:18px}#gaResult.show{display:flex}.ga-result-box{width:min(340px,100%);background:#171717;border:3px solid #ffd52a;border-radius:20px;padding:20px}.ga-result-box h1{margin:8px 0;color:#ffd52a;font-size:42px}.ga-result-box button{width:100%;border:0;border-radius:12px;padding:12px;background:#ffd52a;color:#111;font-weight:1000}
 
+.ga-ability{display:block;font-size:6px;font-weight:1000;line-height:1.05;margin-top:2px;opacity:.82}
+.ga-lane-open{position:absolute;z-index:3;font-size:7px;font-weight:1000;color:#fff;background:#0009;border:1px solid #ffd52a;border-radius:999px;padding:3px 6px;transform:translateX(-50%);pointer-events:none}
 </style>
 </head>
 <body>
@@ -1762,39 +1764,274 @@ maybeShowWhatsNew();
 cleanTeam();
 save();
 
-/* ===== GOLDEN ARENA V9.12 ===== */
+/* ===== GOLDEN ARENA V9.14 ===== */
 const GA_COST={Common:1,Uncommon:3,Rare:5,Epic:7,Legendary:9,Exotic:10};
+const GA_RANK={Common:1,Uncommon:2,Rare:3,Epic:4,Legendary:5,Exotic:6};
+const GA_SCALE={
+ Common:{hp:1.00,atk:1.00,spd:.95},
+ Uncommon:{hp:1.08,atk:1.06,spd:1.00},
+ Rare:{hp:1.17,atk:1.12,spd:1.02},
+ Epic:{hp:1.27,atk:1.19,spd:1.04},
+ Legendary:{hp:1.40,atk:1.27,spd:1.06},
+ Exotic:{hp:1.55,atk:1.36,spd:1.08}
+};
+const GA_POWER_NAMES=["GUARDIAN","BERSERKER","SPRINTER","DRAIN","SPLASH","SHIELD"];
 const GA={deck:[],botDeck:[],energy:10,botEnergy:10,units:[],towers:null,selected:null,running:false,start:0,overtime:false,loops:[]};
+
 function gaCost(c){return GA_COST[tierFor(c)]||1}
+function gaRank(c){return GA_RANK[tierFor(c)]||1}
+function gaPower(c){return GA_POWER_NAMES[(Number(c.id)||0)%GA_POWER_NAMES.length]}
+
 function gaOpenPicker(){
- GA.deck=[];const picker=$("#gaPicker"),grid=$("#gaGrid");if(!picker||!grid){toast("Golden Arena UI error");return}
- const owned=CARDS.filter(c=>(state.owned[c.id]||0)>0);
- grid.innerHTML=owned.map(c=>`<button type="button" class="ga-pick" id="gaPick${c.id}" style="--r:${R[tierFor(c)].color}" onclick="gaTogglePick(${c.id})"><img src="${c.image}" onerror="this.style.opacity='.2'"><b>${c.name}<br>${tierFor(c)} · ${gaCost(c)} ENERGY</b></button>`).join("");
- $("#gaCount").textContent="0 / 4";picker.classList.add("show");if(!owned.length)toast("You need owned cards to play");
+ GA.deck=[];
+ const owned=CARDS.filter(c=>(state.owned[c.id]||0)>0).sort((a,b)=>{
+   const d=gaRank(b)-gaRank(a);
+   if(d)return d;
+   return (a.name||"").localeCompare(b.name||"") || a.id-b.id;
+ });
+ $("#gaGrid").innerHTML=owned.map(c=>`<button type="button" id="gaPick${c.id}" class="ga-pick" style="--r:${R[tierFor(c)].color}" onclick="gaTogglePick(${c.id})"><img src="${c.image}" onerror="this.style.opacity='.2'"><b>${c.name}<br>${tierFor(c)} · ${gaCost(c)} ENERGY<span class="ga-ability">${gaPower(c)}</span></b></button>`).join("");
+ $("#gaCount").textContent="0 / 4";
+ $("#gaPicker").classList.add("show");
+ if(!owned.length)toast("You need owned cards to play Golden Arena");
 }
 function gaClosePicker(){$("#gaPicker")?.classList.remove("show")}
-function gaTogglePick(id){const i=GA.deck.indexOf(id);if(i>=0)GA.deck.splice(i,1);else{if(GA.deck.length>=4){toast("Choose exactly 4 cards");return}GA.deck.push(id)}document.querySelectorAll(".ga-pick").forEach(x=>x.classList.remove("selected"));GA.deck.forEach(x=>$("#gaPick"+x)?.classList.add("selected"));$("#gaCount").textContent=GA.deck.length+" / 4";if(GA.deck.length===4)setTimeout(gaStart,180)}
-function gaBuildBotDeck(){const used=new Set();return GA.deck.map(id=>{const pc=CARDS.find(c=>c.id===id),tier=tierFor(pc);let pool=CARDS.filter(c=>tierFor(c)===tier&&!used.has(c.id)&&!c.bossExclusive);if(!pool.length)pool=CARDS.filter(c=>tierFor(c)===tier&&!used.has(c.id));const pick=pool[Math.floor(Math.random()*pool.length)]||pc;used.add(pick.id);return pick.id})}
-function gaFreshTowers(){return {pL:{side:"player",x:34,y:70,hp:820,max:820},pR:{side:"player",x:71,y:70,hp:820,max:820},pK:{side:"player",x:52,y:83,hp:1250,max:1250},eL:{side:"enemy",x:32,y:28,hp:820,max:820},eR:{side:"enemy",x:70,y:28,hp:820,max:820},eK:{side:"enemy",x:51,y:16,hp:1250,max:1250}}}
-function gaStart(){if(GA.deck.length!==4)return;gaClosePicker();GA.botDeck=gaBuildBotDeck();GA.energy=10;GA.botEnergy=10;GA.units=[];GA.towers=gaFreshTowers();GA.selected=null;GA.running=true;GA.start=Date.now();GA.overtime=false;$("#gaTimer").textContent="3:00";$("#gaBoost").textContent="";$("#gaGame").classList.add("show");gaRenderHand();gaDraw();gaUpdateEnergy();GA.loops=[setInterval(gaRegen,500),setInterval(gaTick,100),setInterval(gaBotTick,700),setInterval(gaClock,250)]}
+function gaTogglePick(id){
+ const i=GA.deck.indexOf(id);
+ if(i>=0)GA.deck.splice(i,1);
+ else{
+   if(GA.deck.length>=4){toast("Choose exactly 4 cards");return}
+   GA.deck.push(id);
+ }
+ document.querySelectorAll(".ga-pick").forEach(x=>x.classList.remove("selected"));
+ GA.deck.forEach(x=>$("#gaPick"+x)?.classList.add("selected"));
+ $("#gaCount").textContent=GA.deck.length+" / 4";
+ if(GA.deck.length===4)setTimeout(gaStart,180);
+}
+function gaBuildBotDeck(){
+ const used=new Set();
+ return GA.deck.map(id=>{
+   const pc=CARDS.find(c=>c.id===id),rank=gaRank(pc);
+   let pool=CARDS.filter(c=>gaRank(c)===rank&&!used.has(c.id)&&!c.bossExclusive);
+   if(!pool.length)pool=CARDS.filter(c=>gaRank(c)===rank&&!used.has(c.id));
+   const pick=pool[Math.floor(Math.random()*pool.length)]||pc;
+   used.add(pick.id);
+   return pick.id;
+ });
+}
+function gaFreshTowers(){
+ return {
+   pL:{key:"pL",side:"player",lane:"left",x:34,y:70,hp:820,max:820},
+   pR:{key:"pR",side:"player",lane:"right",x:71,y:70,hp:820,max:820},
+   pK:{key:"pK",side:"player",lane:"king",x:52,y:83,hp:1250,max:1250},
+   eL:{key:"eL",side:"enemy",lane:"left",x:32,y:28,hp:820,max:820},
+   eR:{key:"eR",side:"enemy",lane:"right",x:70,y:28,hp:820,max:820},
+   eK:{key:"eK",side:"enemy",lane:"king",x:51,y:16,hp:1250,max:1250}
+ };
+}
+function gaStart(){
+ if(GA.deck.length!==4)return;
+ gaClosePicker();
+ GA.botDeck=gaBuildBotDeck();GA.energy=10;GA.botEnergy=10;GA.units=[];GA.towers=gaFreshTowers();GA.selected=null;GA.running=true;GA.start=Date.now();GA.overtime=false;
+ $("#gaTimer").textContent="3:00";$("#gaBoost").textContent="";$("#gaGame").classList.add("show");
+ gaRenderHand();gaDraw();gaUpdateEnergy();
+ GA.loops=[setInterval(gaRegen,500),setInterval(gaTick,100),setInterval(gaBotTick,700),setInterval(gaClock,250)];
+}
 function gaStopLoops(){GA.loops.forEach(clearInterval);GA.loops=[]}
 function gaExit(){GA.running=false;gaStopLoops();$("#gaGame")?.classList.remove("show")}
-function gaSelect(id){const c=CARDS.find(x=>x.id===id);if(!c)return;if(GA.energy<gaCost(c)){toast("Not enough energy");return}GA.selected=id;gaRenderHand();toast("Tap your yellow side to deploy")}
+function gaSelect(id){
+ const c=CARDS.find(x=>x.id===id);if(!c)return;
+ if(GA.energy<gaCost(c)){toast("Not enough energy");return}
+ GA.selected=id;gaRenderHand();toast("Tap a legal deployment area");
+}
 function gaUpdateEnergy(){$("#gaEnergyText").textContent=Math.floor(GA.energy);$("#gaEnergyFill").style.width=(GA.energy*10)+"%"}
-function gaRenderHand(){$("#gaHand").innerHTML=GA.deck.map(id=>{const c=CARDS.find(x=>x.id===id),cost=gaCost(c),off=GA.energy<cost;return `<button type="button" class="ga-hand-card ${off?"disabled":""} ${GA.selected===id?"selected":""}" style="--r:${R[tierFor(c)].color}" onclick="gaSelect(${id})"><img src="${c.image}"><span>${c.name}</span><b class="ga-cost">${cost}</b></button>`}).join("")}
-function gaDeploy(e){if(!GA.running||GA.selected===null)return;const field=$("#gaField"),r=field.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100;if(y<52){toast("Deploy on your yellow side");return}const c=CARDS.find(x=>x.id===GA.selected),cost=gaCost(c);if(GA.energy<cost){toast("Not enough energy");return}GA.energy-=cost;gaSpawn(c,"player",x,y);GA.selected=null;gaUpdateEnergy();gaRenderHand()}
-function gaSpawn(c,side,x,y){const s=stats(c),hp=Math.round(70+s.def*.42);GA.units.push({c,side,x,y,hp,max:hp,atk:Math.max(6,Math.round(s.atk*.095)),speed:.115+s.spd*.00045,cool:0})}
-function gaRegen(){if(!GA.running)return;const rate=GA.overtime?.62:.30;GA.energy=Math.min(10,GA.energy+rate);GA.botEnergy=Math.min(10,GA.botEnergy+rate);gaUpdateEnergy();gaRenderHand()}
-function gaBotTick(){if(!GA.running)return;const cards=GA.botDeck.map(id=>CARDS.find(c=>c.id===id)).filter(Boolean),aff=cards.filter(c=>gaCost(c)<=GA.botEnergy);if(!aff.length)return;const c=aff[Math.floor(Math.random()*aff.length)];GA.botEnergy-=gaCost(c);gaSpawn(c,"enemy",27+Math.random()*47,44+Math.random()*4)}
+function gaRenderHand(){
+ $("#gaHand").innerHTML=GA.deck.map(id=>{
+   const c=CARDS.find(x=>x.id===id),cost=gaCost(c),off=GA.energy<cost;
+   return `<button type="button" class="ga-hand-card ${off?"disabled":""} ${GA.selected===id?"selected":""}" style="--r:${R[tierFor(c)].color}" onclick="gaSelect(${id})"><img src="${c.image}"><span>${c.name}</span><span class="ga-ability">${gaPower(c)}</span><b class="ga-cost">${cost}</b></button>`;
+ }).join("");
+}
+
+function gaLaneForX(x){return x<52?"left":"right"}
+function gaEnemyLaneOpenForPlayer(lane){return lane==="left"?GA.towers.eL.hp<=0:GA.towers.eR.hp<=0}
+function gaPlayerLaneOpenForEnemy(lane){return lane==="left"?GA.towers.pL.hp<=0:GA.towers.pR.hp<=0}
+
+function gaPlayerDeployAllowed(x,y){
+ if(y>=52)return true;
+ const lane=gaLaneForX(x);
+ return y>=20 && gaEnemyLaneOpenForPlayer(lane);
+}
+function gaDeploy(e){
+ if(!GA.running||GA.selected===null)return;
+ const field=$("#gaField"),r=field.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100;
+ if(!gaPlayerDeployAllowed(x,y)){
+   const lane=gaLaneForX(x);
+   toast(gaEnemyLaneOpenForPlayer(lane)?"Deploy closer to the lane":"Destroy that enemy side tower first");
+   return;
+ }
+ const c=CARDS.find(x=>x.id===GA.selected),cost=gaCost(c);
+ if(GA.energy<cost){toast("Not enough energy");return}
+ GA.energy-=cost;gaSpawn(c,"player",x,y);GA.selected=null;gaUpdateEnergy();gaRenderHand();
+}
+function gaSpawn(c,side,x,y){
+ const s=stats(c),tier=tierFor(c),scale=GA_SCALE[tier]||GA_SCALE.Common,power=gaPower(c);
+ const speedVariance=.88+((Number(c.id)||0)%7)*.04;
+ let hp=Math.round((70+s.def*.42)*scale.hp);
+ let atk=Math.max(6,Math.round((s.atk*.095)*scale.atk));
+ let speed=(.105+s.spd*.00048)*scale.spd*speedVariance;
+ if(power==="GUARDIAN"){hp=Math.round(hp*1.35);speed*=.88}
+ if(power==="SPRINTER")speed*=1.32;
+ GA.units.push({uid:Date.now()+Math.random(),c,side,x,y,hp,max:hp,atk,speed,cool:0,power,shield:power==="SHIELD"?1:0});
+}
+function gaRegen(){
+ if(!GA.running)return;
+ const rate=GA.overtime?.62:.30;
+ GA.energy=Math.min(10,GA.energy+rate);GA.botEnergy=Math.min(10,GA.botEnergy+rate);
+ gaUpdateEnergy();gaRenderHand();
+}
+function gaBotTick(){
+ if(!GA.running)return;
+ const cards=GA.botDeck.map(id=>CARDS.find(c=>c.id===id)).filter(Boolean),aff=cards.filter(c=>gaCost(c)<=GA.botEnergy);
+ if(!aff.length)return;
+ const c=aff[Math.floor(Math.random()*aff.length)];
+ GA.botEnergy-=gaCost(c);
+
+ const advanced=[];
+ if(GA.towers.pL.hp<=0)advanced.push("left");
+ if(GA.towers.pR.hp<=0)advanced.push("right");
+
+ if(advanced.length && Math.random()<.58){
+   const lane=advanced[Math.floor(Math.random()*advanced.length)];
+   gaSpawn(c,"enemy",lane==="left"?32+Math.random()*10:62+Math.random()*13,58+Math.random()*10);
+ }else{
+   gaSpawn(c,"enemy",Math.random()<.5?30+Math.random()*12:62+Math.random()*13,40+Math.random()*7);
+ }
+}
 function gaEnemyUnits(side){return GA.units.filter(u=>u.side!==side&&u.hp>0)}
 function gaEnemyTowers(side){return Object.values(GA.towers).filter(t=>t.side!==side&&t.hp>0)}
-function gaNearestTower(u){const a=gaEnemyTowers(u.side);if(!a.length)return null;return a.sort((x,y)=>Math.hypot(u.x-x.x,u.y-x.y)-Math.hypot(u.x-y.x,u.y-y.y))[0]}
-function gaTick(){if(!GA.running)return;for(const u of GA.units){if(u.hp<=0)continue;u.cool=Math.max(0,u.cool-1);const foe=gaEnemyUnits(u.side).sort((a,b)=>Math.hypot(u.x-a.x,u.y-a.y)-Math.hypot(u.x-b.x,u.y-b.y))[0];if(foe&&Math.hypot(u.x-foe.x,u.y-foe.y)<4.8){if(!u.cool){foe.hp-=u.atk;u.cool=7}continue}const t=gaNearestTower(u);if(!t)continue;const d=Math.hypot(u.x-t.x,u.y-t.y);if(d<5.7){if(!u.cool){t.hp=Math.max(0,t.hp-u.atk);u.cool=8}}else{const dx=t.x-u.x,dy=t.y-u.y,l=Math.max(.01,Math.hypot(dx,dy));u.x+=dx/l*u.speed;u.y+=dy/l*u.speed}}for(const t of Object.values(GA.towers)){if(t.hp<=0)continue;const targets=GA.units.filter(u=>u.side!==t.side&&u.hp>0&&Math.hypot(u.x-t.x,u.y-t.y)<15);if(targets.length&&Math.random()<.14)targets[0].hp-=11}GA.units=GA.units.filter(u=>u.hp>0);gaDraw();gaCheck()}
-function gaDraw(){if(!GA.towers)return;let out="";for(const t of Object.values(GA.towers)){out+=`<div class="ga-tower ${t.side==="enemy"?"enemy":""}" style="left:${t.x}%;top:${t.y-5}%"><i style="width:${Math.max(0,t.hp/t.max*100)}%"></i></div>`;if(t.hp<=0)out+=`<div class="ga-dead" style="left:${t.x}%;top:${t.y}%">✕</div>`}for(const u of GA.units){out+=`<div class="ga-unit-hp" style="left:${u.x}%;top:${u.y-3}%"><i style="width:${Math.max(0,u.hp/u.max*100)}%"></i></div><img class="ga-unit ${u.side}" src="${u.c.image}" style="--r:${R[tierFor(u.c)].color};left:${u.x}%;top:${u.y}%">`}$("#gaField").innerHTML=out}
-function gaClock(){if(!GA.running)return;const e=Math.floor((Date.now()-GA.start)/1000);if(e<180){const l=180-e;$("#gaTimer").textContent=Math.floor(l/60)+":"+String(l%60).padStart(2,"0")}else{GA.overtime=true;$("#gaTimer").textContent="OVERTIME";$("#gaBoost").textContent="2× ENERGY"}}
+function gaLaneTargetTower(u){
+ const lane=gaLaneForX(u.x);
+ if(u.side==="player"){
+   const sideTower=lane==="left"?GA.towers.eL:GA.towers.eR;
+   return sideTower.hp>0?sideTower:GA.towers.eK;
+ }else{
+   const sideTower=lane==="left"?GA.towers.pL:GA.towers.pR;
+   return sideTower.hp>0?sideTower:GA.towers.pK;
+ }
+}
+function gaAggroTarget(u){
+ const foes=gaEnemyUnits(u.side);
+ if(!foes.length)return null;
+ const lane=gaLaneForX(u.x);
+ const candidates=foes.filter(v=>gaLaneForX(v.x)===lane&&Math.hypot(u.x-v.x,u.y-v.y)<=14);
+ if(!candidates.length)return null;
+ return candidates.sort((a,b)=>Math.hypot(u.x-a.x,u.y-a.y)-Math.hypot(u.x-b.x,u.y-b.y))[0];
+}
+function gaIncomingDamage(unit,amount){
+ if(unit.shield>0){unit.shield--;return Math.max(1,Math.round(amount*.5))}
+ return amount;
+}
+function gaUnitAttack(attacker,target){
+ let dmg=attacker.atk;
+ if(attacker.power==="BERSERKER" && attacker.hp<=attacker.max*.5)dmg=Math.round(dmg*1.35);
+ dmg=gaIncomingDamage(target,dmg);
+ target.hp-=dmg;
+ if(attacker.power==="DRAIN")attacker.hp=Math.min(attacker.max,attacker.hp+Math.max(1,Math.round(dmg*.25)));
+ if(attacker.power==="SPLASH"){
+   const extras=gaEnemyUnits(attacker.side).filter(v=>v!==target&&v.hp>0&&Math.hypot(v.x-target.x,v.y-target.y)<=5);
+   extras.forEach(v=>{v.hp-=gaIncomingDamage(v,Math.max(1,Math.round(dmg*.45)))});
+ }
+}
+function gaTowerAttackUnit(target,amount){target.hp-=gaIncomingDamage(target,amount)}
+
+function gaTick(){
+ if(!GA.running)return;
+ for(const u of GA.units){
+   if(u.hp<=0)continue;
+   u.cool=Math.max(0,u.cool-1);
+
+   const foe=gaAggroTarget(u);
+   if(foe){
+     const d=Math.hypot(u.x-foe.x,u.y-foe.y);
+     if(d<4.8){
+       if(!u.cool){gaUnitAttack(u,foe);u.cool=7}
+     }else{
+       const dx=foe.x-u.x,dy=foe.y-u.y,l=Math.max(.01,d);
+       u.x+=dx/l*u.speed;u.y+=dy/l*u.speed;
+     }
+     continue;
+   }
+
+   const t=gaLaneTargetTower(u);
+   if(!t||t.hp<=0)continue;
+   const d=Math.hypot(u.x-t.x,u.y-t.y);
+   if(d<5.7){
+     if(!u.cool){
+       let dmg=u.atk;
+       if(u.power==="BERSERKER"&&u.hp<=u.max*.5)dmg=Math.round(dmg*1.35);
+       t.hp=Math.max(0,t.hp-dmg);
+       if(u.power==="DRAIN")u.hp=Math.min(u.max,u.hp+Math.max(1,Math.round(dmg*.12)));
+       u.cool=8;
+     }
+   }else{
+     const dx=t.x-u.x,dy=t.y-u.y,l=Math.max(.01,d);
+     u.x+=dx/l*u.speed;u.y+=dy/l*u.speed;
+   }
+ }
+
+ for(const t of Object.values(GA.towers)){
+   if(t.hp<=0)continue;
+   const targets=GA.units.filter(u=>u.side!==t.side&&u.hp>0&&Math.hypot(u.x-t.x,u.y-t.y)<15);
+   if(targets.length&&Math.random()<.14){
+     const target=targets.sort((a,b)=>Math.hypot(a.x-t.x,a.y-t.y)-Math.hypot(b.x-t.x,b.y-t.y))[0];
+     gaTowerAttackUnit(target,11);
+   }
+ }
+
+ GA.units=GA.units.filter(u=>u.hp>0);
+ gaDraw();gaCheck();
+}
+function gaDraw(){
+ if(!GA.towers)return;
+ let out="";
+ for(const t of Object.values(GA.towers)){
+   out+=`<div class="ga-tower ${t.side==="enemy"?"enemy":""}" style="left:${t.x}%;top:${t.y-5}%"><i style="width:${Math.max(0,t.hp/t.max*100)}%"></i></div>`;
+   if(t.hp<=0)out+=`<div class="ga-dead" style="left:${t.x}%;top:${t.y}%">✕</div>`;
+ }
+ if(GA.towers.eL.hp<=0)out+=`<div class="ga-lane-open" style="left:32%;top:36%">LEFT LANE OPEN</div>`;
+ if(GA.towers.eR.hp<=0)out+=`<div class="ga-lane-open" style="left:70%;top:36%">RIGHT LANE OPEN</div>`;
+ if(GA.towers.pL.hp<=0)out+=`<div class="ga-lane-open" style="left:34%;top:62%">ENEMY CAN DEPLOY</div>`;
+ if(GA.towers.pR.hp<=0)out+=`<div class="ga-lane-open" style="left:71%;top:62%">ENEMY CAN DEPLOY</div>`;
+ for(const u of GA.units){
+   out+=`<div class="ga-unit-hp" style="left:${u.x}%;top:${u.y-3}%"><i style="width:${Math.max(0,u.hp/u.max*100)}%"></i></div><img class="ga-unit ${u.side}" title="${u.power}" src="${u.c.image}" style="--r:${R[tierFor(u.c)].color};left:${u.x}%;top:${u.y}%">`;
+ }
+ $("#gaField").innerHTML=out;
+}
+function gaClock(){
+ if(!GA.running)return;
+ const e=Math.floor((Date.now()-GA.start)/1000);
+ if(e<180){
+   const l=180-e;$("#gaTimer").textContent=Math.floor(l/60)+":"+String(l%60).padStart(2,"0");
+ }else{
+   GA.overtime=true;$("#gaTimer").textContent="OVERTIME";$("#gaBoost").textContent="2× ENERGY";
+ }
+}
 function gaScore(side){return Object.values(GA.towers).filter(t=>t.side!==side&&t.hp<=0).length}
-function gaCheck(){if(GA.towers.eK.hp<=0)return gaFinish(true);if(GA.towers.pK.hp<=0)return gaFinish(false);if(GA.overtime){const p=gaScore("player"),e=gaScore("enemy");if(p!==e)return gaFinish(p>e)}}
-function gaFinish(win){GA.running=false;gaStopLoops();$("#gaGame").classList.remove("show");const towers=gaScore("player"),reward=win?1500+towers*500:0;if(win){state.coins+=reward;save()}$("#gaResultTitle").textContent=win?"VICTORY":"DEFEAT";$("#gaResultText").textContent=win?`Destroyed ${towers} tower${towers===1?"":"s"} · +${reward.toLocaleString()} coins`:"The black side won the arena.";$("#gaResult").classList.add("show")}
+function gaCheck(){
+ if(GA.towers.eK.hp<=0)return gaFinish(true);
+ if(GA.towers.pK.hp<=0)return gaFinish(false);
+ if(GA.overtime){
+   const p=gaScore("player"),e=gaScore("enemy");
+   if(p!==e)return gaFinish(p>e);
+ }
+}
+function gaFinish(win){
+ GA.running=false;gaStopLoops();$("#gaGame").classList.remove("show");
+ const towers=gaScore("player"),reward=win?1500+towers*500:0;
+ if(win){state.coins+=reward;save()}
+ $("#gaResultTitle").textContent=win?"VICTORY":"DEFEAT";
+ $("#gaResultText").textContent=win?`Destroyed ${towers} tower${towers===1?"":"s"} · +${reward.toLocaleString()} coins`:"The black side won the arena.";
+ $("#gaResult").classList.add("show");
+}
 function gaCloseResult(){$("#gaResult")?.classList.remove("show");render()}
 
 </script>
