@@ -422,3 +422,18 @@ V9.25 GOLDEN ARENA HUB + MATCH FLOW
 - Overtime is sudden death: the first new tower destroyed wins.
 - Victory/Defeat screen remains cinematic and now clearly shows the coin reward.
 - Victory coins are credited when CONTINUE is pressed.
+
+V9.26 UPDATE VERSION DISPLAY FIX
+- The version badge now represents the version that is actually installed.
+- The update button separately shows the version that is available, e.g. V10 READY.
+- Pressing the update button changes it to INSTALL V10, then INSTALLING V10...
+- The installed badge does not change early.
+- Only after the new build installs and reloads does the installed version badge change with that build.
+- This keeps 'current version' and 'available version' visually separate.
+
+VERSION 10 RELEASE
+- Promoted the completed Golden Pulls build to Version 10.
+- Installed/current version badge now displays V10.
+- Internal version is now 10.
+- version.json now reports Version 10.
+- Future updates should advertise the next available version separately from the installed V10 badge.

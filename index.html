@@ -361,7 +361,7 @@ button{font:inherit;cursor:pointer}
 <body>
 <div class="app">
 <div class="top">
-  <div class="brand">GOLDEN PULLS <span class="vbadge">V9</span></div>
+  <div class="brand">GOLDEN PULLS <span class="vbadge">V10</span></div>
   <button id="updateBtn" class="update" onclick="checkForUpdate()">UPDATE</button>
   <div class="wallet">● <span id="coins">0</span></div>
 </div>
@@ -1837,7 +1837,8 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=9.13;
+const APP_INTERNAL_VERSION=10;
+const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
 function hardReloadForUpdate(){
@@ -1872,51 +1873,67 @@ async function activateWaitingWorker(reg){
  return false;
 }
 
+
+function updateVersionLabel(remote){
+ const shown=String(remote.display_version||remote.version||"").trim();
+ return shown?`V${shown}`:"NEW VERSION";
+}
+
 async function checkForUpdate(){
  const b=$("#updateBtn");
  b.textContent="CHECKING...";
  b.disabled=true;
  try{
-   const versionURL=(swReg&&swReg.scope)?new URL("version.json",swReg.scope).href:new URL("version.json",document.baseURI).href;
-   const r=await fetch(versionURL+"?t="+Date.now(),{cache:"no-store"});
+   const r=await fetch("./version.json?t="+Date.now(),{cache:"no-store"});
    if(!r.ok)throw new Error("version fetch failed");
    const remote=await r.json();
    const remoteVersion=Number(remote.version||0);
 
    if(remoteVersion>APP_INTERNAL_VERSION){
-     b.textContent="INSTALLING...";
+     const remoteLabel=updateVersionLabel(remote);
+     b.textContent=`INSTALL ${remoteLabel}`;
      b.classList.add("update-ready");
+     b.disabled=false;
 
-     let controllerChanged=false;
-     if("serviceWorker" in navigator){
-       navigator.serviceWorker.addEventListener("controllerchange",()=>{
-         controllerChanged=true;
+     // Second tap actually installs. Until reload finishes, the installed badge stays V9.
+     b.onclick=async()=>{
+       b.onclick=null;
+       b.textContent=`INSTALLING ${remoteLabel}...`;
+       b.disabled=true;
+
+       let controllerChanged=false;
+       if("serviceWorker" in navigator){
+         navigator.serviceWorker.addEventListener("controllerchange",()=>{
+           controllerChanged=true;
+           hardReloadForUpdate();
+         },{once:true});
+       }
+
+       if(swReg){
+         await swReg.update();
+         await activateWaitingWorker(swReg);
+       }
+
+       setTimeout(async()=>{
+         if(controllerChanged)return;
+         try{
+           if("caches" in window){
+             const keys=await caches.keys();
+             await Promise.all(keys.map(k=>caches.delete(k)));
+           }
+         }catch(e){}
          hardReloadForUpdate();
-       },{once:true});
-     }
-
-     if(swReg){
-       await swReg.update();
-       await activateWaitingWorker(swReg);
-     }
-
-     setTimeout(async()=>{
-       if(controllerChanged)return;
-       try{
-         if("caches" in window){
-           const keys=await caches.keys();
-           await Promise.all(keys.map(k=>caches.delete(k)));
-         }
-       }catch(e){}
-       hardReloadForUpdate();
-     },1800);
+       },1800);
+     };
    }else{
+     b.onclick=checkForUpdate;
      b.textContent="UP TO DATE";
      b.classList.remove("update-ready");
      setTimeout(()=>{b.textContent="UPDATE";b.disabled=false},1400);
    }
  }catch(e){
    console.error("Update error",e);
+   b.onclick=checkForUpdate;
    b.textContent="REFRESH";
    b.disabled=false;
    b.onclick=()=>hardReloadForUpdate();
@@ -1925,13 +1942,15 @@ async function checkForUpdate(){
 
 async function passiveUpdateCheck(){
  try{
-   const versionURL=(swReg&&swReg.scope)?new URL("version.json",swReg.scope).href:new URL("version.json",document.baseURI).href;
-   const r=await fetch(versionURL+"?t="+Date.now(),{cache:"no-store"});
+   const r=await fetch("./version.json?t="+Date.now(),{cache:"no-store"});
+   if(!r.ok)return;
    const remote=await r.json();
    if(Number(remote.version||0)>APP_INTERNAL_VERSION){
      const b=$("#updateBtn");
-     b.textContent=`V${remote.display_version||remote.version} READY`;
+     b.textContent=`${updateVersionLabel(remote)} READY`;
      b.classList.add("update-ready");
+     b.disabled=false;
+     b.onclick=checkForUpdate;
    }
  }catch(e){}
 }
