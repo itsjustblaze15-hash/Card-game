@@ -269,3 +269,13 @@ V9 INSTANT SUBSTITUTION UPDATE
 - You can make the second legal swap or press DONE.
 - Bot substitutions are also instant.
 - Visible version remains V9; internal build is 9.09.
+
+V9 SURVIVOR-BASED WIN REWARDS
+- Battle reward now depends on the number of active cards still standing at victory.
+- 3 standing = 100% of the rolled reward.
+- 2 standing = 75%.
+- 1 standing = 50%.
+- Subs on the bench do not count. A sub only counts if it was swapped into an active slot and survives.
+- Final payouts stay in clean 500-coin steps.
+- Victory screen shows survivors and payout.
+- Visible version remains V9; internal build is 9.10.

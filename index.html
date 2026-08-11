@@ -253,7 +253,7 @@ button{font:inherit;cursor:pointer}
 </section>
 
 <section id="battle" class="screen">
-<div class="hero"><h1>BATTLE</h1><p>Pick 3 owned cards and fight a random bot. Wins power up the cards you used.</p></div><div class="streak-box"><div><b>WIN STREAK</b><div style="font-size:11px">Win reward: 2K–5K · Every 2 wins favors higher payouts · 5 wins: Uncommon pack · 10 wins: Rare pack</div></div><div class="streak-num" id="streakNum">0</div></div>
+<div class="hero"><h1>BATTLE</h1><p>Pick 3 owned cards and fight a random bot. Wins power up the cards you used.</p></div><div class="streak-box"><div><b>WIN STREAK</b><div style="font-size:11px">Base reward: 2K–5K · 3 standing = 100% · 2 standing = 75% · 1 standing = 50%</div></div><div class="streak-num" id="streakNum">0</div></div>
 <div class="panel"><b>BOT DIFFICULTY</b><div class="bot-stars" id="stars">TEAM-BASED MATCHMAKING</div><div style="font-size:12px;font-weight:900;text-align:center;margin-top:8px">Bot strength is matched around your team rating, with some easier and harder opponents.</div></div>
 <div id="teamRatingBox" class="team-rating-box" style="--team-color:#9b9b9b"><span>YOUR TEAM: <b id="teamRatingName">GRAY</b></span><span id="teamRatingStars" class="team-rating-stars">★</span></div><div class="battle-grid" id="teamSlots"></div>
 <div class="sub-label">SUBSTITUTES</div><div class="sub-pick-grid" id="subSlots"></div>
@@ -1226,12 +1226,20 @@ async function startBattle(){
    const normalRewards=[2000,2500,3000,3500,4000,4500,5000];
    const streakRewards=[3500,4000,4500,5000];
    const rewardPool=(state.winStreak>0&&state.winStreak%2===0)?streakRewards:normalRewards;
-   const bonus=rewardPool[Math.floor(Math.random()*rewardPool.length)];
-   if(state.winStreak>0&&state.winStreak%2===0)toast(`2-WIN BONUS! +${fmt(bonus)} coins`);
+   const fullReward=rewardPool[Math.floor(Math.random()*rewardPool.length)];
+
+   // Reward depends on how many of the 3 active cards survive.
+   // 3 standing = full payout, 2 = 75%, 1 = 50%.
+   // Bench cards do not count unless they were swapped into an active slot.
+   const standing=php.filter(hp=>hp>0).length;
+   const survivalMultiplier=standing>=3?1:(standing===2?.75:.50);
+   const bonus=Math.max(500,Math.round((fullReward*survivalMultiplier)/500)*500);
+
+   if(state.winStreak>0&&state.winStreak%2===0)toast(`2-WIN REWARD · ${standing}/3 standing · +${fmt(bonus)} coins`);
    state.coins+=bonus;
    [...participants].map(id=>CARDS.find(c=>c.id===id)).filter(Boolean).forEach(gainCardWin);
    save();
-   showResult(true,`Enemy team eliminated! +${fmt(bonus)} coins`);
+   showResult(true,`VICTORY · ${standing}/3 standing · +${fmt(bonus)} coins`);
  }else{
    state.battleLosses=(state.battleLosses||0)+1;
    state.winStreak=0;save();
@@ -1633,7 +1641,7 @@ async function checkForUpdate(){
  try{
    const r=await fetch("./version.json?t="+Date.now(),{cache:"no-store"});
    const remote=await r.json();
-   const local=9.09;
+   const local=9.10;
    if(Number(remote.version)>local){
      b.textContent=`V${remote.version} READY`;
      b.classList.add("update-ready");
@@ -1650,7 +1658,7 @@ async function passiveUpdateCheck(){
  try{
    const r=await fetch("./version.json?t="+Date.now(),{cache:"no-store"});
    const remote=await r.json();
-   if(Number(remote.version)>9.09){
+   if(Number(remote.version)>9.10){
      const b=$("#updateBtn");
      b.textContent=`V${remote.version} READY`;
      b.classList.add("update-ready");
