@@ -319,6 +319,15 @@ button{font:inherit;cursor:pointer}
 .ga-projectile.cannon{width:10px;height:10px;border-radius:50%;background:#111;border:1px solid #777;box-shadow:0 0 7px #ff9c31}
 .ga-hit-flash{position:absolute;z-index:32;width:14px;height:14px;border:2px solid #ffd95a;border-radius:50%;transform:translate(-50%,-50%);animation:gaHit .22s ease-out forwards;pointer-events:none}
 @keyframes gaHit{from{opacity:1;transform:translate(-50%,-50%) scale(.3)}to{opacity:0;transform:translate(-50%,-50%) scale(1.8)}}
+
+.ga-unit{border:2px solid #ddd!important;background:#151515!important;box-shadow:0 2px 5px #0009!important}
+.ga-unit.player{border-color:#ffd52a!important;background:#171717!important;box-shadow:0 0 0 1px #ffd52a66,0 2px 5px #0009!important}
+.ga-unit.enemy{border-color:#292929!important;background:#090909!important;box-shadow:0 0 0 1px #0009,0 2px 5px #0009!important}
+.ga-unit.dying{animation:gaUnitDie .34s ease-in forwards!important}
+@keyframes gaUnitDie{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.12) rotate(5deg)}100%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(-14deg)}}
+.ga-death-poof{position:absolute;z-index:30;transform:translate(-50%,-50%);font-size:18px;animation:gaPoof .38s ease-out forwards;pointer-events:none}
+@keyframes gaPoof{from{opacity:1;transform:translate(-50%,-50%) scale(.5)}to{opacity:0;transform:translate(-50%,-70%) scale(1.5)}}
+.ga-deck-slot{padding:0;color:#fff;cursor:pointer}.ga-pick-card.selected{outline:4px solid #ffd52a!important;filter:brightness(.72)}
 </style>
 </head>
 <body>
@@ -1898,7 +1907,7 @@ const GA_SCALE={
  Legendary:{hp:1.40,atk:1.27,spd:1.06},Exotic:{hp:1.55,atk:1.36,spd:1.08}
 };
 const GA_POWER_NAMES=["GUARDIAN","BERSERKER","SPRINTER","DRAIN","SPLASH","SHIELD"];
-const GA={deck:[],cycle:[],hand:[],next:null,botDeck:[],botCycle:[],botHand:[],botNext:null,energy:10,botEnergy:10,units:[],towers:null,selected:null,running:false,start:0,overtime:false,otPlayerScore:0,otEnemyScore:0,penaltyArmed:false,lastPlayerPlay:0,projectiles:[],loops:[],lastBotPlay:0};
+const GA={deck:[],cycle:[],hand:[],next:null,botDeck:[],botCycle:[],botHand:[],botNext:null,energy:10,botEnergy:10,units:[],towers:null,selected:null,running:false,start:0,overtime:false,otPlayerScore:0,otEnemyScore:0,penaltyArmed:false,lastPlayerPlay:0,projectiles:[],deaths:[],loops:[],lastBotPlay:0};
 const GA_RIVER_TOP=45;
 const GA_RIVER_BOTTOM=54;
 const GA_BRIDGES=[{id:"L",x:29},{id:"R",x:70}];
@@ -1920,7 +1929,7 @@ function gaShuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(
 
 function gaTowerRush(c){
  const rank=gaRank(c),p=gaPower(c);
- return rank>=4 && (((Number(c.id)||0)%2===0) || p==="SPRINTER" || p==="GUARDIAN");
+ return rank>=4 && (((Number(c.id)||0)%3!==1) || p==="SPRINTER" || p==="GUARDIAN");
 }
 function gaRole(c){
  if(gaTowerRush(c))return "TOWER HUNTER — prioritizes towers and usually ignores enemy units.";
@@ -1952,10 +1961,11 @@ function gaRenderSavedDeck(){
  if(!slots||!status)return;
  status.textContent=ids.length+" / 8";
  slots.innerHTML=Array.from({length:8},(_,i)=>{
-   const c=CARDS.find(x=>x.id===ids[i]);
-   return c?`<div class="ga-deck-slot" style="border-color:${R[c.rarity].color}" title="${c.name}"><img src="${c.image}"></div>`:`<div class="ga-deck-slot">${i+1}</div>`;
+  const c=CARDS.find(x=>x.id===ids[i]);
+  return c?`<button type="button" class="ga-deck-slot" style="border-color:${R[c.rarity].color}" onclick="gaRemoveSavedCard(${c.id})" title="Tap to remove ${c.name}"><img src="${c.image}"></button>`:`<button type="button" class="ga-deck-slot" onclick="gaEditSavedDeck()">${i+1}</button>`;
  }).join("");
 }
+function gaRemoveSavedCard(id){const d=gaSavedDeck().filter(x=>x!==id);gaSaveDeck(d);GA.deck=d;gaRenderSavedDeck();toast("Removed from Arena deck")}
 function gaClearSavedDeck(){state.gaDeck=[];save();gaRenderSavedDeck();toast("Golden Arena deck cleared")}
 function gaEditSavedDeck(){GA.deck=gaSavedDeck();gaCloseLobby();gaOpenPicker(true)}
 
@@ -2011,13 +2021,13 @@ function gaCyclePlayed(id,bot=false){
  if(bot)GA.botNext=n;else GA.next=n;
 }
 function gaFreshTowers(){return {
- pL:{key:"pL",side:"player",lane:"left",x:34,y:70,hp:820,max:820},pR:{key:"pR",side:"player",lane:"right",x:71,y:70,hp:820,max:820},pK:{key:"pK",side:"player",lane:"king",x:52,y:83,hp:1250,max:1250},
- eL:{key:"eL",side:"enemy",lane:"left",x:32,y:28,hp:820,max:820},eR:{key:"eR",side:"enemy",lane:"right",x:70,y:28,hp:820,max:820},eK:{key:"eK",side:"enemy",lane:"king",x:51,y:16,hp:1250,max:1250}
+ pL:{key:"pL",side:"player",lane:"left",x:34,y:70,hp:650,max:650},pR:{key:"pR",side:"player",lane:"right",x:71,y:70,hp:650,max:650},pK:{key:"pK",side:"player",lane:"king",x:52,y:83,hp:1050,max:1050},
+ eL:{key:"eL",side:"enemy",lane:"left",x:32,y:28,hp:650,max:650},eR:{key:"eR",side:"enemy",lane:"right",x:70,y:28,hp:650,max:650},eK:{key:"eK",side:"enemy",lane:"king",x:51,y:16,hp:1050,max:1050}
 }}
 function gaStart(){
  const saved=gaSavedDeck();if(saved.length!==8){gaOpenPicker(true);toast("Build an 8-card Arena deck first");return}
  GA.deck=[...saved];GA.botDeck=gaBuildMatchedBotDeck();gaInitCycle(GA.deck,false);gaInitCycle(GA.botDeck,true);
- GA.energy=10;GA.botEnergy=10;GA.units=[];GA.projectiles=[];GA.towers=gaFreshTowers();GA.selected=null;GA.running=true;GA.start=Date.now();GA.overtime=false;GA.otPlayerScore=0;GA.otEnemyScore=0;GA.penaltyArmed=true;GA.lastPlayerPlay=0;GA.lastBotPlay=0;
+ GA.energy=10;GA.botEnergy=10;GA.units=[];GA.projectiles=[];GA.deaths=[];GA.towers=gaFreshTowers();GA.selected=null;GA.running=true;GA.start=Date.now();GA.overtime=false;GA.otPlayerScore=0;GA.otEnemyScore=0;GA.penaltyArmed=true;GA.lastPlayerPlay=0;GA.lastBotPlay=0;
  $("#gaTimer").textContent="2:00";$("#gaBoost").textContent="";$("#gaGame").classList.remove("ga-overtime");$("#gaGame").classList.add("show");
  gaRenderHand();gaDraw();gaUpdateEnergy();
  GA.loops=[setInterval(gaRegen,500),setInterval(gaTick,100),setInterval(gaBotThink,350),setInterval(gaClock,250)];
@@ -2075,8 +2085,8 @@ function gaBotChooseCard(){
  let scored=affordable.map(c=>{
    let score=Math.random()*18;
    const cost=gaCost(c),p=gaPower(c),rank=gaRank(c);
-   if(defending){score+=rank*5;if(["SPLASH","SHIELD"].includes(p))score+=11}
-   else{score+=rank*8;if(["SPRINTER","BERSERKER","DRAIN"].includes(p))score+=16;if(gaTowerRush(c))score+=24}
+   if(defending){score+=rank*4;if(["SPLASH","SHIELD"].includes(p))score+=8}
+   else{score+=rank*10;if(["SPRINTER","BERSERKER","DRAIN"].includes(p))score+=18;if(gaTowerRush(c))score+=30}
    if(GA.botEnergy>=8&&cost>=6)score+=14;
    if(GA.botEnergy<6&&cost<=5)score+=10;
    return {c,score};
@@ -2098,7 +2108,7 @@ function gaBotThink(){
 }
 function gaEnemyUnits(side){return GA.units.filter(u=>u.side!==side&&u.hp>0)}
 function gaLaneTargetTower(u){const lane=gaLaneForX(u.x);if(u.side==="player"){const t=lane==="left"?GA.towers.eL:GA.towers.eR;return t.hp>0?t:GA.towers.eK}else{const t=lane==="left"?GA.towers.pL:GA.towers.pR;return t.hp>0?t:GA.towers.pK}}
-function gaAggroTarget(u){if(u.towerRush)return null;const lane=gaLaneForX(u.x),radius=u.max>190?4.8:7.2,c=gaEnemyUnits(u.side).filter(v=>gaLaneForX(v.x)===lane&&Math.hypot(u.x-v.x,u.y-v.y)<=radius);return c.sort((a,b)=>Math.hypot(u.x-a.x,u.y-a.y)-Math.hypot(u.x-b.x,u.y-b.y))[0]||null}
+function gaAggroTarget(u){if(u.towerRush)return null;const lane=gaLaneForX(u.x),radius=u.max>190?3.8:5.8,c=gaEnemyUnits(u.side).filter(v=>gaLaneForX(v.x)===lane&&Math.hypot(u.x-v.x,u.y-v.y)<=radius&&Math.abs(u.x-v.x)<4.8);return c.sort((a,b)=>Math.hypot(u.x-a.x,u.y-a.y)-Math.hypot(u.x-b.x,u.y-b.y))[0]||null}
 
 function gaRegion(y){
  if(y<GA_RIVER_TOP)return "enemy";
@@ -2119,6 +2129,7 @@ function gaStepToward(u,x,y){
  const d=Math.max(.01,Math.hypot(x-u.x,y-u.y));
  u.x+=(x-u.x)/d*u.speed;u.y+=(y-u.y)/d*u.speed;
 }
+function gaTowerApproachPoint(u,t){const dx=u.x-t.x,dy=u.y-t.y,d=Math.max(.01,Math.hypot(dx,dy)),r=4.7;return {x:t.x+dx/d*r,y:t.y+dy/d*r}}
 function gaMoveToward(u,target){
  const ur=gaRegion(u.y),tr=gaRegion(target.y);
  if(ur===tr&&ur!=="river"){u.bridge=null;gaStepToward(u,target.x,target.y);return}
@@ -2135,6 +2146,8 @@ function gaMoveToward(u,target){
 function gaIncomingDamage(u,n){if(u.shield>0){u.shield--;return Math.max(1,Math.round(n*.5))}return n}
 function gaUnitAttack(a,t){let d=a.atk;if(a.power==="BERSERKER"&&a.hp<=a.max*.5)d=Math.round(d*1.35);d=gaIncomingDamage(t,d);t.hp-=d;if(a.power==="DRAIN")a.hp=Math.min(a.max,a.hp+Math.max(1,Math.round(d*.25)));if(a.power==="SPLASH")gaEnemyUnits(a.side).filter(v=>v!==t&&Math.hypot(v.x-t.x,v.y-t.y)<=5).forEach(v=>v.hp-=gaIncomingDamage(v,Math.max(1,Math.round(d*.45))))}
 
+function gaMarkDeaths(){const now=Date.now();for(const u of GA.units)if(u.hp<=0&&!u.deathMarked){u.deathMarked=true;u.deathAt=now;GA.deaths.push({x:u.x,y:u.y,start:now,dur:380})}}
+function gaDeathHTML(){const now=Date.now();GA.deaths=GA.deaths.filter(d=>now-d.start<d.dur);return GA.deaths.map(d=>`<div class="ga-death-poof" style="left:${d.x}%;top:${d.y}%">✦</div>`).join("")}
 function gaFireProjectile(t,u,kind,damage){
  const dur=kind==="cannon"?360:220;
  GA.projectiles.push({id:Date.now()+Math.random(),sx:t.x,sy:t.y,ex:u.x,ey:u.y,kind,start:Date.now(),dur});
@@ -2157,27 +2170,25 @@ function gaTick(){
  if(!GA.running)return;
  for(const u of GA.units){
   if(u.hp<=0)continue;u.cool=Math.max(0,u.cool-1);const foe=gaAggroTarget(u);
-  if(foe){const d=Math.hypot(u.x-foe.x,u.y-foe.y);if(d<4.5){if(!u.cool){gaUnitAttack(u,foe);u.cool=7}}else gaMoveToward(u,foe);continue}
+  if(foe){const d=Math.hypot(u.x-foe.x,u.y-foe.y);if(d<4.25){if(!u.cool){gaUnitAttack(u,foe);u.cool=7}}else gaMoveToward(u,foe);continue}
   const t=gaLaneTargetTower(u);if(!t||t.hp<=0)continue;const d=Math.hypot(u.x-t.x,u.y-t.y);
-  // Smaller tower collision: attackers visually reach the tower before hitting it.
-  if(d<4.25){if(!u.cool){let dmg=u.atk;if(u.power==="BERSERKER"&&u.hp<=u.max*.5)dmg=Math.round(dmg*1.35);if(u.towerRush)dmg=Math.round(dmg*1.28);t.hp=Math.max(0,t.hp-dmg);if(u.power==="DRAIN")u.hp=Math.min(u.max,u.hp+Math.max(1,Math.round(dmg*.12)));u.cool=8}}
-  else gaMoveToward(u,t);
+  if(d<5.25){if(!u.cool){let dmg=u.atk;if(u.power==="BERSERKER"&&u.hp<=u.max*.5)dmg=Math.round(dmg*1.35);if(u.towerRush)dmg=Math.round(dmg*1.28);t.hp=Math.max(0,t.hp-dmg);if(u.power==="DRAIN")u.hp=Math.min(u.max,u.hp+Math.max(1,Math.round(dmg*.12)));u.cool=8}}
+  else{const ap=gaTowerApproachPoint(u,t);gaMoveToward(u,ap)}
  }
- // Towers only engage close threats. Outer towers shoot arrows; main towers shoot slower cannonballs.
  const now=Date.now();
  for(const [key,t] of Object.entries(GA.towers)){
-  if(t.hp<=0)continue;
-  const king=key.endsWith("K"),range=king?11.5:9.4;
-  const foes=GA.units.filter(u=>u.side!==t.side&&u.hp>0&&Math.hypot(u.x-t.x,u.y-t.y)<=range)
-   .sort((a,b)=>Math.hypot(a.x-t.x,a.y-t.y)-Math.hypot(b.x-t.x,b.y-t.y));
-  if(!foes.length)continue;
-  const cd=king?1100:900;if(now-(t.lastShot||0)<cd)continue;t.lastShot=now;
-  const target=foes[0],rarity=gaRank(target.c);
-  // Commons are fragile; rarer units survive long enough to form real pushes.
-  const damage=king?Math.max(24,56-rarity*4):Math.max(12,31-rarity*3);
+  if(t.hp<=0)continue;const king=key.endsWith("K"),range=king?9.8:8.0;
+  const foes=GA.units.filter(u=>u.side!==t.side&&u.hp>0&&Math.hypot(u.x-t.x,u.y-t.y)<=range).sort((a,b)=>Math.hypot(a.x-t.x,a.y-t.y)-Math.hypot(b.x-t.x,b.y-t.y));
+  if(!foes.length){t.targetUid=null;t.targetSince=0;continue}
+  const target=foes[0];if(t.targetUid!==target.uid){t.targetUid=target.uid;t.targetSince=now;continue}
+  const windup=king?520:420;if(now-(t.targetSince||now)<windup)continue;
+  const cd=king?1350:1150;if(now-(t.lastShot||0)<cd)continue;t.lastShot=now;
+  const rarity=gaRank(target.c),damage=king?Math.max(18,43-rarity*3):Math.max(9,24-rarity*2);
   gaFireProjectile(t,target,king?"cannon":"arrow",damage);
  }
- GA.units=GA.units.filter(u=>u.hp>0);gaDraw();gaCheck();
+ gaMarkDeaths();
+ GA.units=GA.units.filter(u=>u.hp>0||(u.deathMarked&&Date.now()-u.deathAt<340));
+ gaDraw();gaCheck();
 }
 function gaPlacementOverlay(){
  if(GA.selected===null)return "";
@@ -2192,11 +2203,11 @@ function gaPlacementOverlay(){
  return s;
 }
 function gaDraw(){
- if(!GA.towers)return;let out=gaPlacementOverlay()+gaProjectileHTML();
+ if(!GA.towers)return;let out=gaPlacementOverlay()+gaProjectileHTML()+gaDeathHTML();
  out+=`<div class="ga-bridge-hint" style="left:${GA_BRIDGES[0].x}%;top:${(GA_RIVER_TOP+GA_RIVER_BOTTOM)/2}%"></div>`;
  out+=`<div class="ga-bridge-hint" style="left:${GA_BRIDGES[1].x}%;top:${(GA_RIVER_TOP+GA_RIVER_BOTTOM)/2}%"></div>`;
  for(const t of Object.values(GA.towers)){out+=`<div class="ga-tower ${t.side==="enemy"?"enemy":""}" style="left:${t.x}%;top:${t.y-9}%"><i style="width:${Math.max(0,t.hp/t.max*100)}%"></i></div>`;if(t.hp<=0)out+=`<div class="ga-dead" style="left:${t.x}%;top:${t.y}%">✕</div>`}
- for(const u of GA.units)out+=`<div class="ga-unit-hp" style="left:${u.x}%;top:${u.y-3}%"><i style="width:${Math.max(0,u.hp/u.max*100)}%"></i></div><img class="ga-unit ${u.side}" src="${u.c.image}" style="--r:${R[u.c.rarity].color};left:${u.x}%;top:${u.y}%">`;
+ for(const u of GA.units)out+=`<div class="ga-unit-hp" style="left:${u.x}%;top:${u.y-3}%"><i style="width:${Math.max(0,u.hp/u.max*100)}%"></i></div><img class="ga-unit ${u.side}${u.hp<=0?" dying":""}" src="${u.c.image}" style="left:${u.x}%;top:${u.y}%">`;
  $("#gaField").innerHTML=out;
 }
 function gaClock(){

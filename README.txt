@@ -388,3 +388,14 @@ V9.22 GOLDEN ARENA COMBAT FLOW
 - More Epic+ cards prioritize towers.
 - Bot deployment delay increased to reduce defensive spam.
 - Existing 40K+ win reward, 2-minute regulation, Sudden Death, bridge pathing, and cinematic endings retained.
+
+V9.23 GAMEPLAY FLOW REBALANCE
+- Tap a saved Arena deck card to remove it; selected picker cards are highlighted.
+- Removed bulky rarity-colored battlefield unit outlines.
+- Added quick unit death/fade impact animation.
+- Tower range, damage, and fire rate reduced; first shot now has a windup.
+- Units can attack towers from the angle they arrive instead of pathing around to one exact point.
+- Outer towers reduced to 650 HP; king towers to 1050 HP.
+- Unit aggro reduced so attackers are less easily distracted.
+- More Epic+ units prioritize towers; AI values offensive pressure more.
+- Two-minute regulation still ends immediately when one side leads; Sudden Death is tie-only.
