@@ -279,3 +279,10 @@ V9 SURVIVOR-BASED WIN REWARDS
 - Final payouts stay in clean 500-coin steps.
 - Victory screen shows survivors and payout.
 - Visible version remains V9; internal build is 9.10.
+
+GOLDEN ARENA ISOLATED BETA
+- Built directly on the confirmed-working V9 Battle build.
+- Normal 3v3 startBattle() code is unchanged.
+- Golden Arena uses separate ga* state/functions and overlays.
+- Golden Arena wins only award Arena coins; they do not change normal Battle records, win streak, or boss unlock progress.
+- Existing assets are not bundled. Keep assets/beta_arena.png already in your repo.
