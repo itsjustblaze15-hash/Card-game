@@ -294,3 +294,9 @@ V9.12 PLAY MODE SELECT
 - Battle opens the existing 3v3 menu with win streak, matchmaking, team, substitutes, and Play.
 - Golden Arena opens its 4-card Beta selector directly.
 - Removed the old long stacked Beta card below the regular battle menu.
+
+V9.13 GOLDEN ARENA BUTTON FIX
+- Fixed Golden Arena mode selection so both the full mode card and PLAY BETA button are directly wired.
+- Added defensive Golden Arena opening so a bad/missing card image cannot prevent the selector from opening.
+- Battle mode wiring remains intact.
+- Existing V9.12 game systems and Golden Arena mechanics are otherwise unchanged.

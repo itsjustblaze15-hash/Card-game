@@ -286,8 +286,8 @@ button{font:inherit;cursor:pointer}
 <section id="battle" class="screen">
 <div class="hero"><h1>PLAY</h1><p>Choose a game mode.</p></div>
 <div id="battleModeSelect" class="mode-select-grid">
-  <div class="mode-card battle" onclick="openRegularBattle()"><span class="beta-chip" style="background:#ffd52a;color:#111;border-color:#111">MAIN MODE</span><h2>BATTLE</h2><p>Classic 3v3 battles with substitutes, team-based matchmaking, win streaks, and your normal rewards.</p><button type="button">PLAY BATTLE</button></div>
-  <div class="mode-card arena" onclick="openGoldenArenaBeta()"><span class="beta-chip">BETA</span><h2>GOLDEN ARENA</h2><p>Choose 4 cards, spend energy, deploy tiny units, and destroy the black towers.</p><button type="button">PLAY BETA</button></div>
+  <div class="mode-card battle" id="regularBattleModeCard"><span class="beta-chip" style="background:#ffd52a;color:#111;border-color:#111">MAIN MODE</span><h2>BATTLE</h2><p>Classic 3v3 battles with substitutes, team-based matchmaking, win streaks, and your normal rewards.</p><button id="regularBattleModeBtn" type="button">PLAY BATTLE</button></div>
+  <div class="mode-card arena" id="goldenArenaModeCard"><span class="beta-chip">BETA</span><h2>GOLDEN ARENA</h2><p>Choose 4 cards, spend energy, deploy tiny units, and destroy the black towers.</p><button id="goldenArenaModeBtn" type="button">PLAY BETA</button></div>
 </div>
 <div id="regularBattlePanel" class="regular-battle-panel">
 <button class="mode-back" onclick="closeRegularBattle()">← GAME MODES</button>
@@ -1752,11 +1752,23 @@ const GA_COST={Common:1,Uncommon:3,Rare:5,Epic:7,Legendary:9,Exotic:10};
 let gaDeck=[],gaBotDeck=[],gaEnergy=10,gaBotEnergy=10,gaUnits=[],gaTowers=null,gaRunning=false,gaSelected=null,gaStart=0,gaOvertime=false,gaIntervals=[];
 function gaCost(c){return GA_COST[tierFor(c)]||1}
 function openGoldenArenaBeta(){
-  gaDeck=[];
-  const owned=CARDS.filter(c=>(state.owned[c.id]||0)>0);
-  $("#goldenArenaPickGrid").innerHTML=owned.map(c=>`<div id="gaPick${c.id}" class="beta-pick" style="--r:${R[tierFor(c)].color}" onclick="toggleGoldenArenaPick(${c.id})"><img src="${c.image}"><b>${c.name}<br>${tierFor(c)} · ${gaCost(c)} ENERGY</b></div>`).join("");
-  $("#goldenArenaCount").textContent="0 / 4 selected";
-  $("#goldenArenaSelect").classList.add("show");
+  try{
+    gaDeck=[];
+    const overlay=$("#goldenArenaSelect"),grid=$("#goldenArenaPickGrid"),count=$("#goldenArenaCount");
+    if(!overlay||!grid||!count){toast("Golden Arena failed to load. Refresh once.");return}
+    const owned=CARDS.filter(c=>(state.owned[c.id]||0)>0);
+    grid.innerHTML=owned.map(c=>{
+      const tier=tierFor(c);
+      const rarity=R[tier]||R.Common;
+      return `<div id="gaPick${c.id}" class="beta-pick" style="--r:${rarity.color}" onclick="toggleGoldenArenaPick(${c.id})"><img src="${c.image}" onerror="this.style.opacity='.2'"><b>${c.name}<br>${tier} · ${gaCost(c)} ENERGY</b></div>`;
+    }).join("");
+    count.textContent="0 / 4 selected";
+    overlay.classList.add("show");
+    if(!owned.length) toast("You need owned cards to build a Golden Arena deck.");
+  }catch(err){
+    console.error("Golden Arena open error:",err);
+    toast("Golden Arena could not open. Refresh and try again.");
+  }
 }
 function closeGoldenArenaSelect(){$("#goldenArenaSelect").classList.remove("show")}
 function toggleGoldenArenaPick(id){
@@ -1826,6 +1838,18 @@ function gaScore(side){return Object.values(gaTowers).filter(t=>t.side!==side&&t
 function checkGoldenArenaResult(){if(gaTowers.eK.hp<=0)return finishGoldenArena(true);if(gaTowers.pK.hp<=0)return finishGoldenArena(false);if(gaOvertime){const p=gaScore("player"),e=gaScore("enemy");if(p!==e)return finishGoldenArena(p>e)}}
 function finishGoldenArena(win){gaRunning=false;gaIntervals.forEach(clearInterval);gaIntervals=[];$("#goldenArenaGame").classList.remove("show");const destroyed=gaScore("player"),reward=win?1500+destroyed*500:0;if(win){state.coins+=reward;save()}$("#goldenArenaResultTitle").textContent=win?"VICTORY":"DEFEAT";$("#goldenArenaResultText").textContent=win?`Destroyed ${destroyed} tower${destroyed===1?"":"s"} · +${reward.toLocaleString()} coins`:"The black side won the arena.";$("#goldenArenaResult").classList.add("show")}
 function closeGoldenArenaResult(){$("#goldenArenaResult").classList.remove("show");render()}
+
+
+function wirePlayModeButtons(){
+  const battleCard=$("#regularBattleModeCard"),battleBtn=$("#regularBattleModeBtn");
+  const arenaCard=$("#goldenArenaModeCard"),arenaBtn=$("#goldenArenaModeBtn");
+  if(battleCard)battleCard.addEventListener("click",e=>{if(e.target===battleBtn)return;openRegularBattle()});
+  if(battleBtn)battleBtn.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();openRegularBattle()});
+  if(arenaCard)arenaCard.addEventListener("click",e=>{if(e.target===arenaBtn)return;openGoldenArenaBeta()});
+  if(arenaBtn)arenaBtn.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();openGoldenArenaBeta()});
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",wirePlayModeButtons);
+else wirePlayModeButtons();
 
 </script>
 </body></html>
