@@ -745,21 +745,18 @@ function openPicker(i){
 function closePicker(){$("#pickOverlay").classList.remove("show")}
 function chooseTeamCard(id){
  cleanTeam();
- const current=state.team.slice(0,3);
+ const slots=[state.team[0],state.team[1],state.team[2]];
+ const oldAtTarget=slots[pickSlot];
+ const existing=slots.indexOf(id);
 
- // If this card already exists in another slot, swap it with the tapped slot
- // instead of creating duplicates or shifting the lineup.
- const existing=current.indexOf(id);
+ // If selected card already exists elsewhere, swap the two fixed slots.
  if(existing>=0 && existing!==pickSlot){
-   const old=current[pickSlot];
-   current[pickSlot]=id;
-   if(old!==undefined)current[existing]=old;
-   else current.splice(existing,1);
- }else{
-   current[pickSlot]=id;
+   slots[existing]=oldAtTarget;
  }
+ slots[pickSlot]=id;
 
- state.team=current.filter(x=>x!==undefined).slice(0,3);
+ // Preserve slot order exactly. No insert/splice shifting.
+ state.team=slots.filter(x=>x!==undefined && x!==null);
  save();
  closePicker();
  renderBattle();
@@ -1009,12 +1006,42 @@ function renderUpgrades(){
  });
  $("#upgradeList").innerHTML=owned.length?owned.map(c=>{
    const tier=tierFor(c),s=stats(c);
+
    if(tier==="Exotic"){
-     return `<div class="upgrade-card" style="--rarity:${R[tier].color}"><div class="upgrade-row"><img src="${c.image}"><div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>${c.name}</b><b style="font-size:20px;color:${R[tier].color}">OVR ${overall(c)}</b></div><div>${tier}</div><div class="max-tier-note">MAX TIER · EXOTIC</div><div class="statline"><span>ATK ${s.atk}</span><span>DEF ${s.def}</span><span>SPD ${s.spd}</span></div><div class="ability">${abilityFor(c).name}</div></div></div></div>`;
+     return `<div class="upgrade-card" style="--rarity:${R[tier].color}">
+       <div class="upgrade-row"><img src="${c.image}"><div>
+         <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+           <b>${c.name}</b><b style="font-size:20px;color:${R[tier].color}">OVR ${overall(c)}</b>
+         </div>
+         <div>${tier}</div>
+         <div class="max-tier-note">MAX TIER · EXOTIC</div>
+         <div class="statline"><span>ATK ${s.atk}</span><span>DEF ${s.def}</span><span>SPD ${s.spd}</span></div>
+         <div class="ability">${abilityFor(c).name}</div>
+       </div></div>
+     </div>`;
    }
-   const xp=Math.min(state.cardXP[c.id]||0,winsNeeded(c)),needed=winsNeeded(c),left=Math.max(0,(state.cardCooldown[c.id]||0)-now);
-   let cd="";if(left){let hh=Math.ceil(left/3600000);cd=`<div class="cooldown">Evolution cooldown: about ${hh}h remaining</div>`}
-   return `<div class="upgrade-card" style="--rarity:${R[tier].color}"><div class="upgrade-row"><img src="${c.image}"><div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>${c.name}</b><b style="font-size:20px;color:${R[tier].color}">OVR ${overall(c)}</b></div><div>${tier} · ${xp}/${needed} wins</div><div class="progress"><i style="width:${Math.min(100,xp/needed*100)}%"></i></div>${cd}<div class="statline"><span>ATK ${s.atk}</span><span>DEF ${s.def}</span><span>SPD ${s.spd}</span></div><div class="ability">${abilityFor(c).name}</div></div></div></div>`;
+
+   const xp=Math.min(state.cardXP[c.id]||0,winsNeeded(c));
+   const needed=winsNeeded(c);
+   const left=Math.max(0,(state.cardCooldown[c.id]||0)-now);
+   let cd="";
+   if(left){
+     const hours=Math.ceil(left/3600000);
+     cd=`<div class="cooldown">Evolution cooldown: about ${hours}h remaining</div>`;
+   }
+
+   return `<div class="upgrade-card" style="--rarity:${R[tier].color}">
+     <div class="upgrade-row"><img src="${c.image}"><div>
+       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+         <b>${c.name}</b><b style="font-size:20px;color:${R[tier].color}">OVR ${overall(c)}</b>
+       </div>
+       <div>${tier} · ${xp}/${needed} wins</div>
+       <div class="progress"><i style="width:${Math.min(100,xp/needed*100)}%"></i></div>
+       ${cd}
+       <div class="statline"><span>ATK ${s.atk}</span><span>DEF ${s.def}</span><span>SPD ${s.spd}</span></div>
+       <div class="ability">${abilityFor(c).name}</div>
+     </div></div>
+   </div>`;
  }).join(""):`<div style="text-align:center;padding:30px;font-weight:900">No cards owned yet.</div>`;
 }
 setInterval(()=>{if($("#upgrade").classList.contains("active"))renderUpgrades()},60000);
@@ -1341,7 +1368,7 @@ async function checkForUpdate(){
  try{
    const r=await fetch("./version.json?t="+Date.now(),{cache:"no-store"});
    const remote=await r.json();
-   const local=9;
+   const local=9.01;
    if(Number(remote.version)>local){
      b.textContent=`V${remote.version} READY`;
      b.classList.add("update-ready");
@@ -1358,7 +1385,7 @@ async function passiveUpdateCheck(){
  try{
    const r=await fetch("./version.json?t="+Date.now(),{cache:"no-store"});
    const remote=await r.json();
-   if(Number(remote.version)>9){
+   if(Number(remote.version)>9.01){
      const b=$("#updateBtn");
      b.textContent=`V${remote.version} READY`;
      b.classList.add("update-ready");

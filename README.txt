@@ -188,3 +188,9 @@ V9 FINAL SLOT FIX
 - Cards no longer shift across the lineup when a slot is changed.
 - If a selected card is already in another slot, the two slots swap instead of duplicating.
 - All prior V9 fixes remain included.
+
+V9 FORCED HOTFIX
+- Visible game version remains V9.
+- Internal update version is 9.01 so existing V9 installs actually detect and install this patch.
+- Exotic cards show MAX TIER only: no 50/50 wins, no progress bar, no evolution cooldown.
+- Team card selection replaces the exact tapped slot instead of inserting/shifting cards.

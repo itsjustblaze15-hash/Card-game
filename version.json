@@ -1,4 +1,5 @@
 {
-  "version": "9",
-  "build": "final-slot-replacement"
+  "version": "9.01",
+  "display_version": "9",
+  "build": "forced-slot-exotic-hotfix"
 }
