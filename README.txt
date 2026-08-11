@@ -149,3 +149,11 @@ V8 BOSS DIFFICULTY UPDATE
 - Ice Agents remains easiest, I Need More Bullets harder, Artlander hardest.
 - Bosses remain challenging and are not guaranteed wins.
 - Six-star Exotic normal matchmaking fairness and no-duplicate bot teams remain unchanged.
+
+V8 BOSS TEAM-TURN UPDATE
+- Boss fights now use team turns.
+- On the player's turn, all surviving player cards attack the boss once.
+- On the boss turn, the boss attacks every surviving player card once.
+- Turns alternate until the boss or the whole player team reaches 0 HP.
+- Every 2-win streak milestone now gives an extra 1,500 coins instead of the old tiny bonus.
+- Existing boss HP/damage tuning remains in place.
