@@ -407,3 +407,18 @@ V9.24 GOLDEN ARENA DECK EDITOR FIX
 - Choosing a card already in another slot swaps the two slots instead of duplicating.
 - ADD TO DECK now actually saves cards when the deck has open slots.
 - A full 8-card deck tells the player to select a slot to replace.
+
+V9.25 GOLDEN ARENA HUB + MATCH FLOW
+- Golden Arena now opens into its own full-screen menu with bottom PLAY / DECK / SHOP tabs.
+- Deck uses the existing 8-card editor and replacement system.
+- Shop intentionally says COMING SOON.
+- Golden Arena tag on the main Play chooser changed from BETA to NEW.
+- PLAY runs a 2.2–3.9 second Finding Match animation, Match Found, then 3-2-1-BATTLE before gameplay.
+- Regulation remains exactly 2:00.
+- First 1:30 uses 1x energy: exactly +1 energy every 4 seconds.
+- Final 0:30 uses 2x energy: exactly +1 energy every 2 seconds, with a small 30 SECONDS / 2x ENERGY banner.
+- Final five seconds display a large 5-4-3-2-1 countdown.
+- If tower score is tied at 0:00 (0-0, 1-1, or 2-2), Overtime begins at 3x energy.
+- Overtime is sudden death: the first new tower destroyed wins.
+- Victory/Defeat screen remains cinematic and now clearly shows the coin reward.
+- Victory coins are credited when CONTINUE is pressed.
