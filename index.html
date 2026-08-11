@@ -300,6 +300,15 @@ button{font:inherit;cursor:pointer}
 @keyframes gaCrown{0%{transform:scale(0) rotate(-25deg)}70%{transform:scale(1.25) rotate(8deg)}100%{transform:scale(1)}}
 @keyframes gaBurst{0%{opacity:1;transform:rotate(var(--r)) translateY(0) scaleY(.2)}100%{opacity:0;transform:rotate(var(--r)) translateY(-120px) scaleY(1)}}
 
+
+.ga-info-overlay{position:fixed;inset:0;z-index:100130;background:#000d;display:none;align-items:center;justify-content:center;padding:16px}
+.ga-info-overlay.show{display:flex}.ga-info-box{width:min(390px,100%);background:#171717;color:#fff;border:3px solid #ffd52a;border-radius:20px;padding:14px}
+.ga-info-head{display:grid;grid-template-columns:92px 1fr;gap:11px}.ga-info-head img{width:92px;height:122px;object-fit:cover;border-radius:10px;border:3px solid var(--r)}
+.ga-info-head h2{margin:2px 0 5px;color:#ffd52a}.ga-info-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:11px 0}
+.ga-info-stats b{background:#292929;border-radius:9px;padding:8px 4px;text-align:center;font-size:10px}.ga-info-role{padding:9px;border:1px solid #ffd52a66;border-radius:10px;font-size:10px;font-weight:850;line-height:1.35}
+.ga-info-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.ga-info-actions button{border:0;border-radius:10px;padding:11px;font-weight:1000}
+.ga-info-actions .add{background:#ffd52a;color:#111}.ga-info-actions .close-info{background:#444;color:#fff}
+
 </style>
 </head>
 <body>
@@ -410,6 +419,17 @@ button{font:inherit;cursor:pointer}
   <div class="ga-lobby-actions">
    <button type="button" onclick="gaEditSavedDeck()">EDIT DECK</button>
    <button type="button" onclick="gaLobbyPlay()">PLAY</button>
+  </div>
+ </div>
+</div>
+
+
+<div id="gaInfo" class="ga-info-overlay">
+ <div class="ga-info-box">
+  <div id="gaInfoBody"></div>
+  <div class="ga-info-actions">
+   <button type="button" class="close-info" onclick="gaCloseInfo()">CLOSE</button>
+   <button type="button" class="add" id="gaInfoAdd">ADD TO DECK</button>
   </div>
  </div>
 </div>
@@ -852,6 +872,14 @@ function winsNeeded(c){
  };
  return requirements[tier]||10;
 }
+
+function openBattleMode(){
+ const panel=$("#battleModePanel");
+ if(panel)panel.style.display="block";
+ renderBattle();
+ setTimeout(()=>panel?.scrollIntoView({behavior:"smooth",block:"start"}),30);
+}
+
 function stats(c){
  const tier=tierFor(c),ti=Math.max(0,TIERS.indexOf(tier)),xp=Math.min(state.cardXP[c.id]||0,winsNeeded(c));
  const seed=(c.id*37)%23;
@@ -1860,7 +1888,7 @@ const GA_SCALE={
  Legendary:{hp:1.40,atk:1.27,spd:1.06},Exotic:{hp:1.55,atk:1.36,spd:1.08}
 };
 const GA_POWER_NAMES=["GUARDIAN","BERSERKER","SPRINTER","DRAIN","SPLASH","SHIELD"];
-const GA={deck:[],cycle:[],hand:[],next:null,botDeck:[],botCycle:[],botHand:[],botNext:null,energy:10,botEnergy:10,units:[],towers:null,selected:null,running:false,start:0,overtime:false,otPlayerScore:0,otEnemyScore:0,penaltyArmed:false,loops:[],lastBotPlay:0};
+const GA={deck:[],cycle:[],hand:[],next:null,botDeck:[],botCycle:[],botHand:[],botNext:null,energy:10,botEnergy:10,units:[],towers:null,selected:null,running:false,start:0,overtime:false,otPlayerScore:0,otEnemyScore:0,penaltyArmed:false,lastPlayerPlay:0,loops:[],lastBotPlay:0};
 const GA_RIVER_TOP=45;
 const GA_RIVER_BOTTOM=54;
 const GA_BRIDGES=[{id:"L",x:29},{id:"R",x:70}];
@@ -1879,6 +1907,34 @@ function gaCost(c){return GA_COST[c.rarity]||3}
 function gaRank(c){return GA_RANK[c.rarity]||1}
 function gaPower(c){return GA_POWER_NAMES[(Number(c.id)||0)%GA_POWER_NAMES.length]}
 function gaShuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function gaTowerRush(c){
+ const rank=gaRank(c),p=gaPower(c);
+ return (rank>=4 && ((Number(c.id)||0)%3===0 || p==="SPRINTER")) || (rank>=4&&p==="GUARDIAN");
+}
+function gaRole(c){
+ if(gaTowerRush(c))return "TOWER HUNTER — prioritizes towers and usually ignores enemy units.";
+ const p=gaPower(c);
+ return {
+  GUARDIAN:"TANK — very high health, slower movement, prefers pushing toward towers.",
+  BERSERKER:"BRAWLER — gains extra damage below half health.",
+  SPRINTER:"RUSHER — moves much faster and pressures objectives.",
+  DRAIN:"SUSTAIN — heals from damage it deals.",
+  SPLASH:"CONTROL — damages nearby enemies when it attacks.",
+  SHIELD:"DEFENDER — first incoming hit is heavily reduced."
+ }[p]||"FIGHTER";
+}
+function gaOpenInfo(id){
+ const c=CARDS.find(x=>x.id===id);if(!c)return;
+ const s=stats(c),scale=GA_SCALE[c.rarity]||GA_SCALE.Common;
+ const hp=Math.round((70+s.def*.42)*scale.hp),dmg=Math.max(6,Math.round((s.atk*.095)*scale.atk));
+ $("#gaInfoBody").innerHTML=`<div class="ga-info-head" style="--r:${R[c.rarity].color}"><img src="${c.image}"><div><h2>${c.name}</h2><b>${c.rarity}</b><br><small>${gaCost(c)} ENERGY · ${gaPower(c)}</small></div></div><div class="ga-info-stats"><b>HP<br>${hp}</b><b>DAMAGE<br>${dmg}</b><b>SPEED<br>${Math.round(s.spd*scale.spd)}</b></div><div class="ga-info-role">${gaRole(c)}</div>`;
+ $("#gaInfoAdd").textContent=GA.deck.includes(id)?"REMOVE":"ADD TO DECK";
+ $("#gaInfoAdd").onclick=()=>{gaTogglePick(id);gaOpenInfo(id)};
+ $("#gaInfo").classList.add("show");
+}
+function gaCloseInfo(){$("#gaInfo")?.classList.remove("show")}
+
 function gaSavedDeck(){return Array.isArray(state.gaDeck)?state.gaDeck.filter(id=>CARDS.some(c=>c.id===id)&&(state.owned[id]||0)>0).slice(0,8):[]}
 function gaSaveDeck(ids){state.gaDeck=[...new Set(ids)].slice(0,8);save();gaRenderSavedDeck()}
 function gaRenderSavedDeck(){
@@ -1898,7 +1954,7 @@ function gaOpenPicker(editing=false){
  if(!editing&&saved.length===8){GA.deck=[...saved];gaStart();return}
  GA.deck=editing?[...saved]:[];
  const owned=CARDS.filter(c=>(state.owned[c.id]||0)>0).sort((a,b)=>gaRank(b)-gaRank(a)||(a.name||"").localeCompare(b.name||""));
- $("#gaGrid").innerHTML=owned.map(c=>`<button type="button" id="gaPick${c.id}" class="ga-pick ${GA.deck.includes(c.id)?"selected":""}" style="--r:${R[c.rarity].color}" onclick="gaTogglePick(${c.id})"><img src="${c.image}" onerror="this.style.opacity='.2'"><b>${c.name}<br>${c.rarity} · ${gaCost(c)} ENERGY<span class="ga-ability">${gaPower(c)}</span></b></button>`).join("");
+ $("#gaGrid").innerHTML=owned.map(c=>`<button type="button" id="gaPick${c.id}" class="ga-pick ${GA.deck.includes(c.id)?"selected":""}" style="--r:${R[c.rarity].color}" onclick="gaOpenInfo(${c.id})"><img src="${c.image}" onerror="this.style.opacity='.2'"><b>${c.name}<br>${c.rarity} · ${gaCost(c)} ENERGY<span class="ga-ability">${gaPower(c)}</span></b></button>`).join("");
  $("#gaCount").textContent=GA.deck.length+" / 8";
  $("#gaPicker").classList.add("show");
  if(!owned.length)toast("You need owned cards to play Golden Arena");
@@ -1951,8 +2007,8 @@ function gaFreshTowers(){return {
 function gaStart(){
  const saved=gaSavedDeck();if(saved.length!==8){gaOpenPicker(true);toast("Build an 8-card Arena deck first");return}
  GA.deck=[...saved];GA.botDeck=gaBuildMatchedBotDeck();gaInitCycle(GA.deck,false);gaInitCycle(GA.botDeck,true);
- GA.energy=10;GA.botEnergy=10;GA.units=[];GA.towers=gaFreshTowers();GA.selected=null;GA.running=true;GA.start=Date.now();GA.overtime=false;GA.otPlayerScore=0;GA.otEnemyScore=0;GA.penaltyArmed=true;GA.lastBotPlay=0;
- $("#gaTimer").textContent="3:00";$("#gaBoost").textContent="";$("#gaGame").classList.remove("ga-overtime");$("#gaGame").classList.add("show");
+ GA.energy=10;GA.botEnergy=10;GA.units=[];GA.towers=gaFreshTowers();GA.selected=null;GA.running=true;GA.start=Date.now();GA.overtime=false;GA.otPlayerScore=0;GA.otEnemyScore=0;GA.penaltyArmed=true;GA.lastPlayerPlay=0;GA.lastBotPlay=0;
+ $("#gaTimer").textContent="2:00";$("#gaBoost").textContent="";$("#gaGame").classList.remove("ga-overtime");$("#gaGame").classList.add("show");
  gaRenderHand();gaDraw();gaUpdateEnergy();
  GA.loops=[setInterval(gaRegen,500),setInterval(gaTick,100),setInterval(gaBotThink,350),setInterval(gaClock,250)];
 }
@@ -1988,16 +2044,17 @@ function gaPlayerDeployAllowed(x,y){
 }
 function gaDeploy(e){
  if(!GA.running||GA.selected===null)return;
+ const now=Date.now();if(now-GA.lastPlayerPlay<700){toast("Deployment cooling down");return}
  const r=$("#gaField").getBoundingClientRect(),x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100;
  if(!gaPlayerDeployAllowed(x,y)){toast("Red area is blocked until you destroy that lane's tower");return}
  const c=CARDS.find(x=>x.id===GA.selected),cost=gaCost(c);if(GA.energy<cost)return;
- GA.energy-=cost;gaSpawn(c,"player",x,y);gaCyclePlayed(GA.selected,false);GA.selected=null;gaUpdateEnergy();gaRenderHand();gaDraw();
+ GA.energy-=cost;GA.lastPlayerPlay=now;gaSpawn(c,"player",x,y);gaCyclePlayed(GA.selected,false);GA.selected=null;gaUpdateEnergy();gaRenderHand();gaDraw();
 }
 function gaSpawn(c,side,x,y){
  const s=stats(c),tier=c.rarity,scale=GA_SCALE[tier]||GA_SCALE.Common,power=gaPower(c),speedVariance=.88+((Number(c.id)||0)%7)*.04;
  let hp=Math.round((70+s.def*.42)*scale.hp),atk=Math.max(6,Math.round((s.atk*.095)*scale.atk)),speed=(.105+s.spd*.00048)*scale.spd*speedVariance;
  if(power==="GUARDIAN"){hp=Math.round(hp*1.35);speed*=.88}if(power==="SPRINTER")speed*=1.32;
- GA.units.push({uid:Date.now()+Math.random(),c,side,x,y,hp,max:hp,atk,speed,cool:0,power,shield:power==="SHIELD"?1:0});
+ const towerRush=gaTowerRush(c);if(towerRush){speed*=1.08;atk=Math.round(atk*1.10)}GA.units.push({uid:Date.now()+Math.random(),c,side,x,y,hp,max:hp,atk,speed,cool:0,power,towerRush,shield:power==="SHIELD"?1:0});
 }
 function gaRegen(){if(!GA.running)return;const rate=GA.overtime?.60:.30;GA.energy=Math.min(10,GA.energy+rate);GA.botEnergy=Math.min(10,GA.botEnergy+rate);gaUpdateEnergy();gaRenderHand()}
 function gaThreat(side,lane){return GA.units.filter(u=>u.side!==side&&u.hp>0&&gaLaneForX(u.x)===lane).reduce((n,u)=>n+u.hp+u.atk*5,0)}
@@ -2008,8 +2065,8 @@ function gaBotChooseCard(){
  let scored=affordable.map(c=>{
    let score=Math.random()*18;
    const cost=gaCost(c),p=gaPower(c),rank=gaRank(c);
-   if(defending){score+=rank*8;if(["GUARDIAN","SPLASH","SHIELD"].includes(p))score+=18}
-   else{score+=rank*5;if(["SPRINTER","BERSERKER","DRAIN"].includes(p))score+=12}
+   if(defending){score+=rank*5;if(["SPLASH","SHIELD"].includes(p))score+=11}
+   else{score+=rank*8;if(["SPRINTER","BERSERKER","DRAIN"].includes(p))score+=16;if(gaTowerRush(c))score+=24}
    if(GA.botEnergy>=8&&cost>=6)score+=14;
    if(GA.botEnergy<6&&cost<=5)score+=10;
    return {c,score};
@@ -2018,20 +2075,20 @@ function gaBotChooseCard(){
 }
 function gaBotThink(){
  if(!GA.running)return;
- const now=Date.now();if(now-GA.lastBotPlay<900+Math.random()*850)return;
+ const now=Date.now();if(now-GA.lastBotPlay<700+Math.random()*500)return;
  const c=gaBotChooseCard();if(!c)return;
  const leftThreat=gaThreat("enemy","left"),rightThreat=gaThreat("enemy","right");
  let lane=leftThreat>rightThreat?"left":rightThreat>leftThreat?"right":(Math.random()<.5?"left":"right");
  let x=lane==="left"?29+Math.random()*17:55+Math.random()*18,y;
  const canAdvance=gaPlayerLaneOpenForEnemy(lane);
- if(Math.max(leftThreat,rightThreat)>120)y=34+Math.random()*10;
- else if(canAdvance&&Math.random()<.42)y=54+Math.random()*13;
- else y=27+Math.random()*18; // strictly bot half
+ if(Math.max(leftThreat,rightThreat)>220&&Math.random()<.55)y=34+Math.random()*10;
+ else if(canAdvance&&Math.random()<.62)y=54+Math.random()*13;
+ else y=35+Math.random()*9; // strictly bot half
  GA.botEnergy-=gaCost(c);gaSpawn(c,"enemy",x,y);gaCyclePlayed(c.id,true);GA.lastBotPlay=now;
 }
 function gaEnemyUnits(side){return GA.units.filter(u=>u.side!==side&&u.hp>0)}
 function gaLaneTargetTower(u){const lane=gaLaneForX(u.x);if(u.side==="player"){const t=lane==="left"?GA.towers.eL:GA.towers.eR;return t.hp>0?t:GA.towers.eK}else{const t=lane==="left"?GA.towers.pL:GA.towers.pR;return t.hp>0?t:GA.towers.pK}}
-function gaAggroTarget(u){const lane=gaLaneForX(u.x),c=gaEnemyUnits(u.side).filter(v=>gaLaneForX(v.x)===lane&&Math.hypot(u.x-v.x,u.y-v.y)<=14);return c.sort((a,b)=>Math.hypot(u.x-a.x,u.y-a.y)-Math.hypot(u.x-b.x,u.y-b.y))[0]||null}
+function gaAggroTarget(u){if(u.towerRush)return null;const lane=gaLaneForX(u.x),radius=u.max>190?7:11,c=gaEnemyUnits(u.side).filter(v=>gaLaneForX(v.x)===lane&&Math.hypot(u.x-v.x,u.y-v.y)<=radius);return c.sort((a,b)=>Math.hypot(u.x-a.x,u.y-a.y)-Math.hypot(u.x-b.x,u.y-b.y))[0]||null}
 
 function gaRegion(y){
  if(y<GA_RIVER_TOP)return "enemy";
@@ -2072,7 +2129,7 @@ function gaTick(){
  for(const u of GA.units){if(u.hp<=0)continue;u.cool=Math.max(0,u.cool-1);const foe=gaAggroTarget(u);
   if(foe){const d=Math.hypot(u.x-foe.x,u.y-foe.y);if(d<4.8){if(!u.cool){gaUnitAttack(u,foe);u.cool=7}}else{gaMoveToward(u,foe)}continue}
   const t=gaLaneTargetTower(u);if(!t||t.hp<=0)continue;const d=Math.hypot(u.x-t.x,u.y-t.y);
-  if(d<5.7){if(!u.cool){let dmg=u.atk;if(u.power==="BERSERKER"&&u.hp<=u.max*.5)dmg=Math.round(dmg*1.35);t.hp=Math.max(0,t.hp-dmg);if(u.power==="DRAIN")u.hp=Math.min(u.max,u.hp+Math.max(1,Math.round(dmg*.12)));u.cool=8}}
+  if(d<5.7){if(!u.cool){let dmg=u.atk;if(u.power==="BERSERKER"&&u.hp<=u.max*.5)dmg=Math.round(dmg*1.35);if(u.towerRush)dmg=Math.round(dmg*1.28);t.hp=Math.max(0,t.hp-dmg);if(u.power==="DRAIN")u.hp=Math.min(u.max,u.hp+Math.max(1,Math.round(dmg*.12)));u.cool=8}}
   else{gaMoveToward(u,t)}
  }
  for(const t of Object.values(GA.towers)){if(t.hp<=0)continue;const a=GA.units.filter(u=>u.side!==t.side&&u.hp>0&&Math.hypot(u.x-t.x,u.y-t.y)<15).sort((a,b)=>Math.hypot(a.x-t.x,a.y-t.y)-Math.hypot(b.x-t.x,b.y-t.y));if(a.length&&Math.random()<.14)a[0].hp-=gaIncomingDamage(a[0],11)}
@@ -2163,7 +2220,7 @@ function gaResultFX(win){
  gaResultSound(win);
  if(navigator.vibrate)navigator.vibrate(win?[70,45,100]:[120,60,120]);
 }
-function gaFinish(win){GA.penaltyArmed=false;GA.running=false;gaStopLoops();gaResultFX(win);$("#gaGame").classList.remove("show","ga-overtime");const towers=gaScore("player"),reward=win?1500+towers*500:0;if(win){state.coins+=reward;save()}$("#gaResultTitle").textContent=win?"VICTORY":"DEFEAT";$("#gaResultText").textContent=win?`Destroyed ${towers} tower${towers===1?"":"s"} · +${reward.toLocaleString()} coins`:"The black side won the arena.";$("#gaResult").classList.add("show")}
+function gaFinish(win){GA.penaltyArmed=false;GA.running=false;gaStopLoops();gaResultFX(win);$("#gaGame").classList.remove("show","ga-overtime");const towers=gaScore("player"),reward=win?40000+towers*2500:0;if(win){state.coins+=reward;save()}$("#gaResultTitle").textContent=win?"VICTORY":"DEFEAT";$("#gaResultText").textContent=win?`Destroyed ${towers} tower${towers===1?"":"s"} · +${reward.toLocaleString()} coins`:"The black side won the arena.";$("#gaResult").classList.add("show")}
 function gaCloseResult(){const r=$("#gaResult");r?.classList.remove("show","ga-victory","ga-defeat");render();gaOpenLobby()}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",gaRenderSavedDeck);else gaRenderSavedDeck();
 

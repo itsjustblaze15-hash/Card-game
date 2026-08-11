@@ -364,3 +364,15 @@ V9.20 GOLDEN ARENA RESULTS
 - Victory gets gold burst, crown pop, glow, vibration, and rising victory sound sting.
 - Defeat gets red impact, skull, drop/shake animation, vibration, and falling defeat sound sting.
 - Sounds are generated in-browser, so no new audio assets are required.
+
+V9.21 BATTLE BUTTON + GOLDEN ARENA ATTACK UPDATE
+- Fixed BATTLE mode button: openBattleMode() now exists and opens/renders normal 3v3 setup.
+- Golden Arena wins now award at least 40,000 coins, plus 2,500 per tower destroyed.
+- Golden Arena player and bot use short deployment cooldowns in addition to energy.
+- AI is less defense-obsessed and more willing to create lane pressure.
+- Some Epic, Legendary and Exotic cards are Tower Hunters and ignore units to attack towers.
+- High-HP Guardian cards at Epic+ also become tower-focused objective pushers.
+- Normal fighters use a shorter aggro leash so battles do not become permanent midfield defense.
+- Tower Hunters gain modest tower damage/speed pressure.
+- Tapping a card in Arena deck editing opens a card details panel first.
+- Card details show rarity, energy, HP, damage, speed, power and combat role before adding/removing it.
