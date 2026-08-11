@@ -157,3 +157,16 @@ V8 BOSS TEAM-TURN UPDATE
 - Turns alternate until the boss or the whole player team reaches 0 HP.
 - Every 2-win streak milestone now gives an extra 1,500 coins instead of the old tiny bonus.
 - Existing boss HP/damage tuning remains in place.
+
+GOLDEN PULLS V9
+- Added 30 new cards from the newly submitted V9 photos.
+- assets/ intentionally contains ONLY the 30 new V9 photos.
+- Secret purple Random card unlocks automatically after every other card is owned.
+- One-time What's New popup added for V9.
+- Prize Wheel redesigned with full reward names.
+- Matchmaking loosened while still favoring similar team strength.
+- Bot teams cannot duplicate cards.
+- Boss reward cards cannot be sold; Sell All skips them.
+- Boss HP unchanged from the current V8 build.
+- Boss damage increased moderately for team-turn boss fights.
+- No submitted V9 photos were generated or edited.

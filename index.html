@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Golden Pulls">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="manifest" href="./manifest.webmanifest">
-<title>Golden Pulls V7</title>
+<title>Golden Pulls V9</title>
 <style>
 :root{--gold:#f3c933;--deep:#8d6500;--cream:#fff7d6;--ink:#201700;--common:#9b9b9b;--uncommon:#27c45b;--rare:#2587ff;--epic:#a34cff;--legendary:#ff8a1f}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -169,12 +169,26 @@ button{font:inherit;cursor:pointer}
 
 
 .team-rating-box{margin:10px 0 12px;padding:11px 13px;border:3px solid var(--team-color,#999);background:color-mix(in srgb,var(--team-color,#999) 22%,white);border-radius:15px;display:flex;justify-content:space-between;align-items:center;font-weight:1000}.team-rating-stars{font-size:18px}.records-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.record-stat{background:#fff3bd;border:2px solid #9a7000;border-radius:15px;padding:14px;text-align:center}.record-stat b{display:block;font-size:24px}.record-stat span{font-size:10px;font-weight:1000}.boss-single-center{display:flex!important;justify-content:center!important}.boss-single-center .arena-card{width:31%;min-width:92px;max-width:145px}
+
+/* V9 */
+.wheel{border:9px solid #fff3ba;box-shadow:0 16px 34px #4f350066,inset 0 0 0 3px #241a00}
+.wheel-label-v9{width:84px;margin-left:-42px;margin-top:-12px;text-align:center!important;color:white!important;text-shadow:0 2px 4px #000;font-weight:1000}
+.wheel-label-v9 span{display:block;font-size:8px}.wheel-label-v9 small{display:block;font-size:6px;margin-top:1px}
+.secret-locked-card{min-height:250px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(145deg,#2b2430,#08070a);color:white}
+.secret-question{width:100px;height:130px;border-radius:16px;border:5px solid #a34cff;display:grid;place-items:center;font-size:70px;font-weight:1000;color:#c781ff;background:#140e18;box-shadow:0 0 26px #a34cff66}
+.secret-locked-card .meta{display:block;text-align:center}.secret-locked-card .meta span{display:block;margin-top:5px}
+.boss-unsellable{opacity:.72;background:#484848!important;color:#eee!important;box-shadow:none!important}
+.whatsnew-overlay,.secret-reward-overlay{position:fixed;inset:0;z-index:100000;background:#000c;display:none;align-items:center;justify-content:center;padding:18px}
+.whatsnew-overlay.show,.secret-reward-overlay.show{display:flex}
+.whatsnew-box,.secret-reward-box{width:min(390px,100%);background:#fff7d6;color:#201700;border:4px solid #f3c933;border-radius:22px;padding:20px;box-shadow:0 22px 55px #0008}
+.whatsnew-box h2,.secret-reward-box h2{margin:0 0 10px}.whatsnew-box ul{padding-left:20px;margin:10px 0 16px}.whatsnew-box li{margin:6px 0;font-weight:800;font-size:12px}
+.whatsnew-box button,.secret-reward-box button{width:100%;border:0;border-radius:13px;padding:12px;background:#241a00;color:#ffd84d;font-weight:1000}
 </style>
 </head>
 <body>
 <div class="app">
 <div class="top">
-  <div class="brand">GOLDEN PULLS <span class="vbadge">V8</span></div>
+  <div class="brand">GOLDEN PULLS <span class="vbadge">V9</span></div>
   <button id="updateBtn" class="update" onclick="checkForUpdate()">UPDATE</button>
   <div class="wallet">● <span id="coins">0</span></div>
 </div>
@@ -253,6 +267,8 @@ button{font:inherit;cursor:pointer}
 <div class="arena-bottom"><div id="playerArena" class="arena-team"></div></div>
 </div></div>
 <div class="result-screen" id="resultScreen"><div><h1 id="resultTitle">WIN</h1><p id="resultText"></p><button onclick="closeResult()">BACK</button><button onclick="closeResult();startBattle()">PLAY AGAIN</button></div></div>
+<div id="whatsNewOverlay" class="whatsnew-overlay"><div class="whatsnew-box"><h2>WHAT'S NEW IN V9</h2><ul><li>30 new cards.</li><li>Secret collection-completion card.</li><li>Prize Wheel redesigned.</li><li>Matchmaking has more variety.</li><li>Boss cards are unsellable.</li><li>Boss damage rebalanced.</li></ul><button onclick="closeWhatsNew()">OK</button></div></div>
+<div id="secretRewardOverlay" class="secret-reward-overlay"><div class="secret-reward-box"><h2>SECRET CARD UNLOCKED</h2><p>You collected every card in the game. You have earned a hidden Random card.</p><button onclick="closeSecretReward();render()">CLAIM</button></div></div>
 <div class="toast" id="toast"></div>
 <div class="confirm-overlay" id="dangerOverlay"><div class="confirm-box">
 <h2 id="dangerTitle">ARE YOU SURE?</h2><p id="dangerText"></p>
@@ -261,11 +277,12 @@ button{font:inherit;cursor:pointer}
 </div></div>
 
 <script>
-const CARDS = [{"id": 1, "character": "TIGGY", "name": "TIGGY #01", "rarity": "Common", "image": "assets/card_001.jpeg"}, {"id": 2, "character": "TIGGY", "name": "TIGGY #02", "rarity": "Common", "image": "assets/card_002.jpeg"}, {"id": 3, "character": "TIGGY", "name": "TIGGY #03", "rarity": "Common", "image": "assets/card_003.jpg"}, {"id": 4, "character": "TIGGY", "name": "TIGGY #04", "rarity": "Common", "image": "assets/card_004.jpg"}, {"id": 5, "character": "TIGGY", "name": "TIGGY #05", "rarity": "Common", "image": "assets/card_005.jpeg"}, {"id": 6, "character": "TIGGY", "name": "TIGGY #06", "rarity": "Common", "image": "assets/card_006.jpg"}, {"id": 7, "character": "TIGGY", "name": "TIGGY #07", "rarity": "Common", "image": "assets/card_007.jpg"}, {"id": 8, "character": "TIGGY", "name": "TIGGY #08", "rarity": "Common", "image": "assets/card_008.jpg"}, {"id": 9, "character": "TIGGY", "name": "TIGGY #09", "rarity": "Common", "image": "assets/card_009.jpg"}, {"id": 10, "character": "TIGGY", "name": "TIGGY #10", "rarity": "Common", "image": "assets/card_010.jpg"}, {"id": 11, "character": "TIGGY", "name": "TIGGY #11", "rarity": "Common", "image": "assets/card_011.jpg"}, {"id": 12, "character": "TIGGY", "name": "TIGGY #12", "rarity": "Common", "image": "assets/card_012.jpg"}, {"id": 13, "character": "TIGGY", "name": "TIGGY #13", "rarity": "Common", "image": "assets/card_013.jpg"}, {"id": 14, "character": "TIGGY", "name": "TIGGY #14", "rarity": "Common", "image": "assets/card_014.jpg"}, {"id": 15, "character": "TIGGY", "name": "TIGGY #15", "rarity": "Uncommon", "image": "assets/card_015.jpg"}, {"id": 16, "character": "TIGGY", "name": "TIGGY #16", "rarity": "Uncommon", "image": "assets/card_016.jpg"}, {"id": 17, "character": "TIGGY", "name": "TIGGY #17", "rarity": "Uncommon", "image": "assets/card_017.jpeg"}, {"id": 18, "character": "TIGGY", "name": "TIGGY #18", "rarity": "Uncommon", "image": "assets/card_018.jpeg"}, {"id": 19, "character": "TIGGY", "name": "TIGGY #19", "rarity": "Uncommon", "image": "assets/card_019.jpeg"}, {"id": 20, "character": "TIGGY", "name": "TIGGY #20", "rarity": "Uncommon", "image": "assets/card_020.jpeg"}, {"id": 21, "character": "TIGGY", "name": "TIGGY #21", "rarity": "Uncommon", "image": "assets/card_021.jpeg"}, {"id": 22, "character": "TIGGY", "name": "TIGGY #22", "rarity": "Uncommon", "image": "assets/card_022.jpg"}, {"id": 23, "character": "TIGGY", "name": "TIGGY #23", "rarity": "Uncommon", "image": "assets/card_023.jpg"}, {"id": 24, "character": "TIGGY", "name": "TIGGY #24", "rarity": "Uncommon", "image": "assets/card_024.jpg"}, {"id": 25, "character": "TIGGY", "name": "TIGGY #25", "rarity": "Rare", "image": "assets/card_025.jpg"}, {"id": 26, "character": "TIGGY", "name": "TIGGY #26", "rarity": "Rare", "image": "assets/card_026.jpeg"}, {"id": 27, "character": "TIGGY", "name": "TIGGY #27", "rarity": "Rare", "image": "assets/card_027.jpeg"}, {"id": 28, "character": "TIGGY", "name": "TIGGY #28", "rarity": "Rare", "image": "assets/card_028.jpeg"}, {"id": 29, "character": "TIGGY", "name": "TIGGY #29", "rarity": "Rare", "image": "assets/card_029.jpeg"}, {"id": 30, "character": "TIGGY", "name": "TIGGY #30", "rarity": "Rare", "image": "assets/card_030.jpeg"}, {"id": 31, "character": "TIGGY", "name": "TIGGY #31", "rarity": "Rare", "image": "assets/card_031.jpeg"}, {"id": 32, "character": "TIGGY", "name": "TIGGY #32", "rarity": "Epic", "image": "assets/card_032.jpeg"}, {"id": 33, "character": "TIGGY", "name": "TIGGY #33", "rarity": "Epic", "image": "assets/card_033.jpeg"}, {"id": 34, "character": "TIGGY", "name": "TIGGY #34", "rarity": "Epic", "image": "assets/card_034.jpeg"}, {"id": 35, "character": "TIGGY", "name": "TIGGY #35", "rarity": "Epic", "image": "assets/card_035.jpeg"}, {"id": 36, "character": "TIGGY", "name": "TIGGY #36", "rarity": "Legendary", "image": "assets/card_036.jpeg"}, {"id": 37, "character": "TIGGY", "name": "TIGGY #37", "rarity": "Legendary", "image": "assets/card_037.jpeg"}, {"id": 38, "character": "VGO", "name": "VGO #01", "rarity": "Common", "image": "assets/card_038.jpeg"}, {"id": 39, "character": "VGO", "name": "VGO #02", "rarity": "Common", "image": "assets/card_039.jpg"}, {"id": 40, "character": "VGO", "name": "VGO #03", "rarity": "Common", "image": "assets/card_040.jpg"}, {"id": 41, "character": "VGO", "name": "VGO #04", "rarity": "Common", "image": "assets/card_041.jpg"}, {"id": 42, "character": "VGO", "name": "VGO #05", "rarity": "Common", "image": "assets/card_042.jpg"}, {"id": 43, "character": "VGO", "name": "VGO #06", "rarity": "Uncommon", "image": "assets/card_043.jpg"}, {"id": 44, "character": "VGO", "name": "VGO #07", "rarity": "Uncommon", "image": "assets/card_044.jpg"}, {"id": 45, "character": "VGO", "name": "VGO #08", "rarity": "Uncommon", "image": "assets/card_045.jpeg"}, {"id": 46, "character": "VGO", "name": "VGO #09", "rarity": "Uncommon", "image": "assets/card_046.jpeg"}, {"id": 47, "character": "VGO", "name": "VGO #10", "rarity": "Rare", "image": "assets/card_047.jpg"}, {"id": 48, "character": "VGO", "name": "VGO #11", "rarity": "Rare", "image": "assets/card_048.jpeg"}, {"id": 49, "character": "VGO", "name": "VGO #12", "rarity": "Rare", "image": "assets/card_049.jpeg"}, {"id": 50, "character": "VGO", "name": "VGO #13", "rarity": "Epic", "image": "assets/card_050.jpeg"}, {"id": 51, "character": "VGO", "name": "VGO #14", "rarity": "Legendary", "image": "assets/card_051.jpeg"}, {"id": 52, "character": "HAYK THE THUG", "name": "HAYK THE THUG #01", "rarity": "Common", "image": "assets/card_052.jpeg"}, {"id": 53, "character": "HAYK THE THUG", "name": "HAYK THE THUG #02", "rarity": "Common", "image": "assets/card_053.jpg"}, {"id": 54, "character": "HAYK THE THUG", "name": "HAYK THE THUG #03", "rarity": "Common", "image": "assets/card_054.jpg"}, {"id": 55, "character": "HAYK THE THUG", "name": "HAYK THE THUG #04", "rarity": "Common", "image": "assets/card_055.jpg"}, {"id": 56, "character": "HAYK THE THUG", "name": "HAYK THE THUG #05", "rarity": "Common", "image": "assets/card_056.jpg"}, {"id": 57, "character": "HAYK THE THUG", "name": "HAYK THE THUG #06", "rarity": "Common", "image": "assets/card_057.jpeg"}, {"id": 58, "character": "HAYK THE THUG", "name": "HAYK THE THUG #07", "rarity": "Common", "image": "assets/card_058.jpg"}, {"id": 59, "character": "HAYK THE THUG", "name": "HAYK THE THUG #08", "rarity": "Uncommon", "image": "assets/card_059.jpg"}, {"id": 60, "character": "HAYK THE THUG", "name": "HAYK THE THUG #09", "rarity": "Uncommon", "image": "assets/card_060.jpg"}, {"id": 61, "character": "HAYK THE THUG", "name": "HAYK THE THUG #10", "rarity": "Uncommon", "image": "assets/card_061.jpg"}, {"id": 62, "character": "HAYK THE THUG", "name": "HAYK THE THUG #11", "rarity": "Uncommon", "image": "assets/card_062.jpg"}, {"id": 63, "character": "HAYK THE THUG", "name": "HAYK THE THUG #12", "rarity": "Uncommon", "image": "assets/card_063.jpg"}, {"id": 64, "character": "HAYK THE THUG", "name": "HAYK THE THUG #13", "rarity": "Rare", "image": "assets/card_064.jpg"}, {"id": 65, "character": "HAYK THE THUG", "name": "HAYK THE THUG #14", "rarity": "Rare", "image": "assets/card_065.jpeg"}, {"id": 66, "character": "HAYK THE THUG", "name": "HAYK THE THUG #15", "rarity": "Rare", "image": "assets/card_066.jpeg"}, {"id": 67, "character": "HAYK THE THUG", "name": "HAYK THE THUG #16", "rarity": "Epic", "image": "assets/card_067.jpeg"}, {"id": 68, "character": "HAYK THE THUG", "name": "HAYK THE THUG #17", "rarity": "Epic", "image": "assets/card_068.jpeg"}, {"id": 69, "character": "HAYK THE THUG", "name": "HAYK THE THUG #18", "rarity": "Legendary", "image": "assets/card_069.jpg"}, {"id": 70, "character": "THE GOOF", "name": "THE GOOF #01", "rarity": "Epic", "image": "assets/card_070.jpeg"}, {"id": 71, "character": "THE GOOF", "name": "THE GOOF #02", "rarity": "Legendary", "image": "assets/card_071.jpeg"}, {"id": 72, "character": "THE GOOF", "name": "THE GOOF #03", "rarity": "Legendary", "image": "assets/card_072.jpeg"}, {"id": 73, "character": "THE 3 NERDS", "name": "THE 3 NERDS #01", "rarity": "Rare", "image": "assets/card_073.jpg"}, {"id": 74, "character": "THE 3 NERDS", "name": "THE 3 NERDS #02", "rarity": "Rare", "image": "assets/card_074.jpeg"}, {"id": 75, "character": "THE 3 NERDS", "name": "THE 3 NERDS #03", "rarity": "Epic", "image": "assets/card_075.jpeg"}, {"id": 76, "character": "THE 3 NERDS", "name": "THE 3 NERDS #04", "rarity": "Epic", "image": "assets/card_076.jpeg"}, {"id": 77, "character": "THE 3 NERDS", "name": "THE 3 NERDS #05", "rarity": "Legendary", "image": "assets/card_077.jpeg"}, {"id": 78, "character": "THE 3 NERDS", "name": "THE 3 NERDS #06", "rarity": "Rare", "image": "assets/card_078.jpeg"}, {"id": 79, "character": "THE 3 NERDS", "name": "THE 3 NERDS #07", "rarity": "Epic", "image": "assets/card_079.jpeg"}, {"id": 80, "character": "THE 3 NERDS", "name": "THE 3 NERDS #08", "rarity": "Legendary", "image": "assets/card_080.jpeg"}, {"id": 81, "character": "BOSS EXCLUSIVE", "name": "Ice Agents", "rarity": "Exotic", "image": "assets/ice_agents.jpeg", "bossExclusive": true}, {"id": 82, "character": "Shant", "name": "Shant Uncommon", "rarity": "Uncommon", "image": "assets/shant_uncommon.jpeg"}, {"id": 83, "character": "Shant", "name": "Shant Rare", "rarity": "Rare", "image": "assets/shant_rare.JPG"}, {"id": 84, "character": "Shant", "name": "Shant Epic", "rarity": "Epic", "image": "assets/shant_epic.jpeg"}, {"id": 85, "character": "Shant", "name": "Shant Legendary", "rarity": "Legendary", "image": "assets/shant_legendary.JPG"}, {"id": 86, "character": "Gaylex", "name": "Gaylex 1", "rarity": "Common", "image": "assets/gaylex_common_1.JPG"}, {"id": 87, "character": "Gaylex", "name": "Gaylex 2", "rarity": "Common", "image": "assets/gaylex_common_2.JPG"}, {"id": 88, "character": "Gaylex", "name": "Gaylex 3", "rarity": "Common", "image": "assets/gaylex_common_3.jpeg"}, {"id": 89, "character": "I Need More Bullets", "name": "I Need More Bullets", "rarity": "Exotic", "image": "assets/i_need_more_bullets.JPG", "bossExclusive": true}, {"id": 90, "character": "Balery", "name": "Balery 1", "rarity": "Rare", "image": "assets/balery_rare_1.JPG"}, {"id": 91, "character": "Balery", "name": "Balery 2", "rarity": "Rare", "image": "assets/balery_rare_2.JPG"}, {"id": 92, "character": "Balery", "name": "Balery 3", "rarity": "Rare", "image": "assets/balery_rare_3.jpeg"}, {"id": 93, "character": "Balery", "name": "Balery 4", "rarity": "Rare", "image": "assets/balery_rare_4.JPG"}, {"id": 94, "character": "Random", "name": "Random 1", "rarity": "Epic", "image": "assets/random_epic_1.JPG"}, {"id": 95, "character": "Random", "name": "Random 2", "rarity": "Epic", "image": "assets/random_epic_2.jpeg"}, {"id": 96, "character": "Random", "name": "Random 3", "rarity": "Legendary", "image": "assets/random_legendary_1.JPG"}, {"id": 97, "character": "Random", "name": "Random 4", "rarity": "Legendary", "image": "assets/random_legendary_2.jpg"}, {"id": 98, "character": "HarOUT", "name": "HarOUT 1", "rarity": "Common", "image": "assets/harout_1.JPG"}, {"id": 99, "character": "HarOUT", "name": "HarOUT 2", "rarity": "Uncommon", "image": "assets/harout_2.JPG"}, {"id": 100, "character": "HarOUT", "name": "HarOUT 3", "rarity": "Rare", "image": "assets/harout_3.JPG"}, {"id": 101, "character": "HarOUT", "name": "HarOUT 4", "rarity": "Epic", "image": "assets/harout_4.JPG"}, {"id": 102, "character": "HarOUT", "name": "HarOUT 5", "rarity": "Legendary", "image": "assets/harout_5.JPG"}, {"id": 103, "character": "HarOUT", "name": "HarOUT 6", "rarity": "Rare", "image": "assets/harout_6.JPG"}, {"id": 104, "character": "HarOUT", "name": "HarOUT 7", "rarity": "Epic", "image": "assets/harout_7.JPG"}, {"id": 105, "character": "HarOUT", "name": "HarOUT 8", "rarity": "Legendary", "image": "assets/harout_8.JPG"}, {"id": 106, "character": "VGO", "name": "VGO #15", "rarity": "Rare", "image": "assets/vgo_new_1.JPG"}, {"id": 107, "character": "VGO", "name": "VGO #16", "rarity": "Epic", "image": "assets/vgo_new_2.JPG"}, {"id": 108, "character": "VGO", "name": "VGO #17", "rarity": "Legendary", "image": "assets/vgo_new_3.JPG"}, {"id": 109, "character": "VGO", "name": "VGO #18", "rarity": "Rare", "image": "assets/vgo_new_4.JPG"}, {"id": 110, "character": "Hayko The Thug", "name": "Hayko The Thug 1", "rarity": "Common", "image": "assets/hayko_1.JPG"}, {"id": 111, "character": "Hayko The Thug", "name": "Hayko The Thug 2", "rarity": "Uncommon", "image": "assets/hayko_2.JPG"}, {"id": 112, "character": "Hayko The Thug", "name": "Hayko The Thug 3", "rarity": "Rare", "image": "assets/hayko_3.JPG"}, {"id": 113, "character": "Hayko The Thug", "name": "Hayko The Thug 4", "rarity": "Epic", "image": "assets/hayko_4.JPG"}, {"id": 114, "character": "Hayko The Thug", "name": "Hayko The Thug 5", "rarity": "Legendary", "image": "assets/hayko_5.JPG"}, {"id": 115, "character": "Hayko The Thug", "name": "Hayko The Thug 6", "rarity": "Rare", "image": "assets/hayko_6.JPG"}, {"id": 116, "character": "Hayko The Thug", "name": "Hayko The Thug 7", "rarity": "Epic", "image": "assets/hayko_7.JPG"}, {"id": 117, "character": "The 3 Nerds", "name": "The 3 Nerds 1", "rarity": "Uncommon", "image": "assets/three_nerds_1.JPG"}, {"id": 118, "character": "The 3 Nerds", "name": "The 3 Nerds 2", "rarity": "Rare", "image": "assets/three_nerds_2.JPG"}, {"id": 119, "character": "Artlander", "name": "Artlander", "rarity": "Exotic", "image": "assets/artlander.PNG", "bossExclusive": true}];
+const CARDS = [{"id": 1, "character": "TIGGY", "name": "TIGGY #01", "rarity": "Common", "image": "assets/card_001.jpeg"}, {"id": 2, "character": "TIGGY", "name": "TIGGY #02", "rarity": "Common", "image": "assets/card_002.jpeg"}, {"id": 3, "character": "TIGGY", "name": "TIGGY #03", "rarity": "Common", "image": "assets/card_003.jpg"}, {"id": 4, "character": "TIGGY", "name": "TIGGY #04", "rarity": "Common", "image": "assets/card_004.jpg"}, {"id": 5, "character": "TIGGY", "name": "TIGGY #05", "rarity": "Common", "image": "assets/card_005.jpeg"}, {"id": 6, "character": "TIGGY", "name": "TIGGY #06", "rarity": "Common", "image": "assets/card_006.jpg"}, {"id": 7, "character": "TIGGY", "name": "TIGGY #07", "rarity": "Common", "image": "assets/card_007.jpg"}, {"id": 8, "character": "TIGGY", "name": "TIGGY #08", "rarity": "Common", "image": "assets/card_008.jpg"}, {"id": 9, "character": "TIGGY", "name": "TIGGY #09", "rarity": "Common", "image": "assets/card_009.jpg"}, {"id": 10, "character": "TIGGY", "name": "TIGGY #10", "rarity": "Common", "image": "assets/card_010.jpg"}, {"id": 11, "character": "TIGGY", "name": "TIGGY #11", "rarity": "Common", "image": "assets/card_011.jpg"}, {"id": 12, "character": "TIGGY", "name": "TIGGY #12", "rarity": "Common", "image": "assets/card_012.jpg"}, {"id": 13, "character": "TIGGY", "name": "TIGGY #13", "rarity": "Common", "image": "assets/card_013.jpg"}, {"id": 14, "character": "TIGGY", "name": "TIGGY #14", "rarity": "Common", "image": "assets/card_014.jpg"}, {"id": 15, "character": "TIGGY", "name": "TIGGY #15", "rarity": "Uncommon", "image": "assets/card_015.jpg"}, {"id": 16, "character": "TIGGY", "name": "TIGGY #16", "rarity": "Uncommon", "image": "assets/card_016.jpg"}, {"id": 17, "character": "TIGGY", "name": "TIGGY #17", "rarity": "Uncommon", "image": "assets/card_017.jpeg"}, {"id": 18, "character": "TIGGY", "name": "TIGGY #18", "rarity": "Uncommon", "image": "assets/card_018.jpeg"}, {"id": 19, "character": "TIGGY", "name": "TIGGY #19", "rarity": "Uncommon", "image": "assets/card_019.jpeg"}, {"id": 20, "character": "TIGGY", "name": "TIGGY #20", "rarity": "Uncommon", "image": "assets/card_020.jpeg"}, {"id": 21, "character": "TIGGY", "name": "TIGGY #21", "rarity": "Uncommon", "image": "assets/card_021.jpeg"}, {"id": 22, "character": "TIGGY", "name": "TIGGY #22", "rarity": "Uncommon", "image": "assets/card_022.jpg"}, {"id": 23, "character": "TIGGY", "name": "TIGGY #23", "rarity": "Uncommon", "image": "assets/card_023.jpg"}, {"id": 24, "character": "TIGGY", "name": "TIGGY #24", "rarity": "Uncommon", "image": "assets/card_024.jpg"}, {"id": 25, "character": "TIGGY", "name": "TIGGY #25", "rarity": "Rare", "image": "assets/card_025.jpg"}, {"id": 26, "character": "TIGGY", "name": "TIGGY #26", "rarity": "Rare", "image": "assets/card_026.jpeg"}, {"id": 27, "character": "TIGGY", "name": "TIGGY #27", "rarity": "Rare", "image": "assets/card_027.jpeg"}, {"id": 28, "character": "TIGGY", "name": "TIGGY #28", "rarity": "Rare", "image": "assets/card_028.jpeg"}, {"id": 29, "character": "TIGGY", "name": "TIGGY #29", "rarity": "Rare", "image": "assets/card_029.jpeg"}, {"id": 30, "character": "TIGGY", "name": "TIGGY #30", "rarity": "Rare", "image": "assets/card_030.jpeg"}, {"id": 31, "character": "TIGGY", "name": "TIGGY #31", "rarity": "Rare", "image": "assets/card_031.jpeg"}, {"id": 32, "character": "TIGGY", "name": "TIGGY #32", "rarity": "Epic", "image": "assets/card_032.jpeg"}, {"id": 33, "character": "TIGGY", "name": "TIGGY #33", "rarity": "Epic", "image": "assets/card_033.jpeg"}, {"id": 34, "character": "TIGGY", "name": "TIGGY #34", "rarity": "Epic", "image": "assets/card_034.jpeg"}, {"id": 35, "character": "TIGGY", "name": "TIGGY #35", "rarity": "Epic", "image": "assets/card_035.jpeg"}, {"id": 36, "character": "TIGGY", "name": "TIGGY #36", "rarity": "Legendary", "image": "assets/card_036.jpeg"}, {"id": 37, "character": "TIGGY", "name": "TIGGY #37", "rarity": "Legendary", "image": "assets/card_037.jpeg"}, {"id": 38, "character": "VGO", "name": "VGO #01", "rarity": "Common", "image": "assets/card_038.jpeg"}, {"id": 39, "character": "VGO", "name": "VGO #02", "rarity": "Common", "image": "assets/card_039.jpg"}, {"id": 40, "character": "VGO", "name": "VGO #03", "rarity": "Common", "image": "assets/card_040.jpg"}, {"id": 41, "character": "VGO", "name": "VGO #04", "rarity": "Common", "image": "assets/card_041.jpg"}, {"id": 42, "character": "VGO", "name": "VGO #05", "rarity": "Common", "image": "assets/card_042.jpg"}, {"id": 43, "character": "VGO", "name": "VGO #06", "rarity": "Uncommon", "image": "assets/card_043.jpg"}, {"id": 44, "character": "VGO", "name": "VGO #07", "rarity": "Uncommon", "image": "assets/card_044.jpg"}, {"id": 45, "character": "VGO", "name": "VGO #08", "rarity": "Uncommon", "image": "assets/card_045.jpeg"}, {"id": 46, "character": "VGO", "name": "VGO #09", "rarity": "Uncommon", "image": "assets/card_046.jpeg"}, {"id": 47, "character": "VGO", "name": "VGO #10", "rarity": "Rare", "image": "assets/card_047.jpg"}, {"id": 48, "character": "VGO", "name": "VGO #11", "rarity": "Rare", "image": "assets/card_048.jpeg"}, {"id": 49, "character": "VGO", "name": "VGO #12", "rarity": "Rare", "image": "assets/card_049.jpeg"}, {"id": 50, "character": "VGO", "name": "VGO #13", "rarity": "Epic", "image": "assets/card_050.jpeg"}, {"id": 51, "character": "VGO", "name": "VGO #14", "rarity": "Legendary", "image": "assets/card_051.jpeg"}, {"id": 52, "character": "HAYK THE THUG", "name": "HAYK THE THUG #01", "rarity": "Common", "image": "assets/card_052.jpeg"}, {"id": 53, "character": "HAYK THE THUG", "name": "HAYK THE THUG #02", "rarity": "Common", "image": "assets/card_053.jpg"}, {"id": 54, "character": "HAYK THE THUG", "name": "HAYK THE THUG #03", "rarity": "Common", "image": "assets/card_054.jpg"}, {"id": 55, "character": "HAYK THE THUG", "name": "HAYK THE THUG #04", "rarity": "Common", "image": "assets/card_055.jpg"}, {"id": 56, "character": "HAYK THE THUG", "name": "HAYK THE THUG #05", "rarity": "Common", "image": "assets/card_056.jpg"}, {"id": 57, "character": "HAYK THE THUG", "name": "HAYK THE THUG #06", "rarity": "Common", "image": "assets/card_057.jpeg"}, {"id": 58, "character": "HAYK THE THUG", "name": "HAYK THE THUG #07", "rarity": "Common", "image": "assets/card_058.jpg"}, {"id": 59, "character": "HAYK THE THUG", "name": "HAYK THE THUG #08", "rarity": "Uncommon", "image": "assets/card_059.jpg"}, {"id": 60, "character": "HAYK THE THUG", "name": "HAYK THE THUG #09", "rarity": "Uncommon", "image": "assets/card_060.jpg"}, {"id": 61, "character": "HAYK THE THUG", "name": "HAYK THE THUG #10", "rarity": "Uncommon", "image": "assets/card_061.jpg"}, {"id": 62, "character": "HAYK THE THUG", "name": "HAYK THE THUG #11", "rarity": "Uncommon", "image": "assets/card_062.jpg"}, {"id": 63, "character": "HAYK THE THUG", "name": "HAYK THE THUG #12", "rarity": "Uncommon", "image": "assets/card_063.jpg"}, {"id": 64, "character": "HAYK THE THUG", "name": "HAYK THE THUG #13", "rarity": "Rare", "image": "assets/card_064.jpg"}, {"id": 65, "character": "HAYK THE THUG", "name": "HAYK THE THUG #14", "rarity": "Rare", "image": "assets/card_065.jpeg"}, {"id": 66, "character": "HAYK THE THUG", "name": "HAYK THE THUG #15", "rarity": "Rare", "image": "assets/card_066.jpeg"}, {"id": 67, "character": "HAYK THE THUG", "name": "HAYK THE THUG #16", "rarity": "Epic", "image": "assets/card_067.jpeg"}, {"id": 68, "character": "HAYK THE THUG", "name": "HAYK THE THUG #17", "rarity": "Epic", "image": "assets/card_068.jpeg"}, {"id": 69, "character": "HAYK THE THUG", "name": "HAYK THE THUG #18", "rarity": "Legendary", "image": "assets/card_069.jpg"}, {"id": 70, "character": "THE GOOF", "name": "THE GOOF #01", "rarity": "Epic", "image": "assets/card_070.jpeg"}, {"id": 71, "character": "THE GOOF", "name": "THE GOOF #02", "rarity": "Legendary", "image": "assets/card_071.jpeg"}, {"id": 72, "character": "THE GOOF", "name": "THE GOOF #03", "rarity": "Legendary", "image": "assets/card_072.jpeg"}, {"id": 73, "character": "THE 3 NERDS", "name": "THE 3 NERDS #01", "rarity": "Rare", "image": "assets/card_073.jpg"}, {"id": 74, "character": "THE 3 NERDS", "name": "THE 3 NERDS #02", "rarity": "Rare", "image": "assets/card_074.jpeg"}, {"id": 75, "character": "THE 3 NERDS", "name": "THE 3 NERDS #03", "rarity": "Epic", "image": "assets/card_075.jpeg"}, {"id": 76, "character": "THE 3 NERDS", "name": "THE 3 NERDS #04", "rarity": "Epic", "image": "assets/card_076.jpeg"}, {"id": 77, "character": "THE 3 NERDS", "name": "THE 3 NERDS #05", "rarity": "Legendary", "image": "assets/card_077.jpeg"}, {"id": 78, "character": "THE 3 NERDS", "name": "THE 3 NERDS #06", "rarity": "Rare", "image": "assets/card_078.jpeg"}, {"id": 79, "character": "THE 3 NERDS", "name": "THE 3 NERDS #07", "rarity": "Epic", "image": "assets/card_079.jpeg"}, {"id": 80, "character": "THE 3 NERDS", "name": "THE 3 NERDS #08", "rarity": "Legendary", "image": "assets/card_080.jpeg"}, {"id": 81, "character": "BOSS EXCLUSIVE", "name": "Ice Agents", "rarity": "Exotic", "image": "assets/ice_agents.jpeg", "bossExclusive": true}, {"id": 82, "character": "Shant", "name": "Shant Uncommon", "rarity": "Uncommon", "image": "assets/shant_uncommon.jpeg"}, {"id": 83, "character": "Shant", "name": "Shant Rare", "rarity": "Rare", "image": "assets/shant_rare.JPG"}, {"id": 84, "character": "Shant", "name": "Shant Epic", "rarity": "Epic", "image": "assets/shant_epic.jpeg"}, {"id": 85, "character": "Shant", "name": "Shant Legendary", "rarity": "Legendary", "image": "assets/shant_legendary.JPG"}, {"id": 86, "character": "Gaylex", "name": "Gaylex 1", "rarity": "Common", "image": "assets/gaylex_common_1.JPG"}, {"id": 87, "character": "Gaylex", "name": "Gaylex 2", "rarity": "Common", "image": "assets/gaylex_common_2.JPG"}, {"id": 88, "character": "Gaylex", "name": "Gaylex 3", "rarity": "Common", "image": "assets/gaylex_common_3.jpeg"}, {"id": 89, "character": "I Need More Bullets", "name": "I Need More Bullets", "rarity": "Exotic", "image": "assets/i_need_more_bullets.JPG", "bossExclusive": true}, {"id": 90, "character": "Balery", "name": "Balery 1", "rarity": "Rare", "image": "assets/balery_rare_1.JPG"}, {"id": 91, "character": "Balery", "name": "Balery 2", "rarity": "Rare", "image": "assets/balery_rare_2.JPG"}, {"id": 92, "character": "Balery", "name": "Balery 3", "rarity": "Rare", "image": "assets/balery_rare_3.jpeg"}, {"id": 93, "character": "Balery", "name": "Balery 4", "rarity": "Rare", "image": "assets/balery_rare_4.JPG"}, {"id": 94, "character": "Random", "name": "Random 1", "rarity": "Epic", "image": "assets/random_epic_1.JPG"}, {"id": 95, "character": "Random", "name": "Random 2", "rarity": "Epic", "image": "assets/random_epic_2.jpeg"}, {"id": 96, "character": "Random", "name": "Random 3", "rarity": "Legendary", "image": "assets/random_legendary_1.JPG"}, {"id": 97, "character": "Random", "name": "Random 4", "rarity": "Legendary", "image": "assets/random_legendary_2.jpg"}, {"id": 98, "character": "HarOUT", "name": "HarOUT 1", "rarity": "Common", "image": "assets/harout_1.JPG"}, {"id": 99, "character": "HarOUT", "name": "HarOUT 2", "rarity": "Uncommon", "image": "assets/harout_2.JPG"}, {"id": 100, "character": "HarOUT", "name": "HarOUT 3", "rarity": "Rare", "image": "assets/harout_3.JPG"}, {"id": 101, "character": "HarOUT", "name": "HarOUT 4", "rarity": "Epic", "image": "assets/harout_4.JPG"}, {"id": 102, "character": "HarOUT", "name": "HarOUT 5", "rarity": "Legendary", "image": "assets/harout_5.JPG"}, {"id": 103, "character": "HarOUT", "name": "HarOUT 6", "rarity": "Rare", "image": "assets/harout_6.JPG"}, {"id": 104, "character": "HarOUT", "name": "HarOUT 7", "rarity": "Epic", "image": "assets/harout_7.JPG"}, {"id": 105, "character": "HarOUT", "name": "HarOUT 8", "rarity": "Legendary", "image": "assets/harout_8.JPG"}, {"id": 106, "character": "VGO", "name": "VGO #15", "rarity": "Rare", "image": "assets/vgo_new_1.JPG"}, {"id": 107, "character": "VGO", "name": "VGO #16", "rarity": "Epic", "image": "assets/vgo_new_2.JPG"}, {"id": 108, "character": "VGO", "name": "VGO #17", "rarity": "Legendary", "image": "assets/vgo_new_3.JPG"}, {"id": 109, "character": "VGO", "name": "VGO #18", "rarity": "Rare", "image": "assets/vgo_new_4.JPG"}, {"id": 110, "character": "Hayko The Thug", "name": "Hayko The Thug 1", "rarity": "Common", "image": "assets/hayko_1.JPG"}, {"id": 111, "character": "Hayko The Thug", "name": "Hayko The Thug 2", "rarity": "Uncommon", "image": "assets/hayko_2.JPG"}, {"id": 112, "character": "Hayko The Thug", "name": "Hayko The Thug 3", "rarity": "Rare", "image": "assets/hayko_3.JPG"}, {"id": 113, "character": "Hayko The Thug", "name": "Hayko The Thug 4", "rarity": "Epic", "image": "assets/hayko_4.JPG"}, {"id": 114, "character": "Hayko The Thug", "name": "Hayko The Thug 5", "rarity": "Legendary", "image": "assets/hayko_5.JPG"}, {"id": 115, "character": "Hayko The Thug", "name": "Hayko The Thug 6", "rarity": "Rare", "image": "assets/hayko_6.JPG"}, {"id": 116, "character": "Hayko The Thug", "name": "Hayko The Thug 7", "rarity": "Epic", "image": "assets/hayko_7.JPG"}, {"id": 117, "character": "The 3 Nerds", "name": "The 3 Nerds 1", "rarity": "Uncommon", "image": "assets/three_nerds_1.JPG"}, {"id": 118, "character": "The 3 Nerds", "name": "The 3 Nerds 2", "rarity": "Rare", "image": "assets/three_nerds_2.JPG"}, {"id": 119, "character": "Artlander", "name": "Artlander", "rarity": "Exotic", "image": "assets/artlander.PNG", "bossExclusive": true}, {"id": 120, "character": "VGO", "name": "VGO V9 #01", "rarity": "Rare", "image": "assets/vgo_v9_01.jpg"}, {"id": 121, "character": "VGO", "name": "VGO V9 #02", "rarity": "Epic", "image": "assets/vgo_v9_02.jpg"}, {"id": 122, "character": "VGO", "name": "VGO V9 #03", "rarity": "Legendary", "image": "assets/vgo_v9_03.jpg"}, {"id": 123, "character": "VGO", "name": "VGO V9 #04", "rarity": "Rare", "image": "assets/vgo_v9_04.jpg"}, {"id": 124, "character": "TIGGY", "name": "TIGGY V9 #01", "rarity": "Legendary", "image": "assets/tiggy_v9_01.jpg"}, {"id": 125, "character": "TIGGY", "name": "TIGGY V9 #02", "rarity": "Epic", "image": "assets/tiggy_v9_02.jpg"}, {"id": 126, "character": "TIGGY", "name": "TIGGY V9 #03", "rarity": "Rare", "image": "assets/tiggy_v9_03.jpg"}, {"id": 127, "character": "TIGGY", "name": "TIGGY V9 #04", "rarity": "Uncommon", "image": "assets/tiggy_v9_04.jpg"}, {"id": 128, "character": "TIGGY", "name": "TIGGY V9 #05", "rarity": "Epic", "image": "assets/tiggy_v9_05.jpg"}, {"id": 129, "character": "TIGGY", "name": "TIGGY V9 #06", "rarity": "Rare", "image": "assets/tiggy_v9_06.jpg"}, {"id": 130, "character": "THE 3 NERDS", "name": "THE 3 NERDS V9 #01", "rarity": "Rare", "image": "assets/the_3_nerds_v9_01.jpg"}, {"id": 131, "character": "THE 3 NERDS", "name": "THE 3 NERDS V9 #02", "rarity": "Epic", "image": "assets/the_3_nerds_v9_02.jpg"}, {"id": 132, "character": "THE 3 NERDS", "name": "THE 3 NERDS V9 #03", "rarity": "Legendary", "image": "assets/the_3_nerds_v9_03.jpg"}, {"id": 133, "character": "THE 3 NERDS", "name": "THE 3 NERDS V9 #04", "rarity": "Uncommon", "image": "assets/the_3_nerds_v9_04.jpg"}, {"id": 134, "character": "Hayko The Thug", "name": "Hayko The Thug V9 #01", "rarity": "Common", "image": "assets/hayko_the_thug_v9_01.jpg"}, {"id": 135, "character": "Hayko The Thug", "name": "Hayko The Thug V9 #02", "rarity": "Uncommon", "image": "assets/hayko_the_thug_v9_02.jpg"}, {"id": 136, "character": "Hayko The Thug", "name": "Hayko The Thug V9 #03", "rarity": "Rare", "image": "assets/hayko_the_thug_v9_03.jpg"}, {"id": 137, "character": "Hayko The Thug", "name": "Hayko The Thug V9 #04", "rarity": "Epic", "image": "assets/hayko_the_thug_v9_04.jpg"}, {"id": 138, "character": "Hayko The Thug", "name": "Hayko The Thug V9 #05", "rarity": "Legendary", "image": "assets/hayko_the_thug_v9_05.jpg"}, {"id": 139, "character": "Hayko The Thug", "name": "Hayko The Thug V9 #06", "rarity": "Rare", "image": "assets/hayko_the_thug_v9_06.jpg"}, {"id": 140, "character": "Hayko The Thug", "name": "Hayko The Thug V9 #07", "rarity": "Epic", "image": "assets/hayko_the_thug_v9_07.jpg"}, {"id": 141, "character": "Shant", "name": "Shant V9 #01", "rarity": "Common", "image": "assets/shant_v9_01.jpg"}, {"id": 142, "character": "Shant", "name": "Shant V9 #02", "rarity": "Rare", "image": "assets/shant_v9_02.jpg"}, {"id": 143, "character": "Random", "name": "Random V9 #01", "rarity": "Common", "image": "assets/random_v9_01.jpg"}, {"id": 144, "character": "Random", "name": "Random V9 #02", "rarity": "Uncommon", "image": "assets/random_v9_02.jpeg"}, {"id": 145, "character": "Random", "name": "Random V9 #03", "rarity": "Rare", "image": "assets/random_v9_03.jpg"}, {"id": 146, "character": "Random", "name": "Random V9 #04", "rarity": "Epic", "image": "assets/random_v9_04.jpg"}, {"id": 147, "character": "Random", "name": "Random V9 #05", "rarity": "Legendary", "image": "assets/random_v9_05.jpg"}, {"id": 148, "character": "HarOUT", "name": "HarOUT V9 #01", "rarity": "Rare", "image": "assets/harout_v9_01.jpg"}, {"id": 149, "character": "Random", "name": "Random Secret", "rarity": "Epic", "image": "assets/random_secret_v9.jpg", "secretExclusive": true}];
 const R={Common:{color:"#9b9b9b",value:250},Uncommon:{color:"#27c45b",value:700},Rare:{color:"#2587ff",value:1800},Epic:{color:"#a34cff",value:5000},Legendary:{color:"#ff8a1f",value:15000},Exotic:{color:"#00e5ff",value:35000}};
 const ICE_AGENTS_ID=81;
 const MORE_BULLETS_ID=89;
 const ARTLANDER_ID=119;
+const RANDOM_SECRET_ID=149;
 const PACKS=[
 {name:"Common",price:4000,odds:{Common:82,Uncommon:14,Rare:3,Epic:.8,Legendary:.2}},
 {name:"Uncommon",price:12000,odds:{Common:64,Uncommon:27,Rare:7,Epic:1.7,Legendary:.3}},
@@ -310,6 +327,7 @@ if(state.moreBulletsUnlocked===undefined) state.moreBulletsUnlocked=false;
 if(state.moreBulletsBossWins===undefined) state.moreBulletsBossWins=0;
 if(state.moreBulletsProgress===undefined) state.moreBulletsProgress=0;
 if(state.bossLosses===undefined)state.bossLosses=0;
+if(state.randomSecretAwardShown===undefined)state.randomSecretAwardShown=false;
 if(state.artlanderProgress===undefined) state.artlanderProgress=0;
 if(state.artlanderBossUnlocked===undefined) state.artlanderBossUnlocked=false;
 if(state.artlanderUnlocked===undefined) state.artlanderUnlocked=false;
@@ -398,7 +416,7 @@ function closeResult(){
 function fmt(n){return Math.round(n).toLocaleString()}
 function wait(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
 function pickRarity(odds){let x=Math.random()*100,a=0;for(const k of Object.keys(odds)){a+=odds[k];if(x<a)return k}return "Common"}
-function pickCard(r){let pool=CARDS.filter(c=>c.rarity===r&&!c.bossExclusive);if(!pool.length)pool=CARDS.filter(c=>!c.bossExclusive);return pool[Math.floor(Math.random()*pool.length)]}
+function pickCard(r){let pool=CARDS.filter(c=>c.rarity===r&&!c.bossExclusive&&!c.secretExclusive);if(!pool.length)pool=CARDS.filter(c=>!c.bossExclusive&&!c.secretExclusive);return pool[Math.floor(Math.random()*pool.length)]}
 
 function cardSellValue(c,q=1){
  const tier=tierFor(c);
@@ -421,6 +439,23 @@ function renderRecords(){
  set("#recBossWins",bossWins);
  set("#recBossLosses",bossLosses);
 }
+
+
+function checkSecretCollectionReward(){
+ const allOthers=CARDS.filter(c=>c.id!==RANDOM_SECRET_ID).every(c=>(state.owned[c.id]||0)>0);
+ if(allOthers && (state.owned[RANDOM_SECRET_ID]||0)<=0){
+   state.owned[RANDOM_SECRET_ID]=1;
+   state.randomSecretAwardShown=false;
+   save();
+ }
+ if((state.owned[RANDOM_SECRET_ID]||0)>0 && !state.randomSecretAwardShown){
+   state.randomSecretAwardShown=true;
+   save();
+   setTimeout(showSecretReward,180);
+ }
+}
+function showSecretReward(){const o=$("#secretRewardOverlay");if(o)o.classList.add("show")}
+function closeSecretReward(){const o=$("#secretRewardOverlay");if(o)o.classList.remove("show")}
 
 function render(){
  $("#coins").textContent=fmt(state.coins);
@@ -459,7 +494,13 @@ function render(){
    const ca=(a.character||"").localeCompare(b.character||"");
    return ca!==0?ca:(a.name||"").localeCompare(b.name||"");
  });
- $("#ownedCards").innerHTML=ownList.length?ownList.map(c=>{let q=state.owned[c.id]||0,t=tierFor(c),val=cardSellValue(c,q);return `<div class="card" style="--rarity:${R[t].color}"><img src="${c.image}"><div class="nm">${c.name} · OVR ${overall(c)}</div><div class="meta"><span style="color:${R[t].color}">${t}</span><span>x${q}</span></div><div class="ability">${abilityFor(c).name}</div><button class="sell" onclick="sell(${c.id})">SELL 1 · ● ${fmt(val)}</button></div>`}).join(""):`<div style="grid-column:1/-1;text-align:center;padding:28px 12px;font-weight:900">No cards owned in this category yet.</div>`;
+ $("#ownedCards").innerHTML=ownList.length?ownList.map(c=>{
+ let q=state.owned[c.id]||0,t=tierFor(c),val=cardSellValue(c,q);
+ const action=c.bossExclusive
+   ? `<button class="sell boss-unsellable" disabled>BOSS CARD · UNSELLABLE</button>`
+   : `<button class="sell" onclick="sell(${c.id})">SELL 1 · ● ${fmt(val)}</button>`;
+ return `<div class="card" style="--rarity:${R[t].color}"><img src="${c.image}"><div class="nm">${c.name} · OVR ${overall(c)}</div><div class="meta"><span style="color:${R[t].color}">${t}</span><span>x${q}</span></div><div class="ability">${abilityFor(c).name}</div>${action}</div>`;
+}).join(""):`<div style="grid-column:1/-1;text-align:center;padding:28px 12px;font-weight:900">No cards owned in this category yet.</div>`;
 
  $("#indexFilters").innerHTML=chars.map(x=>`<button class="chip ${indexFilter===x?"on":""}" onclick="setIndexFilter('${x.replaceAll("'","\\'")}')">${x}</button>`).join("");
  let idxList=(indexFilter==="ALL"?CARDS:CARDS.filter(c=>c.character===indexFilter)).filter(c=>!indexSearch||((c.character+" "+c.name).toLowerCase().includes(indexSearch.toLowerCase()))).slice().sort((a,b)=>{
@@ -469,7 +510,13 @@ function render(){
    const ca=(a.character||"").localeCompare(b.character||"");
    return ca!==0?ca:(a.name||"").localeCompare(b.name||"");
  });
- $("#indexCards").innerHTML=idxList.map(c=>{let q=state.owned[c.id]||0,t=c.rarity;return `<div class="card ${q?"":"locked"}" style="--rarity:${R[t].color}"><img src="${c.image}"><div class="nm">${q?c.name+" · OVR "+originalOverall(c):"NOT COLLECTED"}</div><div class="meta"><span style="color:${R[t].color}">${t}</span><span>${q?"x"+q:"LOCKED"}</span></div></div>`}).join("");
+ $("#indexCards").innerHTML=idxList.map(c=>{
+ let q=state.owned[c.id]||0,t=c.rarity;
+ if(c.id===RANDOM_SECRET_ID&&!q){
+   return `<div class="card secret-locked-card" style="--rarity:${R.Epic.color}"><div class="secret-question">?</div><div class="nm">LOCKED</div><div class="meta"><span style="color:${R.Epic.color}">???</span><span>Collect all cards to unlock this</span></div></div>`;
+ }
+ return `<div class="card ${q?"":"locked"}" style="--rarity:${R[t].color}"><img src="${c.image}"><div class="nm">${q?c.name+" · OVR "+originalOverall(c):"NOT COLLECTED"}</div><div class="meta"><span style="color:${R[t].color}">${t}</span><span>${q?"x"+q:"LOCKED"}</span></div></div>`;
+}).join("");
  renderBattle();
  renderUpgrades();
 
@@ -478,12 +525,16 @@ function render(){
 
 
  renderRecords();
+
+ checkSecretCollectionReward();
 }
 function setOwnedFilter(x){ownedFilter=x;render()} function setIndexFilter(x){indexFilter=x;render()}
 
 function sell(id){
  let q=state.owned[id]||0;if(!q)return;
- let c=CARDS.find(x=>x.id===id),t=tierFor(c),val=cardSellValue(c,q);
+ let c=CARDS.find(x=>x.id===id);
+ if(c&&c.bossExclusive){toast("Boss cards cannot be sold");return}
+ let t=tierFor(c),val=cardSellValue(c,q);
  state.owned[id]=q-1;
  if(state.owned[id]<=0){
    state.owned[id]=0;
@@ -540,17 +591,24 @@ $("#doneBtn").onclick=()=>{
  save();$("#modal").classList.remove("show");toast("5 cards added to collection");
 }
 
-const WHEEL_SLOTS=["Common","Uncommon","Rare","Common","Epic","Uncommon","Common","Common","Rare","Common","Uncommon","Common"];
-const wheelColors={Common:"#b8b8b8",Uncommon:"#24d86a",Rare:"#238cff",Epic:"#b44cff",Coins:"#ffd21f"};
+const WHEEL_SLOTS=["Common","Uncommon","Rare","Common","Epic","Uncommon","Common","Rare","Epic","Common","Uncommon","Rare"];
+const wheelColors={Common:"#92979f",Uncommon:"#21c96a",Rare:"#2b78ff",Epic:"#9a48df"};
 function buildWheel(){
+ const wheel=$("#wheel");
+ wheel.innerHTML="";
  const deg=360/WHEEL_SLOTS.length;
- let stops=[];
- WHEEL_SLOTS.forEach((s,i)=>{stops.push(`${wheelColors[s]} ${i*deg}deg ${(i+1)*deg}deg`)});
- $("#wheel").style.background=`conic-gradient(${stops.join(",")})`;
+ const stops=[];
  WHEEL_SLOTS.forEach((s,i)=>{
-   let d=document.createElement("div");d.className="wheel-label";d.textContent=s==="Coins"?"5K":s[0];
-   d.style.transform=`rotate(${i*deg+deg/2}deg) translateX(88px) rotate(90deg)`;
-   $("#wheel").appendChild(d);
+   const start=i*deg,end=(i+1)*deg;
+   stops.push(`${wheelColors[s]} ${start}deg ${end-.8}deg,#fff3c0 ${end-.8}deg ${end}deg`);
+ });
+ wheel.style.background=`conic-gradient(${stops.join(",")})`;
+ WHEEL_SLOTS.forEach((s,i)=>{
+   const d=document.createElement("div");
+   d.className="wheel-label wheel-label-v9";
+   d.innerHTML=`<span>${s.toUpperCase()}</span><small>PACK</small>`;
+   d.style.transform=`rotate(${i*deg+deg/2}deg) translateX(82px) rotate(90deg)`;
+   wheel.appendChild(d);
  });
 }
 buildWheel();
@@ -694,39 +752,35 @@ function teamRating(cards){if(!cards.length)return 1;const r=cards.map(rarityRan
 function updateTeamRatingUI(){if(!$("#teamRatingBox"))return;const cs=(state.team||[]).map(id=>CARDS.find(c=>c.id===id)).filter(Boolean),m=ratingMeta(teamRating(cs));$("#teamRatingBox").style.setProperty("--team-color",m[2]);$("#teamRatingName").textContent=m[0];$("#teamRatingStars").textContent=m[1];$("#teamRatingStars").style.color=m[2]}
 function botCardForRating(n){const t={1:"Common",2:"Uncommon",3:"Rare",4:"Epic",5:"Legendary",6:"Exotic"}[n];let pool=CARDS.filter(c=>tierFor(c)===t&&c.id!==ICE_AGENTS_ID&&c.id!==MORE_BULLETS_ID);if(!pool.length)pool=CARDS.filter(c=>tierFor(c)===t);return pool[Math.floor(Math.random()*pool.length)]||pickCard(t)}
 function fairBotDeck(level){
- if(level>=6){
-   let pool=CARDS.filter(c=>tierFor(c)==="Exotic" && c.id!==ICE_AGENTS_ID && c.id!==MORE_BULLETS_ID && c.id!==ARTLANDER_ID);
-   if(pool.length<3)pool=CARDS.filter(c=>tierFor(c)==="Exotic");
-   const shuffled=pool.slice().sort(()=>Math.random()-.5);
-   return {level:6,cards:shuffled.slice(0,3)};
- }
-
- let n=Math.min(5,level);
+ const clamped=Math.max(1,Math.min(6,level));
  const r=Math.random();
- if(r<.30)n=Math.max(1,n-1);
- else if(r<.78)n=n;
- else n=Math.min(5,n+1);
+ let n=clamped;
 
- const patterns={
-  1:[[1,1,1],[1,1,2]],
-  2:[[2,2,2],[1,2,2],[2,2,3]],
-  3:[[3,3,3],[2,3,3],[3,3,4]],
-  4:[[4,4,4],[3,4,4],[4,4,5]],
-  5:[[5,5,5],[4,5,5]]
- };
- const p=patterns[n][Math.floor(Math.random()*patterns[n].length)];
+ if(r<.52)n=clamped;
+ else if(r<.72)n=Math.max(1,clamped-1);
+ else if(r<.86)n=Math.min(6,clamped+1);
+ else if(r<.94)n=Math.max(1,clamped-2);
+ else if(r<.98)n=Math.min(6,clamped+2);
+ else n=1+Math.floor(Math.random()*6);
 
+ const tierForRank={1:"Common",2:"Uncommon",3:"Rare",4:"Epic",5:"Legendary",6:"Exotic"};
  const used=new Set();
- const cards=p.map(rank=>{
-   const tier={1:"Common",2:"Uncommon",3:"Rare",4:"Epic",5:"Legendary"}[rank];
-   let pool=CARDS.filter(c=>tierFor(c)===tier && !used.has(c.id) && !c.bossExclusive);
-   if(!pool.length)pool=CARDS.filter(c=>tierFor(c)===tier && !used.has(c.id));
-   const c=pool[Math.floor(Math.random()*pool.length)]||botCardForRating(rank);
+ function uniqueCard(rank){
+   const tier=tierForRank[rank];
+   let pool=CARDS.filter(c=>tierFor(c)===tier&&!used.has(c.id)&&!c.bossExclusive&&!c.secretExclusive);
+   if(!pool.length)pool=CARDS.filter(c=>tierFor(c)===tier&&!used.has(c.id)&&!c.secretExclusive);
+   const c=pool[Math.floor(Math.random()*pool.length)];
    if(c)used.add(c.id);
    return c;
- }).filter(Boolean);
-
- return {level:n,cards};
+ }
+ if(n===6)return {level:6,cards:[uniqueCard(6),uniqueCard(6),uniqueCard(6)].filter(Boolean)};
+ const patterns={
+   1:[[1,1,1],[1,1,2]],2:[[2,2,2],[1,2,2],[2,2,3]],
+   3:[[3,3,3],[2,3,3],[3,3,4]],4:[[4,4,4],[3,4,4],[4,4,5]],
+   5:[[5,5,5],[4,5,5]]
+ };
+ const p=patterns[n][Math.floor(Math.random()*patterns[n].length)];
+ return {level:n,cards:p.map(uniqueCard).filter(Boolean)};
 }
 function starColor(d){return ["#9b9b9b","#27c45b","#2587ff","#a34cff","#f0ad16"][d-1]}
 function starClass(d){return "s"+d}
@@ -1042,7 +1096,7 @@ async function runBossHealthBattle(boss,bossName,bossDifficulty,playerDamageBonu
        if(php[i]<=0)continue;
 
        const rawDmg=damage(boss,team[i],bossDifficulty);
-       const dmg=Math.max(1,Math.round(rawDmg*.63));
+       const dmg=Math.max(1,Math.round(rawDmg*.78));
        const cards=[...document.querySelectorAll("#playerArena .arena-card")];
        if(cards[i])popDamage(cards[i],dmg);
        php[i]=Math.max(0,php[i]-dmg);
@@ -1224,6 +1278,7 @@ function executeDanger(action){
  if(action==="sell"){
    let total=0;
    for(const c of CARDS){
+     if(c.bossExclusive)continue;
      const q=Number(state.owned[c.id]||0);
      for(let copy=1;copy<=q;copy++)total+=cardSellValue(c,copy);
      state.owned[c.id]=0;
@@ -1237,16 +1292,25 @@ function executeDanger(action){
 $("#holdYes").addEventListener("pointerdown",startHold);
 ["pointerup","pointercancel","pointerleave"].forEach(ev=>$("#holdYes").addEventListener(ev,stopHold));
 
+function closeWhatsNew(){
+ const o=$("#whatsNewOverlay");if(o)o.classList.remove("show");
+ localStorage.setItem("goldenPullsV9WhatsNewSeen","1");
+}
+function maybeShowWhatsNew(){
+ if(localStorage.getItem("goldenPullsV9WhatsNewSeen")!=="1"){
+   const o=$("#whatsNewOverlay");if(o)setTimeout(()=>o.classList.add("show"),250);
+ }
+}
 async function checkForUpdate(){
  const b=$("#updateBtn");b.textContent="CHECKING...";
  try{
    const r=await fetch("./version.json?t="+Date.now(),{cache:"no-store"});
    const remote=await r.json();
-   const local=7;
+   const local=9;
    if(Number(remote.version)>local){
      b.textContent=`V${remote.version} READY`;
      b.classList.add("update-ready");
-     if(swReg) await swReg.update();
+     if(swReg)await swReg.update();
      if(swReg&&swReg.waiting){swReg.waiting.postMessage({type:"SKIP_WAITING"});return}
      setTimeout(()=>location.reload(),300);
    }else{
@@ -1259,7 +1323,7 @@ async function passiveUpdateCheck(){
  try{
    const r=await fetch("./version.json?t="+Date.now(),{cache:"no-store"});
    const remote=await r.json();
-   if(Number(remote.version)>7){
+   if(Number(remote.version)>9){
      const b=$("#updateBtn");
      b.textContent=`V${remote.version} READY`;
      b.classList.add("update-ready");
@@ -1268,6 +1332,7 @@ async function passiveUpdateCheck(){
 }
 registerSW();
 passiveUpdateCheck();
+maybeShowWhatsNew();
 cleanTeam();
 save();
 </script>
