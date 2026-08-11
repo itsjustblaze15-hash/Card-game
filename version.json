@@ -1,5 +1,5 @@
 {
-  "version": "9.23",
+  "version": "9.24",
   "display_version": "9",
-  "build": "gameplay-flow-rebalance"
+  "build": "arena-deck-slot-replacement-fix"
 }

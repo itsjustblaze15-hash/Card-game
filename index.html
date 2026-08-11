@@ -328,6 +328,9 @@ button{font:inherit;cursor:pointer}
 .ga-death-poof{position:absolute;z-index:30;transform:translate(-50%,-50%);font-size:18px;animation:gaPoof .38s ease-out forwards;pointer-events:none}
 @keyframes gaPoof{from{opacity:1;transform:translate(-50%,-50%) scale(.5)}to{opacity:0;transform:translate(-50%,-70%) scale(1.5)}}
 .ga-deck-slot{padding:0;color:#fff;cursor:pointer}.ga-pick-card.selected{outline:4px solid #ffd52a!important;filter:brightness(.72)}
+
+.ga-deck-slot:active{transform:scale(.95)}
+#gaInfoAdd:disabled{opacity:.4;filter:grayscale(1)}
 </style>
 </head>
 <body>
@@ -1948,8 +1951,31 @@ function gaOpenInfo(id){
  const s=stats(c),scale=GA_SCALE[c.rarity]||GA_SCALE.Common;
  const hp=Math.round((70+s.def*.42)*scale.hp),dmg=Math.max(6,Math.round((s.atk*.095)*scale.atk));
  $("#gaInfoBody").innerHTML=`<div class="ga-info-head" style="--r:${R[c.rarity].color}"><img src="${c.image}"><div><h2>${c.name}</h2><b>${c.rarity}</b><br><small>${gaCost(c)} ENERGY · ${gaPower(c)}</small></div></div><div class="ga-info-stats"><b>HP<br>${hp}</b><b>DAMAGE<br>${dmg}</b><b>SPEED<br>${Math.round(s.spd*scale.spd)}</b></div><div class="ga-info-role">${gaRole(c)}</div>`;
- $("#gaInfoAdd").textContent=GA.deck.includes(id)?"REMOVE":"ADD TO DECK";
- $("#gaInfoAdd").onclick=()=>{gaTogglePick(id);gaRenderPicker();gaCloseInfo();gaRenderSavedDeck();toast(GA.deck.includes(id)?"Added to Arena deck":"Removed from Arena deck")};
+ const d=gaSavedDeck(),already=d.includes(id),btn=$("#gaInfoAdd");
+
+ if(gaReplaceSlot!==null){
+   btn.textContent=`USE IN SLOT ${gaReplaceSlot+1}`;
+   btn.disabled=false;
+   btn.onclick=()=>{gaCloseInfo();gaReplaceSlotWithCard(id)};
+ }else if(already){
+   btn.textContent="IN DECK";
+   btn.disabled=true;
+   btn.onclick=null;
+ }else if(d.length<8){
+   btn.textContent="ADD TO DECK";
+   btn.disabled=false;
+   btn.onclick=()=>{
+     const next=[...d,id];
+     gaSaveDeck(next);GA.deck=[...next];
+     gaCloseInfo();$("#gaPicker")?.classList.remove("show");
+     gaOpenLobby();gaRenderSavedDeck();
+     toast("Added to Arena deck");
+   };
+ }else{
+   btn.textContent="SELECT A SLOT TO REPLACE";
+   btn.disabled=true;
+   btn.onclick=null;
+ }
  $("#gaInfo").classList.add("show");
 }
 function gaCloseInfo(){$("#gaInfo")?.classList.remove("show")}
@@ -1961,13 +1987,47 @@ function gaRenderSavedDeck(){
  if(!slots||!status)return;
  status.textContent=ids.length+" / 8";
  slots.innerHTML=Array.from({length:8},(_,i)=>{
-  const c=CARDS.find(x=>x.id===ids[i]);
-  return c?`<button type="button" class="ga-deck-slot" style="border-color:${R[c.rarity].color}" onclick="gaRemoveSavedCard(${c.id})" title="Tap to remove ${c.name}"><img src="${c.image}"></button>`:`<button type="button" class="ga-deck-slot" onclick="gaEditSavedDeck()">${i+1}</button>`;
+   const c=CARDS.find(x=>x.id===ids[i]);
+   return c
+    ? `<button type="button" class="ga-deck-slot" style="border-color:${R[c.rarity].color}" onclick="gaChooseReplaceSlot(${i})" title="Replace ${c.name}"><img src="${c.image}"></button>`
+    : `<button type="button" class="ga-deck-slot" onclick="gaChooseReplaceSlot(${i})">${i+1}</button>`;
  }).join("");
 }
-function gaRemoveSavedCard(id){const d=gaSavedDeck().filter(x=>x!==id);gaSaveDeck(d);GA.deck=d;gaRenderSavedDeck();toast("Removed from Arena deck")}
+
+let gaReplaceSlot=null;
+
+function gaChooseReplaceSlot(slotIndex){
+ gaReplaceSlot=slotIndex;
+ GA.deck=gaSavedDeck();
+ gaCloseLobby();
+ gaOpenPicker(true);
+ toast(`Choose a card for slot ${slotIndex+1}`);
+}
+function gaReplaceSlotWithCard(id){
+ const slot=gaReplaceSlot;
+ if(slot===null||slot===undefined)return;
+ let d=gaSavedDeck();
+ while(d.length<8)d.push(null);
+ const existing=d.indexOf(id);
+ if(existing>=0&&existing!==slot){
+   const old=d[slot]??null;
+   d[slot]=id;
+   d[existing]=old;
+ }else{
+   d[slot]=id;
+ }
+ d=d.filter(x=>x!==null&&x!==undefined);
+ gaSaveDeck(d);
+ GA.deck=[...d];
+ gaReplaceSlot=null;
+ $("#gaPicker")?.classList.remove("show");
+ gaOpenLobby();
+ gaRenderSavedDeck();
+ toast("Arena deck updated");
+}
+
 function gaClearSavedDeck(){state.gaDeck=[];save();gaRenderSavedDeck();toast("Golden Arena deck cleared")}
-function gaEditSavedDeck(){GA.deck=gaSavedDeck();gaCloseLobby();gaOpenPicker(true)}
+function gaEditSavedDeck(){gaReplaceSlot=null;GA.deck=gaSavedDeck();gaCloseLobby();gaOpenPicker(true)}
 
 function gaOpenPicker(editing=false){
  const saved=gaSavedDeck();
@@ -1981,16 +2041,11 @@ function gaOpenPicker(editing=false){
 }
 function gaClosePicker(){$("#gaPicker")?.classList.remove("show")}
 function gaTogglePick(id){
- const i=GA.deck.indexOf(id);
- if(i>=0)GA.deck.splice(i,1);
- else{
-   if(GA.deck.length>=8){toast("Your Arena deck holds 8 cards");return}
-   GA.deck.push(id);
- }
- document.querySelectorAll(".ga-pick").forEach(x=>x.classList.remove("selected"));
- GA.deck.forEach(x=>$("#gaPick"+x)?.classList.add("selected"));
- $("#gaCount").textContent=GA.deck.length+" / 8";
- if(GA.deck.length===8){gaSaveDeck(GA.deck);setTimeout(()=>{gaClosePicker();gaOpenLobby();toast("8-card Arena deck saved")},180)}
+ if(gaReplaceSlot!==null){gaReplaceSlotWithCard(id);return}
+ const d=gaSavedDeck();
+ if(d.includes(id)){toast("That card is already in your Arena deck");return}
+ if(d.length>=8){toast("Tap a deck slot first to replace it");return}
+ gaSaveDeck([...d,id]);GA.deck=gaSavedDeck();gaRenderSavedDeck();toast("Added to Arena deck");
 }
 function gaBuildMatchedBotDeck(){
  const player=GA.deck.map(id=>CARDS.find(c=>c.id===id)).filter(Boolean);

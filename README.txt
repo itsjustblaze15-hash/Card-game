@@ -399,3 +399,11 @@ V9.23 GAMEPLAY FLOW REBALANCE
 - Unit aggro reduced so attackers are less easily distracted.
 - More Epic+ units prioritize towers; AI values offensive pressure more.
 - Two-minute regulation still ends immediately when one side leads; Sudden Death is tie-only.
+
+V9.24 GOLDEN ARENA DECK EDITOR FIX
+- Tapping a filled Arena deck slot no longer deletes it instantly.
+- Tapping a slot opens the card picker specifically to replace that slot.
+- The card-details button says USE IN SLOT X during replacement.
+- Choosing a card already in another slot swaps the two slots instead of duplicating.
+- ADD TO DECK now actually saves cards when the deck has open slots.
+- A full 8-card deck tells the player to select a slot to replace.
