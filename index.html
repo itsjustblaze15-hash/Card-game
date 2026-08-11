@@ -204,7 +204,7 @@ button{font:inherit;cursor:pointer}
 .sub-choice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
 .sub-choice{border:3px solid var(--rarity);border-radius:12px;padding:5px;background:color-mix(in srgb,var(--rarity) 20%,white);text-align:center;font-size:8px;font-weight:1000}
 .sub-choice img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:7px}.sub-choice.selected{box-shadow:0 0 0 3px #201700;transform:scale(.96)}
-.sub-choice.disabled{filter:grayscale(1);opacity:.35;pointer-events:none}
+.sub-choice.disabled{filter:grayscale(1);opacity:.38;pointer-events:none}.sub-choice.locked-swap{background:#b7b7b7!important;border-color:#777!important;color:#333!important;filter:grayscale(1);opacity:.62}
 .sub-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.sub-actions button{border:0;border-radius:12px;padding:12px;font-weight:1000;background:#241a00;color:#ffd84d}.sub-actions button:disabled{opacity:.35}
 
 
@@ -312,7 +312,7 @@ button{font:inherit;cursor:pointer}
 <div id="whatsNewOverlay" class="whatsnew-overlay" style="display:none"><div class="whatsnew-box"><h2>WHAT'S NEW IN V9</h2><ul><li>30 new cards added.</li><li>Secret card for completing the collection.</li><li>Prize Wheel redesigned.</li><li>More varied matchmaking.</li><li>Boss cards cannot be sold.</li><li>Boss battles rebalanced.</li></ul><button onclick="closeWhatsNew()">OK</button></div></div>
 <div id="secretRewardOverlay" class="secret-reward-overlay"><div class="secret-reward-box"><h2>SECRET CARD UNLOCKED</h2><p>You collected every card in the game. You have earned a hidden Random card.</p><button onclick="closeSecretReward();render()">CLAIM</button></div></div>
 <div id="subOverlay" class="sub-overlay"><div class="sub-box">
-<h2>SWITCH SUBS?</h2><p>Choose a surviving starter, then choose a substitute. A card that leaves cannot return, and a sub that enters is locked in.</p>
+<h2>SWITCH SUBS?</h2><p>Choose a surviving starter, then choose a substitute. The swap happens here instantly. Both swapped cards turn gray and are locked for the rest of the match.</p>
 <div class="sub-section-title">ACTIVE</div><div id="subActiveChoices" class="sub-choice-grid"></div>
 <div class="sub-section-title">BENCH</div><div id="subBenchChoices" class="sub-choice-grid"></div>
 <div class="sub-actions"><button id="subSwapBtn" onclick="confirmSubChoice()" disabled>SWAP</button><button onclick="finishSubBreak()">DONE</button></div>
@@ -903,7 +903,7 @@ function arenaCard(c,hp,max,active=false){
  <div class="hp"><i style="width:${pct}%"></i></div><div class="hp-txt">${Math.max(0,hp)} / ${max} HP</div></div>`;
 }
 
-let battlePlayerBench=[],battleEnemyBench=[];
+let battlePlayerBench=[],battleEnemyBench=[],battlePlayerBenchLocked=[],battleEnemyBenchLocked=[];
 let subResolve=null,subActivePick=-1,subBenchPick=-1,subPromptCtx=null;
 
 function benchCard(c,used=false){
@@ -912,32 +912,37 @@ function benchCard(c,used=false){
  return `<div class="bench-card ${used?"used":""}" style="--rarity:${R[t].color}"><img src="${c.image}"><b>${c.name}</b></div>`;
 }
 function drawBattleBenches(){
- if($("#playerBench"))$("#playerBench").innerHTML=battlePlayerBench.map(c=>benchCard(c,!c)).join("");
- if($("#enemyBench"))$("#enemyBench").innerHTML=battleEnemyBench.map(c=>benchCard(c,!c)).join("");
+ if($("#playerBench"))$("#playerBench").innerHTML=battlePlayerBench.map((c,i)=>benchCard(c,!c||battlePlayerBenchLocked[i])).join("");
+ if($("#enemyBench"))$("#enemyBench").innerHTML=battleEnemyBench.map((c,i)=>benchCard(c,!c||battleEnemyBenchLocked[i])).join("");
 }
 function legalSubSlots(hp,locked){return hp.map((v,i)=>v>0&&!locked[i]?i:-1).filter(i=>i>=0)}
-function availableBenchIndexes(bench){return bench.map((c,i)=>c?i:-1).filter(i=>i>=0)}
+function availableBenchIndexes(bench,benchLocked=[]){return bench.map((c,i)=>c&&!benchLocked[i]?i:-1).filter(i=>i>=0)}
 
 function renderSubPrompt(){
  const ctx=subPromptCtx;if(!ctx)return;
+
  $("#subActiveChoices").innerHTML=ctx.team.map((c,i)=>{
-   const disabled=ctx.php[i]<=0||ctx.locked[i];
+   const knocked=ctx.php[i]<=0;
+   const locked=ctx.locked[i];
+   const disabled=knocked||locked;
    const t=tierFor(c);
-   return `<div class="sub-choice ${disabled?"disabled":""} ${subActivePick===i?"selected":""}" style="--rarity:${R[t].color}" onclick="chooseSubActive(${i})"><img src="${c.image}">${c.name}<br>${disabled?(ctx.php[i]<=0?"KNOCKED OUT":"LOCKED IN"):`${ctx.php[i]} HP`}</div>`;
+   return `<div class="sub-choice ${disabled?"disabled":""} ${locked?"locked-swap":""} ${subActivePick===i?"selected":""}" style="--rarity:${R[t].color}" onclick="chooseSubActive(${i})"><img src="${c.image}">${c.name}<br>${knocked?"KNOCKED OUT":locked?"LOCKED IN":`${ctx.php[i]} HP`}</div>`;
  }).join("");
+
  $("#subBenchChoices").innerHTML=ctx.bench.map((c,i)=>{
-   if(!c)return `<div class="sub-choice disabled">USED</div>`;
+   if(!c)return `<div class="sub-choice disabled">EMPTY</div>`;
+   const locked=ctx.benchLocked[i];
    const t=tierFor(c);
-   return `<div class="sub-choice ${subBenchPick===i?"selected":""}" style="--rarity:${R[t].color}" onclick="chooseSubBench(${i})"><img src="${c.image}">${c.name}<br>OVR ${overall(c)}</div>`;
+   return `<div class="sub-choice ${locked?"disabled locked-swap":""} ${subBenchPick===i?"selected":""}" style="--rarity:${R[t].color}" onclick="chooseSubBench(${i})"><img src="${c.image}">${c.name}<br>${locked?"USED · LOCKED":`OVR ${overall(c)}`}</div>`;
  }).join("");
+
  $("#subSwapBtn").disabled=!(subActivePick>=0&&subBenchPick>=0);
 }
 function chooseSubActive(i){if(!subPromptCtx||subPromptCtx.php[i]<=0||subPromptCtx.locked[i])return;subActivePick=i;renderSubPrompt()}
-function chooseSubBench(i){if(!subPromptCtx||!subPromptCtx.bench[i])return;subBenchPick=i;renderSubPrompt()}
+function chooseSubBench(i){if(!subPromptCtx||!subPromptCtx.bench[i]||subPromptCtx.benchLocked[i])return;subBenchPick=i;renderSubPrompt()}
 function confirmSubChoice(){
  if(!subResolve||subActivePick<0||subBenchPick<0)return;
  const r=subResolve;subResolve=null;
- $("#subOverlay").classList.remove("show");
  r({slot:subActivePick,bench:subBenchPick});
 }
 function finishSubBreak(){
@@ -946,55 +951,73 @@ function finishSubBreak(){
  $("#subOverlay").classList.remove("show");
  r(null);
 }
-function promptSubChoice(team,bench,php,locked){
- if(!legalSubSlots(php,locked).length||!availableBenchIndexes(bench).length)return Promise.resolve(null);
- subPromptCtx={team,bench,php,locked};subActivePick=-1;subBenchPick=-1;
+function promptSubChoice(team,bench,php,locked,benchLocked){
+ if(!legalSubSlots(php,locked).length||!availableBenchIndexes(bench,benchLocked).length)return Promise.resolve(null);
+ subPromptCtx={team,bench,php,locked,benchLocked};subActivePick=-1;subBenchPick=-1;
  renderSubPrompt();$("#subOverlay").classList.add("show");
  return new Promise(resolve=>subResolve=resolve);
 }
-async function animateSubSwap(outCard,inCard,side){
- showCenter(outCard,side);
- $("#arenaLog").textContent=`${outCard.name} OUT`;
- await wait(380);hideCenter();await wait(120);
- showCenter(inCard,side);
- $("#arenaLog").textContent=`${inCard.name} IN`;
- await wait(520);hideCenter();await wait(160);
-}
+
 async function playerSubBreak(team,bench,php,pmax,locked,enemy,ehp,emax,difficulty,participants){
  let swaps=0;
  while(swaps<2){
-   const choice=await promptSubChoice(team,bench,php,locked);
+   const choice=await promptSubChoice(team,bench,php,locked,battlePlayerBenchLocked);
    if(!choice)break;
+
    const out=team[choice.slot],incoming=bench[choice.bench];
    if(!out||!incoming)continue;
-   await animateSubSwap(out,incoming,"player");
+
+   // Instant swap directly on the substitution screen.
    team[choice.slot]=incoming;
    pmax[choice.slot]=maxHP(incoming);
    php[choice.slot]=pmax[choice.slot];
+
+   // The incoming card is locked into ACTIVE.
    locked[choice.slot]=true;
-   bench[choice.bench]=null;
+
+   // The outgoing card moves to BENCH, stays visible in gray, and is locked.
+   bench[choice.bench]=out;
+   battlePlayerBenchLocked[choice.bench]=true;
+
    battlePlayerBench=bench;
    participants.add(incoming.id);
-   drawArena(team,enemy,php,ehp,pmax,emax,-1,-1,difficulty);
    swaps++;
+
+   // Refresh the actual arena and keep the substitution overlay open.
+   drawArena(team,enemy,php,ehp,pmax,emax,-1,-1,difficulty);
+   subPromptCtx={team,bench,php,locked,benchLocked:battlePlayerBenchLocked};
+   subActivePick=-1;subBenchPick=-1;
+   renderSubPrompt();
+
+   // If no more legal swaps remain, close automatically.
+   if(swaps>=2||!legalSubSlots(php,locked).length||!availableBenchIndexes(bench,battlePlayerBenchLocked).length){
+     $("#subOverlay").classList.remove("show");
+     break;
+   }
  }
+ // If player pressed DONE, finishSubBreak already closes the overlay.
 }
 async function botSubBreak(enemy,bench,ehp,emax,locked,team,php,pmax,difficulty){
  let swaps=0;
  while(swaps<2&&Math.random()<.7){
-   const legal=legalSubSlots(ehp,locked),avail=availableBenchIndexes(bench);
+   const legal=legalSubSlots(ehp,locked),avail=availableBenchIndexes(bench,battleEnemyBenchLocked);
    if(!legal.length||!avail.length)break;
+
    const slot=legal.sort((a,b)=>ehp[a]-ehp[b])[0];
    const bi=avail.sort((a,b)=>overall(bench[b])-overall(bench[a]))[0];
    const out=enemy[slot],incoming=bench[bi];
-   await animateSubSwap(out,incoming,"enemy");
+
    enemy[slot]=incoming;
    emax[slot]=maxHP(incoming,difficulty);
    ehp[slot]=emax[slot];
    locked[slot]=true;
-   bench[bi]=null;
+
+   bench[bi]=out;
+   battleEnemyBenchLocked[bi]=true;
    battleEnemyBench=bench;
+
    drawArena(team,enemy,php,ehp,pmax,emax,-1,-1,difficulty);
+   await wait(220);
    swaps++;
  }
 }
@@ -1127,6 +1150,8 @@ async function startBattle(){
 
  battlePlayerBench=playerBench.slice();
  battleEnemyBench=enemyBench.slice();
+ battlePlayerBenchLocked=[false,false];
+ battleEnemyBenchLocked=[false,false];
 
  battleBusy=true;
  $("#battleModal").style.display="flex";$("#battleModal").classList.add("show");
@@ -1181,7 +1206,7 @@ async function startBattle(){
  const won=allDead(ehp)&&!allDead(php);
  $("#battleModal").classList.remove("show");
  $("#battleModal").style.display="none";
- hideCenter();battlePlayerBench=[];battleEnemyBench=[];
+ hideCenter();battlePlayerBench=[];battleEnemyBench=[];battlePlayerBenchLocked=[];battleEnemyBenchLocked=[];
  battleBusy=false;
 
  if(won){
@@ -1608,7 +1633,7 @@ async function checkForUpdate(){
  try{
    const r=await fetch("./version.json?t="+Date.now(),{cache:"no-store"});
    const remote=await r.json();
-   const local=9.08;
+   const local=9.09;
    if(Number(remote.version)>local){
      b.textContent=`V${remote.version} READY`;
      b.classList.add("update-ready");
@@ -1625,7 +1650,7 @@ async function passiveUpdateCheck(){
  try{
    const r=await fetch("./version.json?t="+Date.now(),{cache:"no-store"});
    const remote=await r.json();
-   if(Number(remote.version)>9.08){
+   if(Number(remote.version)>9.09){
      const b=$("#updateBtn");
      b.textContent=`V${remote.version} READY`;
      b.classList.add("update-ready");

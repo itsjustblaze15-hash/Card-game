@@ -259,3 +259,13 @@ V9 TURN ORDER + UPGRADE LINEUP FIX
 - Upgrade screen marks the 2 substitutes with a DASHED BROWN outline.
 - Highlights update from the current live team/sub selections.
 - Visible version remains V9; internal build is 9.08.
+
+V9 INSTANT SUBSTITUTION UPDATE
+- Removed the old substitution animation.
+- Player substitutions now happen instantly on the SWITCH SUBS screen.
+- The substitute moves into ACTIVE immediately.
+- The removed starter moves into the same BENCH slot immediately.
+- Both swapped cards turn gray and are locked for the rest of the match.
+- You can make the second legal swap or press DONE.
+- Bot substitutions are also instant.
+- Visible version remains V9; internal build is 9.09.
