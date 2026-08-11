@@ -133,13 +133,13 @@ button{font:inherit;cursor:pointer}
 .battle-arena{width:min(480px,100%);text-align:center}
 .arena-stars{font-size:25px;font-weight:1000;letter-spacing:3px;margin-bottom:8px}
 .arena-team{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:8px 0}
-.arena-card{border:3px solid var(--rarity);background:color-mix(in srgb,var(--rarity) 28%,white);color:#161100;border-radius:13px;padding:4px;position:relative;transition:.25s;box-shadow:0 5px 12px #0004;transform:scale(.86)}
+.arena-card{border:3px solid var(--rarity);background:color-mix(in srgb,var(--rarity) 28%,white);color:#161100;border-radius:13px;padding:4px;position:relative;transition:.25s;box-shadow:0 5px 12px #0004;transform:scale(.80)}
 .arena-card img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px}
 .arena-card b{display:block;font-size:9px;line-height:1.1;margin-top:4px}
 .arena-card.dead{filter:grayscale(1) brightness(.42);opacity:.65}
-.arena-card.active{transform:scale(.86);box-shadow:0 5px 12px #0004}
+.arena-card.active{transform:scale(.80);box-shadow:0 5px 12px #0004}
 .hp{height:10px;background:#3c2700;border-radius:999px;overflow:hidden;margin:5px 0 2px;border:1px solid #0005}.hp i{display:block;height:100%;background:linear-gradient(90deg,#22c95b,#d7ef43);transition:width .45s}.hp-txt{font-size:9px;font-weight:1000}
-.arena-log{color:#fff7d6;padding:4px;font-weight:1000;min-height:28px;margin:4px 0;text-shadow:0 2px 3px #000}
+.arena-log{color:#fff7d6;padding:0;font-weight:1000;min-height:4px;margin:0;text-shadow:0 2px 3px #000;font-size:0}
 .danger-zone{margin:18px 0 8px;padding:14px;border:2px solid #9b2300;border-radius:18px;background:#3a1008;color:#fff1d1}
 .danger-zone h3{margin:0 0 8px;color:#ff9d79}.danger-zone button{width:100%;border:0;border-radius:12px;padding:12px;margin-top:8px;font-weight:1000}
 .sell-all-btn{background:#f2c536;color:#241900}.reset-btn{background:#a92020;color:white}
@@ -152,14 +152,14 @@ button{font:inherit;cursor:pointer}
 /* V7 battle animation + compact UI fix */
 .battle-modal{overflow:hidden}
 .battle-arena{position:relative;min-height:92dvh;display:flex;flex-direction:column;justify-content:space-between;padding:10px 0}
-.arena-top{margin-top:2px}.arena-bottom{margin-bottom:2px}
+.arena-top{margin-top:-10px}.arena-bottom{margin-bottom:-10px}
 .arena-team{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
 .arena-card{min-height:0}
-.arena-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:34%;max-width:128px;z-index:5;pointer-events:none}
+.arena-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:28%;max-width:105px;z-index:5;pointer-events:none}
 .center-fighter{background:#fff7d6;border:4px solid var(--rarity);border-radius:15px;padding:5px;box-shadow:0 10px 22px #0007;opacity:0;transform:scale(.72);transition:.22s}
 .center-fighter.show{opacity:1;transform:translateY(0) scale(1)}
 .center-fighter.player{animation:playerStep .45s ease-out}.center-fighter.enemy{animation:enemyStep .45s ease-out}
-.center-fighter img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:10px}
+.center-fighter img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:9px}
 .damage-pop{position:fixed;z-index:80;font-size:22px;font-weight:1000;color:#ffefb8;text-shadow:0 2px 4px #000;pointer-events:none;animation:dmgPop .7s ease-out forwards}
 @keyframes playerStep{from{transform:translateY(110px) scale(.72)}to{transform:translateY(0) scale(1)}}
 @keyframes enemyStep{from{transform:translateY(-110px) scale(.72)}to{transform:translateY(0) scale(1)}}
@@ -1012,7 +1012,7 @@ function showCenter(c,side){
  const source=cards.find(card=>card.textContent.includes(c.name));
  el.className=`center-fighter ${side} show move-to-center`;
  el.style.setProperty("--rarity",R[t].color);
- el.innerHTML=`<img src="${c.image}"><b>${c.name}<br>${t} · OVR ${overall(c)}</b>`;
+ el.innerHTML=`<img src="${c.image}">`;
 
  // Animate the cloned card from its actual slot into the middle.
  if(source){
@@ -1053,7 +1053,7 @@ function popDamage(targetEl,amount){
 async function sweepAttack(attacker,side,attackerIndex,team,enemy,php,ehp,pmax,emax,difficulty){
  showCenter(attacker,side);
  drawArena(team,enemy,php,ehp,pmax,emax,side==="player"?attackerIndex:-1,side==="enemy"?attackerIndex:-1,difficulty);
- $("#arenaLog").textContent=`${attacker.name} moves to the middle!`;
+ $("#arenaLog").textContent="";
  await wait(430);
 
  if(side==="player"){
@@ -1061,7 +1061,7 @@ async function sweepAttack(attacker,side,attackerIndex,team,enemy,php,ehp,pmax,e
    for(const ti of targets){
      drawArena(team,enemy,php,ehp,pmax,emax,attackerIndex,ti,difficulty);
      const dmg=damage(attacker,enemy[ti],0);
-     $("#arenaLog").textContent=`${attacker.name} hits ${enemy[ti].name} for ${dmg}`;
+     $("#arenaLog").textContent="";
      const cards=[...document.querySelectorAll("#enemyArena .arena-card")];
      if(cards[ti])popDamage(cards[ti],dmg);
      ehp[ti]=Math.max(0,ehp[ti]-dmg);
@@ -1075,7 +1075,7 @@ async function sweepAttack(attacker,side,attackerIndex,team,enemy,php,ehp,pmax,e
    for(const ti of targets){
      drawArena(team,enemy,php,ehp,pmax,emax,ti,attackerIndex,difficulty);
      const dmg=damage(attacker,team[ti],difficulty);
-     $("#arenaLog").textContent=`${attacker.name} hits ${team[ti].name} for ${dmg}`;
+     $("#arenaLog").textContent="";
      const cards=[...document.querySelectorAll("#playerArena .arena-card")];
      if(cards[ti])popDamage(cards[ti],dmg);
      php[ti]=Math.max(0,php[ti]-dmg);
@@ -1595,7 +1595,7 @@ async function checkForUpdate(){
  try{
    const r=await fetch("./version.json?t="+Date.now(),{cache:"no-store"});
    const remote=await r.json();
-   const local=9.06;
+   const local=9.07;
    if(Number(remote.version)>local){
      b.textContent=`V${remote.version} READY`;
      b.classList.add("update-ready");
@@ -1612,7 +1612,7 @@ async function passiveUpdateCheck(){
  try{
    const r=await fetch("./version.json?t="+Date.now(),{cache:"no-store"});
    const remote=await r.json();
-   if(Number(remote.version)>9.06){
+   if(Number(remote.version)>9.07){
      const b=$("#updateBtn");
      b.textContent=`V${remote.version} READY`;
      b.classList.add("update-ready");

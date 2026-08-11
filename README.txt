@@ -241,3 +241,12 @@ V9 BATTLE SIZE + MOTION UPDATE
 - The attacking card now visually moves from its real slot into the center.
 - Its original slot temporarily disappears while it is in the center, then it returns.
 - Visible version remains V9; internal build is 9.06.
+
+V9 BATTLE SPACING CLEANUP
+- Enemy team sits slightly higher.
+- Player team sits slightly lower.
+- Battle cards are a little smaller.
+- Center attacking card is smaller.
+- Center attacking card shows only the image, no name, rarity, OVR, or damage text.
+- Exact damage is still visible through the minus-number popup on the card that gets hit.
+- Visible version remains V9; internal build is 9.07.
