@@ -288,3 +288,9 @@ V9 GOLDEN ARENA BETA
 - Tiny units auto-move/fight, towers shoot, 3-minute timer, 2x-energy overtime.
 - Bot deck mirrors player rarity levels without duplicate bot cards.
 - Patch includes only assets/beta_arena.png; existing assets/icons stay in the repo.
+
+V9.12 PLAY MODE SELECT
+- Play screen now starts with two clear choices: BATTLE and GOLDEN ARENA BETA.
+- Battle opens the existing 3v3 menu with win streak, matchmaking, team, substitutes, and Play.
+- Golden Arena opens its 4-card Beta selector directly.
+- Removed the old long stacked Beta card below the regular battle menu.

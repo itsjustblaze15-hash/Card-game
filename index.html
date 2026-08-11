@@ -252,6 +252,9 @@ button{font:inherit;cursor:pointer}
 .beta-result{position:fixed;inset:0;z-index:100020;background:#000d;display:none;align-items:center;justify-content:center;text-align:center;color:#fff;padding:18px}.beta-result.show{display:flex}
 .beta-result-box{width:min(340px,100%);background:#171717;border:3px solid #ffd52a;border-radius:20px;padding:20px}.beta-result-box h1{margin:8px 0;color:#ffd52a;font-size:42px}.beta-result-box button{width:100%;border:0;border-radius:12px;padding:12px;background:#ffd52a;color:#171100;font-weight:1000}
 
+
+/* V9.12 PLAY MODE SELECT */
+.mode-select-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.mode-card{border:3px solid #111;border-radius:18px;padding:16px 10px;text-align:center;cursor:pointer;box-shadow:0 7px 0 #1113;min-height:150px;display:flex;flex-direction:column;justify-content:center}.mode-card.battle{background:linear-gradient(145deg,#ffd52a,#ffb800);color:#171100}.mode-card.arena{background:linear-gradient(145deg,#171717,#2b2400);border-color:#ffd52a;color:#fff}.mode-card h2{margin:6px 0;font-size:21px}.mode-card p{font-size:10px;font-weight:850;margin:0 0 9px;line-height:1.3}.mode-card button{border:0;border-radius:10px;padding:9px;font-weight:1000;background:#111;color:#ffd52a}.mode-card.arena button{background:#ffd52a;color:#111}.regular-battle-panel{display:none}.regular-battle-panel.show{display:block}.mode-back{margin:0 0 10px;border:0;border-radius:10px;padding:8px 11px;background:#111;color:#ffd52a;font-weight:1000}@media(max-width:430px){.mode-select-grid{grid-template-columns:1fr 1fr}.mode-card{min-height:140px;padding:12px 7px}.mode-card h2{font-size:18px}}
 </style>
 </head>
 <body>
@@ -281,16 +284,20 @@ button{font:inherit;cursor:pointer}
 </section>
 
 <section id="battle" class="screen">
-<div class="hero"><h1>BATTLE</h1><p>Pick 3 owned cards and fight a random bot. Wins power up the cards you used.</p></div><div class="streak-box"><div><b>WIN STREAK</b><div style="font-size:11px">Base reward: 2K–5K · 3 standing = 100% · 2 standing = 75% · 1 standing = 50%</div></div><div class="streak-num" id="streakNum">0</div></div>
+<div class="hero"><h1>PLAY</h1><p>Choose a game mode.</p></div>
+<div id="battleModeSelect" class="mode-select-grid">
+  <div class="mode-card battle" onclick="openRegularBattle()"><span class="beta-chip" style="background:#ffd52a;color:#111;border-color:#111">MAIN MODE</span><h2>BATTLE</h2><p>Classic 3v3 battles with substitutes, team-based matchmaking, win streaks, and your normal rewards.</p><button type="button">PLAY BATTLE</button></div>
+  <div class="mode-card arena" onclick="openGoldenArenaBeta()"><span class="beta-chip">BETA</span><h2>GOLDEN ARENA</h2><p>Choose 4 cards, spend energy, deploy tiny units, and destroy the black towers.</p><button type="button">PLAY BETA</button></div>
+</div>
+<div id="regularBattlePanel" class="regular-battle-panel">
+<button class="mode-back" onclick="closeRegularBattle()">← GAME MODES</button>
+<div class="hero"><h1>BATTLE</h1><p>Pick 3 owned cards and fight a random bot. Wins power up the cards you used.</p></div>
+<div class="streak-box"><div><b>WIN STREAK</b><div style="font-size:11px">Base reward: 2K–5K · 3 standing = 100% · 2 standing = 75% · 1 standing = 50%</div></div><div class="streak-num" id="streakNum">0</div></div>
 <div class="panel"><b>BOT DIFFICULTY</b><div class="bot-stars" id="stars">TEAM-BASED MATCHMAKING</div><div style="font-size:12px;font-weight:900;text-align:center;margin-top:8px">Bot strength is matched around your team rating, with some easier and harder opponents.</div></div>
-<div id="teamRatingBox" class="team-rating-box" style="--team-color:#9b9b9b"><span>YOUR TEAM: <b id="teamRatingName">GRAY</b></span><span id="teamRatingStars" class="team-rating-stars">★</span></div><div class="battle-grid" id="teamSlots"></div>
+<div id="teamRatingBox" class="team-rating-box" style="--team-color:#9b9b9b"><span>YOUR TEAM: <b id="teamRatingName">GRAY</b></span><span id="teamRatingStars" class="team-rating-stars">★</span></div>
+<div class="battle-grid" id="teamSlots"></div>
 <div class="sub-label">SUBSTITUTES</div><div class="sub-pick-grid" id="subSlots"></div>
 <button class="primary" onclick="startBattle()">PLAY</button>
-<div class="beta-mode-card">
-  <span class="beta-chip">BETA</span>
-  <h3>GOLDEN ARENA</h3>
-  <p>Choose 4 cards. Place tiny units on your yellow side, manage energy, and destroy the black towers.</p>
-  <button class="primary" onclick="openGoldenArenaBeta()">PLAY BETA</button>
 </div>
 </section>
 
@@ -1739,6 +1746,8 @@ maybeShowWhatsNew();
 cleanTeam();
 save();
 
+function openRegularBattle(){const s=$("#battleModeSelect"),p=$("#regularBattlePanel");if(s)s.style.display="none";if(p)p.classList.add("show");render()}
+function closeRegularBattle(){const s=$("#battleModeSelect"),p=$("#regularBattlePanel");if(p)p.classList.remove("show");if(s)s.style.display="grid"}
 const GA_COST={Common:1,Uncommon:3,Rare:5,Epic:7,Legendary:9,Exotic:10};
 let gaDeck=[],gaBotDeck=[],gaEnergy=10,gaBotEnergy=10,gaUnits=[],gaTowers=null,gaRunning=false,gaSelected=null,gaStart=0,gaOvertime=false,gaIntervals=[];
 function gaCost(c){return GA_COST[tierFor(c)]||1}
