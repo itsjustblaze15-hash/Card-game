@@ -376,3 +376,15 @@ V9.21 BATTLE BUTTON + GOLDEN ARENA ATTACK UPDATE
 - Tower Hunters gain modest tower damage/speed pressure.
 - Tapping a card in Arena deck editing opens a card details panel first.
 - Card details show rarity, energy, HP, damage, speed, power and combat role before adding/removing it.
+
+V9.22 GOLDEN ARENA COMBAT FLOW
+- Fixed Add To Deck from the card detail popup.
+- Reduced tower range and tower collision so units can get visibly closer.
+- Outer towers fire visible arrow projectiles; main towers fire slower, stronger cannonballs.
+- Damage lands when the projectile reaches the unit.
+- Commons remain fragile, while rarer units survive more tower shots.
+- Tower HP bars are positioned above the towers.
+- Normal unit aggro is shorter to reduce endless defensive fighting.
+- More Epic+ cards prioritize towers.
+- Bot deployment delay increased to reduce defensive spam.
+- Existing 40K+ win reward, 2-minute regulation, Sudden Death, bridge pathing, and cinematic endings retained.
