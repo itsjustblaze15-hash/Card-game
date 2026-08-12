@@ -1991,7 +1991,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.16;
+const APP_INTERNAL_VERSION=10.17;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
@@ -2123,7 +2123,7 @@ const GA_SCALE={
  Legendary:{hp:1.40,atk:1.27,spd:1.06},Exotic:{hp:1.55,atk:1.36,spd:1.08}
 };
 const GA_POWER_NAMES=["GUARDIAN","BERSERKER","SPRINTER","DRAIN","SPLASH","SHIELD"];
-const GA={deck:[],cycle:[],hand:[],next:null,botDeck:[],botCycle:[],botHand:[],botNext:null,energy:10,botEnergy:10,units:[],towers:null,selected:null,running:false,start:0,overtime:false,otPlayerScore:0,otEnemyScore:0,penaltyArmed:false,lastPlayerPlay:0,projectiles:[],deaths:[],loops:[],lastBotPlay:0,lastRegen:0,energyMult:1,phase30:false,lastCountdown:-1,pendingReward:0,pendingWin:false,lastTowerHP:{},finishing:false,overtimeStart:0,overtime5x:false};
+const GA={deck:[],cycle:[],hand:[],next:null,botDeck:[],botCycle:[],botHand:[],botNext:null,energy:10,botEnergy:10,units:[],towers:null,selected:null,running:false,start:0,overtime:false,otPlayerScore:0,otEnemyScore:0,penaltyArmed:false,lastPlayerPlay:0,projectiles:[],deaths:[],loops:[],lastBotPlay:0,lastRegen:0,energyMult:1,phase30:false,lastCountdown:-1,pendingReward:0,pendingWin:false,lastTowerHP:{},finishing:false,overtimeStart:0,overtime5x:false,regulationTimeout:null,regulationResolved:false};
 const GA_RIVER_TOP=45;
 const GA_RIVER_BOTTOM=54;
 const GA_BRIDGES=[{id:"L",x:29},{id:"R",x:70}];
@@ -2329,10 +2329,10 @@ function gaFreshTowers(){return {
 function gaStart(){
  const saved=gaSavedDeck();if(saved.length!==8){gaOpenPicker(true);toast("Build an 8-card Arena deck first");return}
  GA.deck=[...saved];GA.botDeck=gaBuildMatchedBotDeck();gaInitCycle(GA.deck,false);gaInitCycle(GA.botDeck,true);
- GA.energy=10;GA.botEnergy=10;GA.units=[];GA.projectiles=[];GA.deaths=[];GA.towers=gaFreshTowers();GA.lastTowerHP={};for(const [k,t] of Object.entries(GA.towers))GA.lastTowerHP[k]=t.hp;GA.finishing=false;GA.selected=null;GA.running=true;GA.start=Date.now();GA.overtime=false;GA.otPlayerScore=0;GA.otEnemyScore=0;GA.penaltyArmed=true;GA.lastPlayerPlay=0;GA.lastBotPlay=0;GA.lastRegen=Date.now();GA.energyMult=1;GA.phase30=false;GA.lastCountdown=-1;GA.pendingReward=0;GA.pendingWin=false;GA.overtimeStart=0;GA.overtime5x=false;
+ GA.energy=10;GA.botEnergy=10;GA.units=[];GA.projectiles=[];GA.deaths=[];GA.towers=gaFreshTowers();GA.lastTowerHP={};for(const [k,t] of Object.entries(GA.towers))GA.lastTowerHP[k]=t.hp;GA.finishing=false;GA.selected=null;GA.running=true;GA.start=Date.now();GA.overtime=false;GA.otPlayerScore=0;GA.otEnemyScore=0;GA.penaltyArmed=true;GA.lastPlayerPlay=0;GA.lastBotPlay=0;GA.lastRegen=Date.now();GA.energyMult=1;GA.phase30=false;GA.lastCountdown=-1;GA.pendingReward=0;GA.pendingWin=false;GA.overtimeStart=0;GA.overtime5x=false;GA.regulationResolved=false;if(GA.regulationTimeout)clearTimeout(GA.regulationTimeout);GA.regulationTimeout=null;
  $("#gaTimer").textContent="2:00";$("#gaBoost").textContent="";$("#gaGame").classList.remove("ga-overtime");$("#gaGame").classList.add("show");
  gaRenderHand();gaDraw();gaUpdateEnergy();
- GA.loops=[setInterval(gaRegen,100),setInterval(gaTick,100),setInterval(gaBotThink,350),setInterval(gaClock,100)];
+ GA.loops=[setInterval(gaRegen,100),setInterval(gaTick,100),setInterval(gaBotThink,350),setInterval(gaClock,100)];GA.regulationTimeout=setTimeout(()=>gaResolveRegulationEnd("watchdog"),120050);
 }
 function gaStopLoops(){GA.loops.forEach(clearInterval);GA.loops=[]}
 function gaArenaPenalty(){
@@ -2344,11 +2344,11 @@ function gaArenaPenalty(){
 function gaExit(){
  if(!GA.running){$("#gaGame")?.classList.remove("show");return}
  if(!confirm("Leave Golden Arena?\n\nYou will lose 20,000 coins. If you have less than 20,000, your balance will drop to 0."))return;
- const loss=gaArenaPenalty();GA.running=false;gaStopLoops();
+ const loss=gaArenaPenalty();GA.running=false;if(GA.regulationTimeout){clearTimeout(GA.regulationTimeout);GA.regulationTimeout=null}gaStopLoops();
  $("#gaGame")?.classList.remove("show","ga-overtime");
  toast(loss?`You lost ${loss.toLocaleString()} coins for leaving Golden Arena`:"Golden Arena exited");
 }
-function gaSelect(id){if(GA.running&&!GA.overtime&&Date.now()-GA.start>=120000){gaClock();return}const c=CARDS.find(x=>x.id===id);if(!c||!GA.running)return;if(GA.energy<gaCost(c)){toast("Not enough energy");return}GA.selected=id;gaRenderHand();gaDraw()}
+function gaSelect(id){if(GA.running&&!GA.overtime&&Date.now()-GA.start>=120000){gaResolveRegulationEnd("input");return}const c=CARDS.find(x=>x.id===id);if(!c||!GA.running)return;if(GA.energy<gaCost(c)){toast("Not enough energy");return}GA.selected=id;gaRenderHand();gaDraw()}
 function gaUpdateEnergy(){$("#gaEnergyText").textContent=Math.floor(GA.energy);$("#gaEnergyFill").style.width=(GA.energy*10)+"%"}
 function gaRenderHand(){
  $("#gaHand").innerHTML=GA.hand.map(id=>{const c=CARDS.find(x=>x.id===id),cost=gaCost(c),off=GA.energy<cost;return `<button type="button" class="ga-hand-card ${off?"disabled":""} ${GA.selected===id?"selected":""}" style="--r:${R[c.rarity].color}" onclick="gaSelect(${id})"><img src="${c.image}"><span>${c.name}</span><span class="ga-ability">${gaPower(c)}</span><b class="ga-cost">${cost}</b></button>`}).join("");
@@ -2479,6 +2479,7 @@ function gaProjectileHTML(){
 }
 function gaTick(){
  if(!GA.running)return;
+ if(!GA.overtime&&Date.now()-GA.start>=120000){gaResolveRegulationEnd("tick");return}
  for(const u of GA.units){
   if(u.hp<=0)continue;u.cool=Math.max(0,u.cool-1);const foe=gaAggroTarget(u);
   if(foe){const d=Math.hypot(u.x-foe.x,u.y-foe.y);if(d<4.25){if(!u.cool){gaUnitAttack(u,foe);u.cool=7}}else gaMoveToward(u,foe);continue}
@@ -2521,9 +2522,38 @@ function gaDraw(){
  for(const u of GA.units)out+=`<div class="ga-unit-hp" style="left:${u.x}%;top:${u.y-3}%"><i style="width:${Math.max(0,u.hp/u.max*100)}%"></i></div><img class="ga-unit ${u.side}${u.hp<=0?" dying":""}" src="${u.c.image}" style="left:${u.x}%;top:${u.y}%">`;
  $("#gaField").innerHTML=out;
 }
+
+function gaResolveRegulationEnd(source="clock"){
+ if(GA.regulationResolved||GA.overtime||!GA.running)return;
+ GA.regulationResolved=true;
+ if(GA.regulationTimeout){clearTimeout(GA.regulationTimeout);GA.regulationTimeout=null}
+
+ const fc=$("#gaFinalCount");if(fc)fc.classList.remove("show");
+ GA.selected=null;
+ $("#gaTimer").textContent="0:00";
+
+ const winner=gaRegulationWinner();
+ if(winner!==null){
+   gaFinish(winner);
+   return;
+ }
+
+ GA.overtime=true;
+ GA.otPlayerScore=gaScore("player");
+ GA.otEnemyScore=gaScore("enemy");
+ GA.energyMult=3;
+ GA.lastRegen=Date.now();
+ GA.overtimeStart=Date.now();
+ GA.overtime5x=false;
+ $("#gaGame").classList.add("ga-overtime");
+ $("#gaTimer").textContent="OVERTIME";
+ $("#gaBoost").textContent="3× ENERGY · NEXT TOWER WINS";
+ gaPhaseMessage("OVERTIME · 3× ENERGY · NEXT TOWER WINS");
+}
 function gaClock(){
  if(!GA.running)return;
  const e=(Date.now()-GA.start)/1000;
+
  if(!GA.overtime){
   const left=Math.max(0,120-Math.floor(e));
   $("#gaTimer").textContent=Math.floor(left/60)+":"+String(left%60).padStart(2,"0");
@@ -2541,36 +2571,8 @@ function gaClock(){
   }
 
   if(e>=120){
-   const regulationWinner=gaRegulationWinner();
-
-   // Always stop the regulation simulation first. This prevents units/cards from
-   // continuing to run at 0:00 while the result transition is happening.
-   GA.running=false;
-   gaStopLoops();
-   const fc=$("#gaFinalCount");if(fc)fc.classList.remove("show");
-   GA.selected=null;
-
-   if(regulationWinner!==null){
-     if(!GA.finishing){
-       GA.finishing=true;
-       $("#gaTimer").textContent="0:00";
-       setTimeout(()=>{GA.finishing=false;gaFinish(regulationWinner)},260);
-     }
-     return;
-   }
-
-   // Only a true tie in both destroyed towers AND remaining tower HP gets overtime.
-   GA.running=true;
-   GA.start=Date.now();
-   GA.overtime=true;
-   GA.otPlayerScore=gaScore("player");
-   GA.otEnemyScore=gaScore("enemy");
-   GA.energyMult=3;GA.lastRegen=Date.now();GA.overtimeStart=Date.now();GA.overtime5x=false;
-   $("#gaGame").classList.add("ga-overtime");
-   $("#gaTimer").textContent="OVERTIME";
-   $("#gaBoost").textContent="3× ENERGY · NEXT TOWER WINS";
-   gaPhaseMessage("OVERTIME · 3× ENERGY · NEXT TOWER WINS");
-   GA.loops=[setInterval(gaRegen,100),setInterval(gaTick,100),setInterval(gaBotThink,350),setInterval(gaClock,100)];
+   gaResolveRegulationEnd("clock");
+   return;
   }
  }else{
   $("#gaTimer").textContent="OVERTIME";
@@ -2722,6 +2724,8 @@ function gaResultFX(win){
  if(navigator.vibrate)navigator.vibrate(win?[70,45,100]:[120,60,120]);
 }
 function gaFinish(win){
+ if(GA.regulationTimeout){clearTimeout(GA.regulationTimeout);GA.regulationTimeout=null}
+ GA.regulationResolved=true;
  GA.penaltyArmed=false;GA.running=false;gaStopLoops();GA.finishing=false;gaResultFX(win);
  $("#gaGame").classList.remove("show","ga-overtime");
  const towers=gaScore("player"),reward=win?40000+towers*2500:0;

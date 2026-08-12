@@ -1,5 +1,5 @@
 {
-  "version": "10.16",
+  "version": "10.17",
   "display_version": "10",
-  "build": "golden-arena-regulation-resolution-hard-fix"
+  "build": "golden-arena-timeout-watchdog-hard-stop"
 }

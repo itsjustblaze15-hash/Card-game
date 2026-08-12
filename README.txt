@@ -567,3 +567,11 @@ V10.16 GOLDEN ARENA REGULATION HARD FIX
 - Card input also forces the timeout check if it lands between clock ticks.
 - Victory/Defeat still uses the existing Golden Arena result and reward flow.
 - All V10.15 navigation fixes and V10.14 bot upgrades remain intact.
+
+V10.17 GOLDEN ARENA 0:00 WATCHDOG FIX
+- Replaced the fragile delayed 0:00 transition with one idempotent regulation resolver.
+- Regulation now has a separate 120.05-second watchdog in addition to the normal game clock.
+- gaClock, gaTick, card input, and the watchdog all trigger the same resolver.
+- A regulation win calls gaFinish immediately with no dead-zone setTimeout.
+- A true tie goes directly into overtime without stopping/restarting the live match loops.
+- The watchdog clears on finish and manual exit.
