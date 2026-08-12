@@ -413,6 +413,14 @@ button{font:inherit;cursor:pointer}
 /* V10.10 exact Blackjack face-card assets */
 .bj-card.face-art{overflow:hidden;padding:0;background:#fff}
 .bj-card.face-art img{width:100%;height:100%;object-fit:cover;display:block;border-radius:8px}
+
+/* V10.11 Blackjack dealing + result presentation */
+.bj-table{position:relative}.bj-deck-pile{position:absolute;right:18px;top:76px;width:76px;height:108px;border-radius:10px;background:repeating-linear-gradient(45deg,#7b1010,#7b1010 7px,#d1b75b 7px,#d1b75b 10px);border:2px solid #f4d26c;box-shadow:-4px 5px 0 #203426,-8px 10px 0 #18281e,0 9px 18px #0007;z-index:2}
+.bj-card{width:82px!important;height:116px!important}.bj-card.deal-in{animation:bjDealIn .42s cubic-bezier(.2,.85,.25,1) both}.bj-card.flip-in{animation:bjFlipIn .38s ease-out both}
+@keyframes bjDealIn{0%{opacity:0;transform:translate(120px,-85px) rotate(10deg) scale(.78)}100%{opacity:1;transform:none}}@keyframes bjFlipIn{0%{transform:rotateY(90deg);opacity:.3}100%{transform:rotateY(0);opacity:1}}
+#bjGame.bj-locked .bj-controls button{opacity:.45;pointer-events:none}
+#bjResultScreen{position:fixed;inset:0;z-index:100300;display:none;align-items:center;justify-content:center;text-align:center;padding:20px;color:#fff}#bjResultScreen.show{display:flex}#bjResultScreen.win{background:radial-gradient(circle,#22b85f,#07381d)}#bjResultScreen.lose{background:radial-gradient(circle,#d82e2e,#450909)}#bjResultScreen.push{background:radial-gradient(circle,#777,#222)}
+.bj-result-card{width:min(360px,100%);border:3px solid #f0d36b;border-radius:22px;padding:22px;background:#07160ee6;box-shadow:0 20px 50px #0009}.bj-result-card h1{font-size:46px;margin:0 0 8px}.bj-result-card p{font-weight:900;margin:7px 0}.bj-result-money{font-size:27px;color:#f0d36b;font-weight:1000;margin:12px 0}.bj-result-card button{width:100%;border:0;border-radius:13px;padding:13px;background:#f0d36b;color:#171100;font-weight:1000;margin-top:10px}
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -524,7 +532,7 @@ button{font:inherit;cursor:pointer}
 <section id="bjPageShop" class="bj-page"><div class="bj-panel"><h2>CARD BACK SHOP</h2><div class="bj-small">Uses the same coins as every other mode.</div><div id="bjShopBacks" class="bj-back-grid"></div></div></section>
 <section id="bjPageRanked" class="bj-page"><div class="bj-panel"><h2>RANKED</h2><div class="bj-rank" id="bjRankBig"></div><div id="bjRankProgress" class="bj-small"></div></div><div class="bj-panel"><h2>STATS</h2><div id="bjStats" class="bj-statgrid"></div></div><div class="bj-panel"><h2>RANK REWARDS</h2><div class="bj-small">Silver unlocks Midnight. Gold unlocks Gold. Higher ranks will get exclusive cosmetics.</div></div></section></div>
 <nav class="bj-bottom"><button id="bjNavPlay" class="on" onclick="bjTab('play')">PLAY</button><button id="bjNavCollection" onclick="bjTab('collection')">COLLECTION</button><button id="bjNavShop" onclick="bjTab('shop')">SHOP</button><button id="bjNavRanked" onclick="bjTab('ranked')">RANKED</button></nav></div>
-<div id="bjGame"><div class="bj-table"><div class="bj-topline"><button class="bj-btn" onclick="bjLeaveGame()">LEAVE</button><span>BET <b id="bjGameBet"></b></span><span>COINS <b id="bjGameCoins"></b></span></div><div class="bj-hand"><h3>DEALER <span id="bjDealerScore"></span></h3><div id="bjDealerCards" class="bj-cards"></div></div><div id="bjMessage"></div><div class="bj-hand"><h3>YOU <span id="bjPlayerScore"></span></h3><div id="bjPlayerCards" class="bj-cards"></div></div></div><div class="bj-controls"><button class="hit" onclick="bjHit()">HIT</button><button class="stand" onclick="bjStand()">STAND</button><button class="double" onclick="bjDouble()">DOUBLE</button></div></div><div id="gaLobby">
+<div id="bjGame"><div class="bj-table"><div class="bj-deck-pile"></div><div class="bj-topline"><button class="bj-btn" onclick="bjLeaveGame()">LEAVE</button><span>BET <b id="bjGameBet"></b></span><span>COINS <b id="bjGameCoins"></b></span></div><div class="bj-hand"><h3>DEALER <span id="bjDealerScore"></span></h3><div id="bjDealerCards" class="bj-cards"></div></div><div id="bjMessage"></div><div class="bj-hand"><h3>YOU <span id="bjPlayerScore"></span></h3><div id="bjPlayerCards" class="bj-cards"></div></div></div><div class="bj-controls"><button class="hit" onclick="bjHit()">HIT</button><button class="stand" onclick="bjStand()">STAND</button><button class="double" onclick="bjDouble()">DOUBLE</button></div></div><div id="bjResultScreen"><div class="bj-result-card"><h1 id="bjResultTitle">VICTORY</h1><p id="bjResultText"></p><div id="bjResultMoney" class="bj-result-money"></div><button type="button" onclick="bjContinue()">CONTINUE</button></div></div><div id="gaLobby">
  <div class="ga-hub">
   <div class="ga-hub-head"><div><span class="new">NEW</span><h1>GOLDEN ARENA</h1></div><button type="button" onclick="gaCloseLobby()">BACK</button></div>
   <div class="ga-hub-body">
@@ -1912,7 +1920,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.10;
+const APP_INTERNAL_VERSION=10.11;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
@@ -2622,7 +2630,27 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
 
 window.addEventListener("pagehide",()=>{if(GA?.running&&GA?.penaltyArmed)gaArenaPenalty()});
 
-const BJ_SUITS=["♠","♥","♦","♣"],BJ_RANKS=["A","2","3","4","5","6","7","8","9","10","J","Q","K"];let BJ={deck:[],player:[],dealer:[],bet:500,playing:false,holeHidden:true};
+const BJ_SUITS=["♠","♥","♦","♣"],BJ_RANKS=["A","2","3","4","5","6","7","8","9","10","J","Q","K"];let BJ={deck:[],player:[],dealer:[],bet:500,playing:false,holeHidden:true,busy:false};
+function bjWait(ms){return new Promise(r=>setTimeout(r,ms))}
+function bjLock(on){BJ.busy=!!on;$("#bjGame")?.classList.toggle("bj-locked",!!on)}
+function bjAnimateLatestCard(id){const el=document.querySelector(`#${id} .bj-card:last-child`);if(el){el.classList.remove("deal-in");void el.offsetWidth;el.classList.add("deal-in")}}
+function bjAnimateHoleFlip(){const el=document.querySelectorAll("#bjDealerCards .bj-card")[1];if(el){el.classList.remove("flip-in");void el.offsetWidth;el.classList.add("flip-in")}}
+async function bjAnimateDealSequence(){
+ bjLock(true);BJ.player=[];BJ.dealer=[];BJ.holeHidden=true;bjRenderTable();
+ BJ.player.push(bjDraw());bjRenderTable();bjAnimateLatestCard("bjPlayerCards");await bjWait(430);
+ BJ.dealer.push(bjDraw());bjRenderTable();bjAnimateLatestCard("bjDealerCards");await bjWait(430);
+ BJ.player.push(bjDraw());bjRenderTable();bjAnimateLatestCard("bjPlayerCards");await bjWait(430);
+ BJ.dealer.push(bjDraw());bjRenderTable();bjAnimateLatestCard("bjDealerCards");await bjWait(520);
+ bjLock(false);
+ if(bjIsBlackjack(BJ.player))await bjStand();
+}
+function bjShowResult(r,msg,payout,profit){
+ const s=$("#bjResultScreen");s.className="show "+(r==="win"?"win":r==="loss"?"lose":"push");
+ $("#bjResultTitle").textContent=r==="win"?"VICTORY":r==="loss"?"DEFEAT":"PUSH";
+ $("#bjResultText").textContent=msg;
+ $("#bjResultMoney").textContent=r==="win"?`+${profit.toLocaleString()} PROFIT · ${payout.toLocaleString()} RETURNED`:r==="loss"?`-${BJ.bet.toLocaleString()} COINS`:`${payout.toLocaleString()} COINS RETURNED`;
+}
+function bjContinue(){$("#bjResultScreen").className="";$("#bjGame").classList.remove("show","bj-locked");bjOpenHub()}
 function bjData(){if(!state.blackjack)state.blackjack={wins:0,losses:0,pushes:0,blackjacks:0,rankPoints:0,ownedBacks:["classic"],equippedBack:"classic",specialCards:[]};return state.blackjack}
 function bjOpenHub(){bjData();bjRenderHub();bjTab("play");$("#bjHub").classList.add("show")}function bjCloseHub(){$("#bjHub").classList.remove("show")}
 function bjTab(t){["play","collection","shop","ranked"].forEach(x=>{$("#bjPage"+x[0].toUpperCase()+x.slice(1))?.classList.toggle("active",x===t);$("#bjNav"+x[0].toUpperCase()+x.slice(1))?.classList.toggle("on",x===t)});bjRenderHub()}
@@ -2633,15 +2661,15 @@ function bjSetBet(n){BJ.bet=n;$("#bjBetLabel").textContent=n.toLocaleString()}fu
 function bjPersist(){try{const payload=JSON.stringify(state);localStorage.setItem(SAVE_KEY,payload);localStorage.setItem("goldenPullsV2",payload);localStorage.setItem("goldenPullsV1",payload)}catch(e){console.error("Blackjack save failed",e)}}
 function bjSyncCoins(){const n=Number(state.coins)||0;state.coins=n;const w=$("#coins");if(w)w.textContent=fmt(n);const g=$("#bjGameCoins");if(g)g.textContent=n.toLocaleString()}
 function bjValue(a){let n=0,z=0;for(let c of a){if(c.r==="A"){n+=11;z++}else if(["J","Q","K"].includes(c.r))n+=10;else n+=+c.r}while(n>21&&z){n-=10;z--}return n}function bjIsBlackjack(a){return a.length===2&&bjValue(a)===21}function bjDraw(){return BJ.deck.pop()}
-function bjStart(){
+async function bjStart(){
  const coins=Number(state.coins)||0,bet=Number(BJ.bet)||500;
  if(BJ.playing)return;
  if(coins<bet){toast(`Need ${bet.toLocaleString()} coins to deal`);return}
- BJ.bet=bet;BJ.deck=bjFreshDeck();BJ.player=[bjDraw(),bjDraw()];BJ.dealer=[bjDraw(),bjDraw()];BJ.playing=true;BJ.holeHidden=true;
+ BJ.bet=bet;BJ.deck=bjFreshDeck();BJ.playing=true;BJ.holeHidden=true;
  state.coins=coins-bet;bjPersist();bjSyncCoins();
- bjCloseHub();const game=$("#bjGame");if(!game){BJ.playing=false;state.coins=coins;bjPersist();toast("Blackjack table failed to open");return}game.classList.add("show");
- $("#bjGameBet").textContent=BJ.bet.toLocaleString();$("#bjMessage").textContent="";bjRenderTable();
- if(bjIsBlackjack(BJ.player))setTimeout(bjStand,450)
+ bjCloseHub();const game=$("#bjGame");if(!game){BJ.playing=false;state.coins=coins;bjPersist();toast("Blackjack table failed to open");return}
+ game.classList.add("show");$("#bjGameBet").textContent=BJ.bet.toLocaleString();$("#bjMessage").textContent="";
+ await bjAnimateDealSequence();
 }
 function bjFaceAsset(c){
  const suit={"♠":"spades","♥":"hearts","♦":"diamonds","♣":"clubs"}[c.s];
@@ -2655,11 +2683,11 @@ function bjCardHTML(c,h=false){
  let red=c.s==="♥"||c.s==="♦";
  return `<div class="bj-card ${red?"red":""}"><span class="corner">${c.r}<br>${c.s}</span>${c.s}</div>`;
 }
-function bjRenderTable(){$("#bjDealerCards").innerHTML=BJ.dealer.map((c,i)=>bjCardHTML(c,BJ.holeHidden&&i===1)).join("");$("#bjPlayerCards").innerHTML=BJ.player.map(c=>bjCardHTML(c)).join("");$("#bjPlayerScore").textContent=`(${bjValue(BJ.player)})`;$("#bjDealerScore").textContent=BJ.holeHidden?`(${bjValue([BJ.dealer[0]])}+?)`:`(${bjValue(BJ.dealer)})`;$("#bjGameCoins").textContent=state.coins.toLocaleString()}
-function bjHit(){if(!BJ.playing)return;BJ.player.push(bjDraw());bjRenderTable();if(bjValue(BJ.player)>21)bjResolve("loss","BUST");else if(bjValue(BJ.player)===21)bjStand()}
-function bjStand(){if(!BJ.playing)return;BJ.holeHidden=false;while(bjValue(BJ.dealer)<=16)BJ.dealer.push(bjDraw());bjRenderTable();let p=bjValue(BJ.player),d=bjValue(BJ.dealer);if(p>21)bjResolve("loss","BUST");else if(d>21||p>d)bjResolve("win",d>21?"DEALER BUST":"YOU WIN");else if(p<d)bjResolve("loss","DEALER WINS");else bjResolve("push","PUSH")}
-function bjDouble(){if(!BJ.playing||BJ.player.length!==2)return;if(state.coins<BJ.bet)return toast("Not enough coins");state.coins-=BJ.bet;BJ.bet*=2;bjPersist();bjSyncCoins();$("#bjGameBet").textContent=BJ.bet.toLocaleString();BJ.player.push(bjDraw());bjRenderTable();if(bjValue(BJ.player)>21)bjResolve("loss","BUST");else bjStand()}
-function bjResolve(r,msg){if(!BJ.playing)return;BJ.playing=false;BJ.holeHidden=false;let d=bjData(),nat=bjIsBlackjack(BJ.player),pay=0;if(r==="win"){d.wins++;d.rankPoints+=3;pay=nat?Math.floor(BJ.bet*2.5):BJ.bet*2;if(nat)d.blackjacks++}else if(r==="push"){d.pushes++;d.rankPoints++;pay=BJ.bet}else d.losses++;state.coins+=pay;if(d.rankPoints>=15&&!d.ownedBacks.includes("midnight"))d.ownedBacks.push("midnight");if(d.rankPoints>=35&&!d.ownedBacks.includes("gold"))d.ownedBacks.push("gold");bjPersist();bjSyncCoins();bjRenderTable();$("#bjMessage").textContent=nat&&r==="win"?"BLACKJACK!":msg;setTimeout(()=>{$("#bjGame").classList.remove("show");bjOpenHub()},1500)}
+function bjRenderTable(){$("#bjDealerCards").innerHTML=BJ.dealer.map((c,i)=>bjCardHTML(c,BJ.holeHidden&&i===1)).join("");$("#bjPlayerCards").innerHTML=BJ.player.map(c=>bjCardHTML(c)).join("");const ready=BJ.player.length>=2&&BJ.dealer.length>=2;$("#bjPlayerScore").textContent=ready?`(${bjValue(BJ.player)})`:"";$("#bjDealerScore").textContent=!ready?"":BJ.holeHidden?`(${bjValue([BJ.dealer[0]])}+?)`:`(${bjValue(BJ.dealer)})`;$("#bjGameCoins").textContent=state.coins.toLocaleString()}
+async function bjHit(){if(!BJ.playing||BJ.busy)return;bjLock(true);BJ.player.push(bjDraw());bjRenderTable();bjAnimateLatestCard("bjPlayerCards");await bjWait(480);bjLock(false);if(bjValue(BJ.player)>21)await bjResolve("loss","BUST");else if(bjValue(BJ.player)===21)await bjStand()}
+async function bjStand(){if(!BJ.playing||BJ.busy)return;bjLock(true);BJ.holeHidden=false;bjRenderTable();bjAnimateHoleFlip();await bjWait(650);while(bjValue(BJ.dealer)<=16){BJ.dealer.push(bjDraw());bjRenderTable();bjAnimateLatestCard("bjDealerCards");await bjWait(700)}const p=bjValue(BJ.player),d=bjValue(BJ.dealer);bjLock(false);if(p>21)await bjResolve("loss","BUST");else if(d>21)await bjResolve("win","DEALER BUST");else if(p>d)await bjResolve("win","YOU WIN");else if(p<d)await bjResolve("loss","DEALER WINS");else await bjResolve("push","PUSH")}
+async function bjDouble(){if(!BJ.playing||BJ.busy||BJ.player.length!==2)return;const extra=BJ.bet;if(state.coins<extra)return toast("Not enough coins");state.coins-=extra;BJ.bet+=extra;bjPersist();bjSyncCoins();$("#bjGameBet").textContent=BJ.bet.toLocaleString();bjLock(true);BJ.player.push(bjDraw());bjRenderTable();bjAnimateLatestCard("bjPlayerCards");await bjWait(520);bjLock(false);if(bjValue(BJ.player)>21)await bjResolve("loss","BUST");else await bjStand()}
+async function bjResolve(r,msg){if(!BJ.playing)return;BJ.playing=false;BJ.holeHidden=false;const d=bjData(),nat=bjIsBlackjack(BJ.player);let pay=0,profit=0;if(r==="win"){d.wins++;d.rankPoints+=3;pay=nat?Math.floor(BJ.bet*2.5):BJ.bet*2;profit=pay-BJ.bet;if(nat)d.blackjacks++}else if(r==="push"){d.pushes++;d.rankPoints++;pay=BJ.bet}else{d.losses++;profit=-BJ.bet}state.coins+=pay;if(d.rankPoints>=15&&!d.ownedBacks.includes("midnight"))d.ownedBacks.push("midnight");if(d.rankPoints>=35&&!d.ownedBacks.includes("gold"))d.ownedBacks.push("gold");bjPersist();bjSyncCoins();bjRenderTable();$("#bjMessage").textContent="";await bjWait(850);bjShowResult(r,nat&&r==="win"?"BLACKJACK!":msg,pay,profit)}
 function bjLeaveGame(){if(BJ.playing){state.coins+=BJ.bet;bjPersist();bjSyncCoins()}BJ.playing=false;$("#bjGame").classList.remove("show");bjOpenHub()}
 </script>
 </body></html>

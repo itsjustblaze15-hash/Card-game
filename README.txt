@@ -519,3 +519,5 @@ V10.10 BLACKJACK FACE CARDS
 - Blackjack now displays these uploaded images whenever J, Q, or K is dealt.
 - Number cards and Aces keep the existing standard face design.
 - Visible version remains V10.
+
+V10.11 BLACKJACK: larger cards, animated initial deal, animated Hit, dealer hole-card flip and one-by-one dealer hits, suspense pauses, persistent Victory/Defeat/Push screen with Continue, normal win returns 2x total, loss keeps wager lost, push returns wager, natural blackjack remains 3:2.
