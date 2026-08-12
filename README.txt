@@ -537,3 +537,14 @@ V10.13 3V3 SUBSTITUTION HOTFIX
 - The substitution overlay now renders above the live battle again.
 - Existing substitution timing and rules are unchanged.
 - Visible version remains V10.
+
+V10.14 3V3 BOT CARD UPGRADES
+- Normal 3v3 bots can now use upgraded versions of cards instead of being limited to printed rarity.
+- Bot upgrades only move UP the rarity ladder. Downgrades are impossible.
+- Examples now possible: Common/gray -> Uncommon/green, Rare/blue, Epic/purple, Legendary/orange, or Exotic/cyan; Rare/blue -> Legendary/orange; etc.
+- A card can never appear below its original printed rarity.
+- Bot upgraded tiers affect that bot card's rarity color, HP, damage, speed, OVR, and abilities exactly like a card at that tier.
+- Bot cards use isolated botTier data and do not change or overwrite the player's owned card upgrades.
+- Bot clones do not inherit the player's XP bonus just because they share the same card ID.
+- Upgraded enemy cards show an upward marker in 3v3 so the upgrade is readable.
+- Existing matchmaking, substitutes, and all other V10 systems remain intact.

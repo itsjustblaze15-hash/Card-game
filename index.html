@@ -1007,7 +1007,7 @@ function spinWheel(){
 
 const TIERS=["Common","Uncommon","Rare","Epic","Legendary","Exotic"];
 let pickSlot=0,pickKind="starter",battleBusy=false;
-function tierFor(c){return state.cardTier[c.id]||c.rarity}
+function tierFor(c){return c?.botTier||state.cardTier[c.id]||c.rarity}
 function winsNeeded(c){
  const tier=tierFor(c);
  const requirements={
@@ -1037,7 +1037,7 @@ function closeBattleMode(){
 }
 
 function stats(c){
- const tier=tierFor(c),ti=Math.max(0,TIERS.indexOf(tier)),xp=Math.min(state.cardXP[c.id]||0,winsNeeded(c));
+ const tier=tierFor(c),ti=Math.max(0,TIERS.indexOf(tier)),xp=c?.botTier?0:Math.min(state.cardXP[c.id]||0,winsNeeded(c));
  const seed=(c.id*37)%23;
  const bonus=Math.min(12,xp);
  if(tier==="Exotic"){
@@ -1153,22 +1153,61 @@ function fairBotDeck(level){
  else n=1+Math.floor(Math.random()*6);
 
  const tierForRank={1:"Common",2:"Uncommon",3:"Rare",4:"Epic",5:"Legendary",6:"Exotic"};
+ const rankForTier={Common:1,Uncommon:2,Rare:3,Epic:4,Legendary:5,Exotic:6};
  const used=new Set();
- function uniqueCard(rank){
-   const tier=tierForRank[rank];
-   let pool=CARDS.filter(c=>tierFor(c)===tier&&!used.has(c.id)&&!c.bossExclusive&&!c.secretExclusive);
-   if(!pool.length)pool=CARDS.filter(c=>tierFor(c)===tier&&!used.has(c.id)&&!c.secretExclusive);
-   const c=pool[Math.floor(Math.random()*pool.length)];
-   if(c)used.add(c.id);
-   return c;
+
+ // Pick a real base card whose ORIGINAL rarity is never above the bot's target tier.
+ // The bot can then use that card at its original tier or any upgraded tier up to the target.
+ // Example: Common -> Uncommon/Rare/Epic/Legendary/Exotic; Rare -> Legendary is legal.
+ // Downgrades such as Uncommon -> Common or Rare -> Uncommon are impossible.
+ function uniqueCard(targetRank){
+   let pool=CARDS.filter(c=>{
+     const originalRank=rankForTier[c.rarity]||1;
+     return originalRank<=targetRank&&!used.has(c.id)&&!c.bossExclusive&&!c.secretExclusive;
+   });
+   if(!pool.length)pool=CARDS.filter(c=>{
+     const originalRank=rankForTier[c.rarity]||1;
+     return originalRank<=targetRank&&!used.has(c.id)&&!c.secretExclusive;
+   });
+
+   // Favor cards closer to the intended strength, but deliberately allow lower-original
+   // cards so upgraded gray/green/blue cards actually show up.
+   pool.sort((a,b)=>(rankForTier[b.rarity]||1)-(rankForTier[a.rarity]||1));
+   const weighted=[];
+   for(const c of pool){
+     const gap=targetRank-(rankForTier[c.rarity]||1);
+     const copies=gap===0?5:gap===1?4:gap===2?3:2;
+     for(let i=0;i<copies;i++)weighted.push(c);
+   }
+   const base=weighted[Math.floor(Math.random()*weighted.length)];
+   if(!base)return null;
+   used.add(base.id);
+
+   const originalRank=rankForTier[base.rarity]||1;
+   let upgradedRank=originalRank;
+
+   if(targetRank>originalRank){
+     // Most lower-rarity bot cards get upgraded, but some stay at their printed tier.
+     if(Math.random()<.82){
+       const minUpgrade=originalRank+1;
+       // Usually land near matchmaking target; occasionally stop at an intermediate tier.
+       upgradedRank=Math.random()<.72
+         ? targetRank
+         : minUpgrade+Math.floor(Math.random()*(targetRank-minUpgrade+1));
+     }
+   }
+
+   upgradedRank=Math.max(originalRank,Math.min(6,upgradedRank));
+   return {...base,botTier:tierForRank[upgradedRank],botOriginalRarity:base.rarity};
  }
+
  let ranks;
  if(n===6)ranks=[6,6,6,6,6];
  else{
    const patterns={1:[[1,1,1],[1,1,2]],2:[[2,2,2],[1,2,2],[2,2,3]],3:[[3,3,3],[2,3,3],[3,3,4]],4:[[4,4,4],[3,4,4],[4,4,5]],5:[[5,5,5],[4,5,5]]};
    const starters=patterns[n][Math.floor(Math.random()*patterns[n].length)];
-   const subRank1=Math.max(1,Math.min(5,n+(Math.random()<.25?-1:Math.random()>.8?1:0)));
-   const subRank2=Math.max(1,Math.min(5,n+(Math.random()<.25?-1:Math.random()>.8?1:0)));
+   const subRank1=Math.max(1,Math.min(6,n+(Math.random()<.25?-1:Math.random()>.8?1:0)));
+   const subRank2=Math.max(1,Math.min(6,n+(Math.random()<.25?-1:Math.random()>.8?1:0)));
    ranks=[...starters,subRank1,subRank2];
  }
  return {level:n,cards:ranks.map(uniqueCard).filter(Boolean)};
@@ -1191,8 +1230,9 @@ let movingCardId=null,movingSide=null;
 function arenaCard(c,hp,max,active=false){
  const tier=tierFor(c),pct=Math.max(0,Math.min(100,hp/max*100));
  const moving=(movingCardId===c.id);
+ const upgraded=c?.botTier&&c.botTier!==c.rarity;
  return `<div class="arena-card ${hp<=0?"dead":""} ${moving?"moving-source":""}" style="--rarity:${R[tier].color}">
- <img src="${c.image}"><b>${c.name}<br>${tier} · OVR ${overall(c)}</b>
+ <img src="${c.image}"><b>${c.name}<br>${tier}${upgraded?` ↑ from ${c.rarity}`:""} · OVR ${overall(c)}</b>
  <div class="hp"><i style="width:${pct}%"></i></div><div class="hp-txt">${Math.max(0,hp)} / ${max} HP</div></div>`;
 }
 
@@ -1202,7 +1242,7 @@ let subResolve=null,subActivePick=-1,subBenchPick=-1,subPromptCtx=null;
 function benchCard(c,used=false){
  if(!c)return "";
  const t=tierFor(c);
- return `<div class="bench-card ${used?"used":""}" style="--rarity:${R[t].color}"><img src="${c.image}"><b>${c.name}</b></div>`;
+ return `<div class="bench-card ${used?"used":""}" style="--rarity:${R[t].color}"><img src="${c.image}"><b>${c.name}${c?.botTier&&c.botTier!==c.rarity?" ↑":""}</b></div>`;
 }
 function drawBattleBenches(){
  if($("#playerBench"))$("#playerBench").innerHTML=battlePlayerBench.map((c,i)=>benchCard(c,!c||battlePlayerBenchLocked[i])).join("");
@@ -1933,7 +1973,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.13;
+const APP_INTERNAL_VERSION=10.14;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
