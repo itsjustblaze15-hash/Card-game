@@ -512,3 +512,10 @@ V10.09 GOLDEN ARENA TOWER EXPLOSIONS
 - After the king-tower explosion there is a short relief pause, then the cinematic Victory/Defeat screen appears.
 - Overtime sudden death still ends on the first newly destroyed tower, with its explosion playing before the result.
 - Visible version remains V10.
+
+V10.10 BLACKJACK FACE CARDS
+- Added the exact 12 uploaded King, Queen, and Jack images to assets/ without editing or regenerating them.
+- Mapped each exact image to its matching Spades, Hearts, Diamonds, or Clubs card.
+- Blackjack now displays these uploaded images whenever J, Q, or K is dealt.
+- Number cards and Aces keep the existing standard face design.
+- Visible version remains V10.
