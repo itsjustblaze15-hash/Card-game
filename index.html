@@ -1991,7 +1991,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.15;
+const APP_INTERNAL_VERSION=10.16;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
@@ -2348,7 +2348,7 @@ function gaExit(){
  $("#gaGame")?.classList.remove("show","ga-overtime");
  toast(loss?`You lost ${loss.toLocaleString()} coins for leaving Golden Arena`:"Golden Arena exited");
 }
-function gaSelect(id){const c=CARDS.find(x=>x.id===id);if(!c)return;if(GA.energy<gaCost(c)){toast("Not enough energy");return}GA.selected=id;gaRenderHand();gaDraw()}
+function gaSelect(id){if(GA.running&&!GA.overtime&&Date.now()-GA.start>=120000){gaClock();return}const c=CARDS.find(x=>x.id===id);if(!c||!GA.running)return;if(GA.energy<gaCost(c)){toast("Not enough energy");return}GA.selected=id;gaRenderHand();gaDraw()}
 function gaUpdateEnergy(){$("#gaEnergyText").textContent=Math.floor(GA.energy);$("#gaEnergyFill").style.width=(GA.energy*10)+"%"}
 function gaRenderHand(){
  $("#gaHand").innerHTML=GA.hand.map(id=>{const c=CARDS.find(x=>x.id===id),cost=gaCost(c),off=GA.energy<cost;return `<button type="button" class="ga-hand-card ${off?"disabled":""} ${GA.selected===id?"selected":""}" style="--r:${R[c.rarity].color}" onclick="gaSelect(${id})"><img src="${c.image}"><span>${c.name}</span><span class="ga-ability">${gaPower(c)}</span><b class="ga-cost">${cost}</b></button>`}).join("");
@@ -2541,24 +2541,36 @@ function gaClock(){
   }
 
   if(e>=120){
-   const p=gaScore("player"),b=gaScore("enemy");
-   if(p!==b){
-    // Regulation ended with a leader: resolve exactly once and award through the normal result flow.
-    if(!GA.finishing){
-      GA.finishing=true;
-      GA.running=false;
-      gaStopLoops();
-      const fc=$("#gaFinalCount");if(fc)fc.classList.remove("show");
-      setTimeout(()=>{GA.finishing=false;gaFinish(p>b)},260);
-    }
-    return;
+   const regulationWinner=gaRegulationWinner();
+
+   // Always stop the regulation simulation first. This prevents units/cards from
+   // continuing to run at 0:00 while the result transition is happening.
+   GA.running=false;
+   gaStopLoops();
+   const fc=$("#gaFinalCount");if(fc)fc.classList.remove("show");
+   GA.selected=null;
+
+   if(regulationWinner!==null){
+     if(!GA.finishing){
+       GA.finishing=true;
+       $("#gaTimer").textContent="0:00";
+       setTimeout(()=>{GA.finishing=false;gaFinish(regulationWinner)},260);
+     }
+     return;
    }
-   // Tied after regulation: only then enter sudden-death overtime.
-   GA.overtime=true;GA.otPlayerScore=p;GA.otEnemyScore=b;GA.energyMult=3;GA.lastRegen=Date.now();GA.overtimeStart=Date.now();GA.overtime5x=false;
+
+   // Only a true tie in both destroyed towers AND remaining tower HP gets overtime.
+   GA.running=true;
+   GA.start=Date.now();
+   GA.overtime=true;
+   GA.otPlayerScore=gaScore("player");
+   GA.otEnemyScore=gaScore("enemy");
+   GA.energyMult=3;GA.lastRegen=Date.now();GA.overtimeStart=Date.now();GA.overtime5x=false;
    $("#gaGame").classList.add("ga-overtime");
    $("#gaTimer").textContent="OVERTIME";
    $("#gaBoost").textContent="3× ENERGY · NEXT TOWER WINS";
    gaPhaseMessage("OVERTIME · 3× ENERGY · NEXT TOWER WINS");
+   GA.loops=[setInterval(gaRegen,100),setInterval(gaTick,100),setInterval(gaBotThink,350),setInterval(gaClock,100)];
   }
  }else{
   $("#gaTimer").textContent="OVERTIME";
@@ -2572,6 +2584,22 @@ function gaClock(){
  }
 }
 function gaScore(side){return Object.values(GA.towers).filter(t=>t.side!==side&&t.hp<=0).length}
+function gaRemainingTowerHP(side){
+ return Object.values(GA.towers).filter(t=>t.side===side).reduce((sum,t)=>sum+Math.max(0,Number(t.hp)||0),0);
+}
+function gaRegulationWinner(){
+ const p=gaScore("player"),b=gaScore("enemy");
+ if(p!==b)return p>b?true:false;
+
+ // Same number of destroyed towers: compare the total HP still standing.
+ // Lower enemy HP means the player dealt more tower damage, and vice versa.
+ const playerHP=gaRemainingTowerHP("player");
+ const enemyHP=gaRemainingTowerHP("enemy");
+ if(playerHP!==enemyHP)return enemyHP<playerHP?true:false;
+
+ // Perfect tie only: overtime.
+ return null;
+}
 
 function gaDestroyedTowersSinceLastCheck(){
  const destroyed=[];

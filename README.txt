@@ -557,3 +557,13 @@ V10.15 3V3 CARD PICKER / BACK FIX
 - The Battle BACK button no longer dumps the player into a hidden chooser state. If the chooser is open, it closes the chooser first.
 - Card replacement/swap behavior is otherwise unchanged.
 - V10.14 upgraded bot cards remain intact.
+
+V10.16 GOLDEN ARENA REGULATION HARD FIX
+- Reworked the actual 0:00 resolution path based on the recorded failure.
+- At regulation end, destroyed-tower count is checked first.
+- If destroyed-tower count is tied, remaining tower HP is now used as the regulation tiebreaker.
+- Only a perfect tie in both tower count and remaining tower HP enters overtime.
+- The simulation and input are stopped BEFORE the result transition, preventing the arena from sitting interactable at 0:00.
+- Card input also forces the timeout check if it lands between clock ticks.
+- Victory/Defeat still uses the existing Golden Arena result and reward flow.
+- All V10.15 navigation fixes and V10.14 bot upgrades remain intact.
