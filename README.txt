@@ -477,3 +477,5 @@ V10.05 GOLDEN ARENA OVERTIME + SPEED UPDATE
 - Sudden-death rule remains unchanged: the next tower destroyed wins.
 - All Golden Arena units now move about 15% faster to reduce sluggish gameplay while preserving individual speed differences.
 - Visible version remains V10.
+
+V10.06: Added Blackjack BETA with shared coins, real 52-card deck, dealer stands on all 17s, Hit/Stand/Double, 3:2 natural blackjack, card-back shop, collection foundation for special card faces, stats and ranked rewards.
