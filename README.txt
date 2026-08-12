@@ -479,3 +479,11 @@ V10.05 GOLDEN ARENA OVERTIME + SPEED UPDATE
 - Visible version remains V10.
 
 V10.06: Added Blackjack BETA with shared coins, real 52-card deck, dealer stands on all 17s, Hit/Stand/Double, 3:2 natural blackjack, card-back shop, collection foundation for special card faces, stats and ranked rewards.
+
+
+V10.07 BLACKJACK DEAL HOTFIX
+- Fixed Blackjack DEAL so a valid bet reliably opens the table and deals two player/two dealer cards.
+- Blackjack coin persistence no longer depends on the full app render path before the hand opens.
+- Coin wallet updates immediately when a hand starts, doubles, resolves, or is left.
+- Not-enough-coins feedback is now visible above the Blackjack overlay.
+- Visible major version remains V10.
