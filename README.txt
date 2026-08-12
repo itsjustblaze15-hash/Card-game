@@ -503,3 +503,12 @@ V10.08 MODE UI + SHOP/SALE UPDATE
   Legendary: 96,000 -> 72,000.
 - Packs page now has a large 25% OFF ALL PACKS sale banner and each paid pack displays its old crossed-out price plus the sale price.
 - Visible game version remains V10.
+
+V10.09 GOLDEN ARENA TOWER EXPLOSIONS
+- EVERY destroyed Golden Arena tower now explodes, whether it happens during regulation or overtime.
+- Outer left/right tower destruction plays the normal explosion, debris, shake, and vibration without ending regulation by itself.
+- Main/king tower destruction uses a much larger explosion with more debris, stronger screen shake, and stronger vibration.
+- Destroying a main/king tower immediately decides the match, but the explosion fully plays first.
+- After the king-tower explosion there is a short relief pause, then the cinematic Victory/Defeat screen appears.
+- Overtime sudden death still ends on the first newly destroyed tower, with its explosion playing before the result.
+- Visible version remains V10.

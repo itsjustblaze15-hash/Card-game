@@ -388,6 +388,27 @@ button{font:inherit;cursor:pointer}
 .pack-sale-banner{grid-column:1/-1;background:#b31515;color:#fff;border:3px solid #ffdb55;border-radius:18px;padding:13px;text-align:center;font-weight:1000;box-shadow:0 8px 18px #0003}
 .pack-sale-banner b{display:block;font-size:24px;color:#ffe56d}.sale-tag{display:inline-block;background:#b31515;color:#fff;border-radius:999px;padding:3px 7px;font-size:8px;font-weight:1000;margin-left:6px}
 .old-pack-price{text-decoration:line-through;opacity:.55;font-size:9px;margin-right:5px}
+
+/* V10.09 all-tower explosions */
+.ga-tower-explosion.king{
+ width:34px!important;height:34px!important;
+ box-shadow:0 0 28px 14px #fff1a0,0 0 55px 28px #ff9d00,0 0 85px 40px #ff2d00!important;
+ animation:gaKingBoom 1.15s ease-out forwards!important
+}
+.ga-tower-explosion.king:before,.ga-tower-explosion.king:after{inset:-28px!important;border-width:8px!important;animation-duration:1.05s!important}
+@keyframes gaKingBoom{
+ 0%{opacity:0;transform:translate(-50%,-50%) scale(.15)}
+ 10%{opacity:1;transform:translate(-50%,-50%) scale(3.4)}
+ 55%{opacity:1;transform:translate(-50%,-50%) scale(2)}
+ 100%{opacity:0;transform:translate(-50%,-50%) scale(.2)}
+}
+.ga-map.ga-king-shake{animation:gaKingShake .8s linear}
+@keyframes gaKingShake{
+ 0%,100%{transform:translate(0)}
+ 12%{transform:translate(-9px,4px)}25%{transform:translate(10px,-4px)}
+ 38%{transform:translate(-8px,-3px)}52%{transform:translate(8px,4px)}
+ 68%{transform:translate(-5px,2px)}82%{transform:translate(4px,-2px)}
+}
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -1887,7 +1908,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.08;
+const APP_INTERNAL_VERSION=10.09;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
@@ -2458,11 +2479,11 @@ function gaClock(){
 }
 function gaScore(side){return Object.values(GA.towers).filter(t=>t.side!==side&&t.hp<=0).length}
 
-function gaDestroyedTowerSinceLastCheck(){
- let destroyed=null;
+function gaDestroyedTowersSinceLastCheck(){
+ const destroyed=[];
  for(const [k,t] of Object.entries(GA.towers)){
    const prev=GA.lastTowerHP[k];
-   if(prev>0&&t.hp<=0)destroyed={key:k,tower:t};
+   if(prev>0&&t.hp<=0)destroyed.push({key:k,tower:t});
    GA.lastTowerHP[k]=t.hp;
  }
  return destroyed;
@@ -2471,17 +2492,70 @@ function gaTowerExplosion(t){
  return new Promise(resolve=>{
    const map=document.querySelector("#gaGame .ga-map");
    if(!map||!t){resolve();return}
-   map.classList.remove("ga-finish-shake");void map.offsetWidth;map.classList.add("ga-finish-shake");
-   const boom=document.createElement("div");boom.className="ga-tower-explosion";boom.style.left=t.x+"%";boom.style.top=t.y+"%";map.appendChild(boom);
-   for(let i=0;i<12;i++){
-     const d=document.createElement("i");d.className="ga-boom-debris";d.style.left=t.x+"%";d.style.top=t.y+"%";
-     const a=(Math.PI*2*i/12)+(Math.random()*.28),dist=35+Math.random()*45;
-     d.style.setProperty("--dx",Math.cos(a)*dist+"px");d.style.setProperty("--dy",Math.sin(a)*dist+"px");map.appendChild(d);
-     setTimeout(()=>d.remove(),950);
+   const king=t.lane==="king"||String(t.key||"").endsWith("K");
+   map.classList.remove("ga-finish-shake","ga-king-shake");
+   void map.offsetWidth;
+   map.classList.add(king?"ga-king-shake":"ga-finish-shake");
+
+   const boom=document.createElement("div");
+   boom.className="ga-tower-explosion"+(king?" king":"");
+   boom.style.left=t.x+"%";boom.style.top=t.y+"%";
+   map.appendChild(boom);
+
+   const debrisCount=king?22:12;
+   const maxDist=king?90:55;
+   for(let i=0;i<debrisCount;i++){
+     const d=document.createElement("i");
+     d.className="ga-boom-debris";
+     d.style.left=t.x+"%";d.style.top=t.y+"%";
+     const a=(Math.PI*2*i/debrisCount)+(Math.random()*.32),dist=28+Math.random()*maxDist;
+     d.style.width=(king?8:6)+"px";d.style.height=(king?8:6)+"px";
+     d.style.setProperty("--dx",Math.cos(a)*dist+"px");
+     d.style.setProperty("--dy",Math.sin(a)*dist+"px");
+     map.appendChild(d);
+     setTimeout(()=>d.remove(),king?1250:950);
    }
-   if(navigator.vibrate)navigator.vibrate([55,35,90]);
-   setTimeout(()=>{boom.remove();map.classList.remove("ga-finish-shake");resolve()},900);
+
+   if(navigator.vibrate)navigator.vibrate(king?[90,45,130]:[55,35,90]);
+   const dur=king?1180:900;
+   setTimeout(()=>{
+     boom.remove();
+     map.classList.remove("ga-finish-shake","ga-king-shake");
+     resolve();
+   },dur);
  });
+}
+
+async function gaHandleTowerDestructions(destroyed){
+ if(!destroyed.length)return false;
+
+ // Play every explosion one at a time so none are skipped.
+ for(const item of destroyed){
+   await gaTowerExplosion(item.tower);
+ }
+
+ const kingHit=destroyed.find(x=>x.tower.lane==="king"||String(x.key).endsWith("K"));
+ if(kingHit){
+   const win=kingHit.tower.side==="enemy";
+   if(GA.finishing)return true;
+   GA.finishing=true;GA.running=false;gaStopLoops();
+   await new Promise(r=>setTimeout(r,650));
+   gaFinish(win);
+   return true;
+ }
+
+ // In overtime, the first newly destroyed outer tower is the sudden-death winner.
+ if(GA.overtime){
+   const first=destroyed[0];
+   const win=first.tower.side==="enemy";
+   if(GA.finishing)return true;
+   GA.finishing=true;GA.running=false;gaStopLoops();
+   await new Promise(r=>setTimeout(r,650));
+   gaFinish(win);
+   return true;
+ }
+
+ return false;
 }
 async function gaFinishAfterTowerExplosion(win,tower){
  if(GA.finishing)return;
@@ -2493,30 +2567,21 @@ async function gaFinishAfterTowerExplosion(win,tower){
  gaFinish(win);
 }
 function gaCheck(){
- const destroyed=gaDestroyedTowerSinceLastCheck();
- if(destroyed&&GA.overtime){
-   const winner=destroyed.tower.side==="enemy";
-   gaFinishAfterTowerExplosion(winner,destroyed.tower);
+ if(GA.finishing)return;
+ const destroyed=gaDestroyedTowersSinceLastCheck();
+ if(destroyed.length){
+   gaHandleTowerDestructions(destroyed);
    return;
  }
-if(GA.towers.eK.hp<=0)return gaFinish(true);if(GA.towers.pK.hp<=0)return gaFinish(false);if(GA.overtime){const p=gaScore("player"),b=gaScore("enemy");if(p>GA.otPlayerScore)return gaFinish(true);if(b>GA.otEnemyScore)return gaFinish(false)}}
 
-function gaResultSound(win){
- try{
-  const AC=window.AudioContext||window.webkitAudioContext,ctx=new AC(),now=ctx.currentTime;
-  const notes=win?[392,523.25,659.25,783.99]:[392,329.63,261.63,196];
-  notes.forEach((hz,i)=>{
-   const o=ctx.createOscillator(),g=ctx.createGain();
-   o.type=win?(i===notes.length-1?"square":"triangle"):"sawtooth";
-   o.frequency.setValueAtTime(hz,now+i*.12);
-   if(!win)o.frequency.exponentialRampToValueAtTime(Math.max(70,hz*.72),now+i*.12+.22);
-   g.gain.setValueAtTime(.0001,now+i*.12);
-   g.gain.exponentialRampToValueAtTime(win?.12:.085,now+i*.12+.018);
-   g.gain.exponentialRampToValueAtTime(.0001,now+i*.12+.28);
-   o.connect(g);g.connect(ctx.destination);o.start(now+i*.12);o.stop(now+i*.12+.3);
-  });
-  setTimeout(()=>ctx.close(),1200);
- }catch(e){}
+ if(GA.towers.eK.hp<=0){gaHandleTowerDestructions([{key:"eK",tower:GA.towers.eK}]);return}
+ if(GA.towers.pK.hp<=0){gaHandleTowerDestructions([{key:"pK",tower:GA.towers.pK}]);return}
+
+ if(GA.overtime){
+   const p=gaScore("player"),b=gaScore("enemy");
+   if(p>GA.otPlayerScore)return gaFinish(true);
+   if(b>GA.otEnemyScore)return gaFinish(false);
+ }
 }
 function gaResultFX(win){
  const box=$("#gaResult");
