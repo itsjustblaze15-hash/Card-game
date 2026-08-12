@@ -530,3 +530,10 @@ V10.12 GAMEPLAY HOTFIX
 - Removed the final-count overlay when regulation resolves to prevent a frozen-looking end state.
 - Golden Arena deployed character visuals are about 14% larger, with matching wider HP bars. Gameplay stats and hit logic are unchanged.
 - Visible version remains V10.
+
+V10.13 3V3 SUBSTITUTION HOTFIX
+- Fixed the substitution screen not appearing during 3v3.
+- V10.12 raised the live 3v3 battle layer above the mode menu, but the substitution overlay was still underneath it.
+- The substitution overlay now renders above the live battle again.
+- Existing substitution timing and rules are unchanged.
+- Visible version remains V10.

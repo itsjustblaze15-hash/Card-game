@@ -428,6 +428,10 @@ button{font:inherit;cursor:pointer}
 #battleModal{z-index:100220!important}
 
 #resultModal,#gaResult{z-index:100260!important}
+
+/* V10.13 3v3 substitution overlay hotfix */
+.sub-overlay{z-index:100245!important}
+#subOverlay{z-index:100245!important}
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -1929,7 +1933,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.12;
+const APP_INTERNAL_VERSION=10.13;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
