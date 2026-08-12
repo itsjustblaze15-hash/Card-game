@@ -1,5 +1,5 @@
 {
-  "version": "10.17",
+  "version": "10.18",
   "display_version": "10",
-  "build": "golden-arena-timeout-watchdog-hard-stop"
+  "build": "golden-arena-result-reference-error-fix"
 }

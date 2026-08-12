@@ -575,3 +575,13 @@ V10.17 GOLDEN ARENA 0:00 WATCHDOG FIX
 - A regulation win calls gaFinish immediately with no dead-zone setTimeout.
 - A true tie goes directly into overtime without stopping/restarting the live match loops.
 - The watchdog clears on finish and manual exit.
+
+V10.18 GOLDEN ARENA 0:00 ROOT-CAUSE FIX
+- Found the actual freeze: gaResultFX() called gaResultSound(win), but gaResultSound did not exist.
+- That ReferenceError happened after Golden Arena stopped its loops, so the screen stayed frozen at 0:00 before Victory/Defeat could appear.
+- Added a safe generated result-sound function and guarded optional sound/vibration FX.
+- Reordered gaFinish so the result screen is shown BEFORE optional FX, meaning sound can never block Victory/Defeat again.
+- Restored the requested dramatic regulation finish delay:
+  0:00 -> gameplay stops -> TIME! -> ~0.65 second pause -> Victory/Defeat.
+- True ties still enter overtime.
+- Existing reward flow, 3v3 fixes, upgraded bot cards, Blackjack, and all prior V10 systems remain intact.

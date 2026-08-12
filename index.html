@@ -1991,7 +1991,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.17;
+const APP_INTERNAL_VERSION=10.18;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
@@ -2534,7 +2534,10 @@ function gaResolveRegulationEnd(source="clock"){
 
  const winner=gaRegulationWinner();
  if(winner!==null){
-   gaFinish(winner);
+   GA.running=false;
+   gaStopLoops();
+   gaPhaseMessage("TIME!");
+   setTimeout(()=>gaFinish(winner),650);
    return;
  }
 
@@ -2707,6 +2710,27 @@ function gaCheck(){
    if(b>GA.otEnemyScore)return gaFinish(false);
  }
 }
+
+function gaResultSound(win){
+ try{
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC)return;
+  const ctx=new AC();
+  const notes=win?[523.25,659.25,783.99]:[392,329.63,261.63];
+  notes.forEach((freq,i)=>{
+   const o=ctx.createOscillator(),g=ctx.createGain();
+   o.type="sine";o.frequency.value=freq;
+   g.gain.setValueAtTime(0.0001,ctx.currentTime+i*.11);
+   g.gain.exponentialRampToValueAtTime(.09,ctx.currentTime+i*.11+.02);
+   g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+i*.11+.18);
+   o.connect(g);g.connect(ctx.destination);
+   o.start(ctx.currentTime+i*.11);o.stop(ctx.currentTime+i*.11+.2);
+  });
+  setTimeout(()=>{try{ctx.close()}catch(e){}},700);
+ }catch(e){
+  console.warn("Golden Arena result sound skipped",e);
+ }
+}
 function gaResultFX(win){
  const box=$("#gaResult");
  box.classList.remove("ga-victory","ga-defeat");
@@ -2720,13 +2744,15 @@ function gaResultFX(win){
   burst.innerHTML=Array.from({length:14},(_,i)=>`<i style="--r:${i*(360/14)}deg"></i>`).join("");
   card.prepend(burst);
  }
- gaResultSound(win);
- if(navigator.vibrate)navigator.vibrate(win?[70,45,100]:[120,60,120]);
+ try{gaResultSound(win)}catch(e){console.warn("GA result sound error",e)}
+ try{if(navigator.vibrate)navigator.vibrate(win?[70,45,100]:[120,60,120])}catch(e){}
 }
 function gaFinish(win){
  if(GA.regulationTimeout){clearTimeout(GA.regulationTimeout);GA.regulationTimeout=null}
  GA.regulationResolved=true;
- GA.penaltyArmed=false;GA.running=false;gaStopLoops();GA.finishing=false;gaResultFX(win);
+ GA.penaltyArmed=false;GA.running=false;gaStopLoops();GA.finishing=false;
+
+ // Result UI must never depend on optional sound/FX succeeding.
  $("#gaGame").classList.remove("show","ga-overtime");
  const towers=gaScore("player"),reward=win?40000+towers*2500:0;
  GA.pendingReward=reward;GA.pendingWin=win;
@@ -2734,6 +2760,8 @@ function gaFinish(win){
  $("#gaResultText").textContent=win?`You destroyed ${towers} tower${towers===1?"":"s"}.`:"The black side won the arena.";
  $("#gaResultCoins").textContent=win?`+${reward.toLocaleString()} COINS`:"";
  $("#gaResult").classList.add("show");
+
+ try{gaResultFX(win)}catch(e){console.warn("Golden Arena result FX skipped",e)}
 }
 function gaCloseResult(){
  if(GA.pendingWin&&GA.pendingReward>0){state.coins+=GA.pendingReward;save();toast(`+${GA.pendingReward.toLocaleString()} coins`)}
