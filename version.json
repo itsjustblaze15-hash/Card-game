@@ -1,5 +1,5 @@
 {
-  "version": "10.14",
+  "version": "10.15",
   "display_version": "10",
-  "build": "3v3-bot-upgraded-cards"
+  "build": "3v3-card-picker-navigation-fix"
 }

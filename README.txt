@@ -548,3 +548,12 @@ V10.14 3V3 BOT CARD UPGRADES
 - Bot clones do not inherit the player's XP bonus just because they share the same card ID.
 - Upgraded enemy cards show an upward marker in 3v3 so the upgrade is readable.
 - Existing matchmaking, substitutes, and all other V10 systems remain intact.
+
+V10.15 3V3 CARD PICKER / BACK FIX
+- Fixed tapping a 3v3 starter or substitute appearing to do nothing.
+- The card chooser was actually opening behind the full-screen 3v3 Battle panel because its old z-index was too low.
+- The chooser now opens above the Battle setup immediately.
+- CANCEL now closes the chooser and returns directly to the same 3v3 Battle deck/setup screen.
+- The Battle BACK button no longer dumps the player into a hidden chooser state. If the chooser is open, it closes the chooser first.
+- Card replacement/swap behavior is otherwise unchanged.
+- V10.14 upgraded bot cards remain intact.

@@ -432,6 +432,11 @@ button{font:inherit;cursor:pointer}
 /* V10.13 3v3 substitution overlay hotfix */
 .sub-overlay{z-index:100245!important}
 #subOverlay{z-index:100245!important}
+
+/* V10.15 3v3 deck picker/navigation fix */
+.pick-overlay{z-index:100190!important}
+#pickOverlay{z-index:100190!important}
+.picker{position:relative;z-index:100191!important}
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -1030,6 +1035,11 @@ function openBattleMode(){
  panel.scrollTop=0;
 }
 function closeBattleMode(){
+ const picker=$("#pickOverlay");
+ if(picker?.classList.contains("show")){
+   closePicker();
+   return;
+ }
  const panel=$("#battleModePanel");
  if(!panel)return;
  panel.classList.remove("show");
@@ -1110,7 +1120,15 @@ function openPicker(i,kind="starter"){
  $("#pickCards").innerHTML=owned.map(c=>`<div class="card" style="--rarity:${R[tierFor(c)].color};background:color-mix(in srgb,${R[tierFor(c)].color} 28%,white)" onclick="chooseTeamCard(${c.id})"><img src="${c.image}"><div class="nm">${c.name} · OVR ${overall(c)}</div><div class="meta"><span>${tierFor(c)}</span><span>${tierFor(c)==="Exotic"?"MAX":Math.min(state.cardXP[c.id]||0,winsNeeded(c))+"/"+winsNeeded(c)}</span></div><div class="ability">${abilityFor(c).name}</div></div>`).join("");
  $("#pickOverlay").classList.add("show");
 }
-function closePicker(){$("#pickOverlay").classList.remove("show")}
+function closePicker(){
+ $("#pickOverlay").classList.remove("show");
+ const panel=$("#battleModePanel");
+ if(panel){
+   panel.style.display="block";
+   panel.classList.add("show");
+ }
+ renderBattle();
+}
 function chooseTeamCard(id){
  cleanTeam();
  const starters=[state.team[0],state.team[1],state.team[2]];
@@ -1973,7 +1991,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.14;
+const APP_INTERNAL_VERSION=10.15;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
