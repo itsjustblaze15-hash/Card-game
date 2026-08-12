@@ -487,3 +487,19 @@ V10.07 BLACKJACK DEAL HOTFIX
 - Coin wallet updates immediately when a hand starts, doubles, resolves, or is left.
 - Not-enough-coins feedback is now visible above the Blackjack overlay.
 - Visible major version remains V10.
+
+V10.08 MODE UI + SHOP/SALE UPDATE
+- Normal 3v3 Battle now opens as its own full-screen mode screen, like Golden Arena and Blackjack, instead of expanding underneath the mode chooser.
+- Added a dedicated BACK button to the 3v3 Battle screen.
+- Golden Arena's 3-2-1 pre-match countdown now uses a solid Golden Pulls yellow background so the game-mode selection screen is not visible underneath.
+- Blackjack card-back shop prices reduced substantially:
+  Midnight: 15,000 -> 5,000 coins.
+  Gold: 40,000 -> 12,000 coins.
+- All paid card packs from Common through Legendary are 25% off:
+  Common: 4,000 -> 3,000.
+  Uncommon: 12,000 -> 9,000.
+  Rare: 30,000 -> 22,500.
+  Epic: 56,000 -> 42,000.
+  Legendary: 96,000 -> 72,000.
+- Packs page now has a large 25% OFF ALL PACKS sale banner and each paid pack displays its old crossed-out price plus the sale price.
+- Visible game version remains V10.

@@ -373,6 +373,21 @@ button{font:inherit;cursor:pointer}
 #bjHub,#bjGame{position:fixed;inset:0;z-index:100090;background:#07150d;color:#fff;display:none;overflow:auto}#bjHub.show,#bjGame.show{display:block}
 .bj-head{display:flex;align-items:center;justify-content:space-between;padding:14px;background:#0b2114;border-bottom:1px solid #d5b44a66}.bj-head h1{margin:0;color:#f0d36b}.bj-beta{background:#ff9d00;color:#111;border-radius:99px;padding:4px 8px;font-size:9px;font-weight:1000}.bj-btn,.bj-head button{border:0;border-radius:11px;padding:10px 13px;background:#e4c457;color:#171100;font-weight:1000}.bj-body{padding:16px 14px 90px}.bj-panel{background:#0c2517;border:1px solid #e4c45755;border-radius:18px;padding:15px;margin-bottom:12px}.bj-panel h2{color:#f0d36b}.bj-small{font-size:11px;opacity:.72;font-weight:800}.bj-rank{font-size:28px;color:#f0d36b;font-weight:1000}.bj-bottom{position:fixed;bottom:0;left:0;right:0;height:70px;background:#081b10;display:grid;grid-template-columns:repeat(4,1fr)}.bj-bottom button{border:0;background:transparent;color:#8da696;font-size:10px;font-weight:1000}.bj-bottom button.on{color:#f0d36b}.bj-page{display:none}.bj-page.active{display:block}.bj-back-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.bj-back{border:2px solid #ffffff25;border-radius:14px;padding:10px;text-align:center}.bj-back.on{border-color:#f0d36b}.bj-back-art{height:95px;border-radius:10px;background:repeating-linear-gradient(45deg,#7b1010,#7b1010 8px,#c7a44c 8px,#c7a44c 11px)}.bj-back[data-back="midnight"] .bj-back-art{background:radial-gradient(circle,#556 1px,#080a18 2px)}.bj-back[data-back="gold"] .bj-back-art{background:repeating-linear-gradient(135deg,#e7c958,#e7c958 7px,#3e2d00 7px,#3e2d00 12px)}
 .bj-table{min-height:100vh;background:radial-gradient(circle at center,#155b31,#092a19 65%);padding:15px 12px 105px}.bj-topline{display:flex;justify-content:space-between;font-weight:1000}.bj-hand{min-height:155px;margin:15px 0;text-align:center}.bj-hand h3{color:#f1d672}.bj-cards{display:flex;justify-content:center;gap:7px;flex-wrap:wrap}.bj-card{position:relative;width:67px;height:96px;border-radius:9px;background:#fff;color:#111;box-shadow:0 5px 12px #0006;display:flex;align-items:center;justify-content:center;font-size:29px;font-weight:1000}.bj-card.red{color:#d11}.bj-card .corner{position:absolute;top:5px;left:6px;font-size:13px;line-height:12px}.bj-card.back{background:repeating-linear-gradient(45deg,#7b1010,#7b1010 7px,#d1b75b 7px,#d1b75b 10px);color:transparent}.bj-card.back.midnight{background:radial-gradient(circle,#667 1px,#080a18 2px)}.bj-card.back.gold{background:repeating-linear-gradient(135deg,#e7c958,#e7c958 6px,#3e2d00 6px,#3e2d00 11px)}.bj-controls{position:fixed;bottom:0;left:0;right:0;background:#07180fee;padding:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.bj-controls button{border:0;border-radius:11px;padding:13px 6px;font-weight:1000}.bj-controls .hit{background:#58c979}.bj-controls .stand{background:#f0d36b}.bj-controls .double{background:#6da8ff}.bj-betrow{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}.bj-betrow button{border:1px solid #f0d36b66;background:#102b1b;color:#fff;border-radius:9px;padding:8px 10px;font-weight:1000}#bjMessage{text-align:center;font-size:20px;font-weight:1000;color:#f0d36b;min-height:27px}.bj-statgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.bj-stat{background:#07180f;border-radius:12px;padding:13px;text-align:center}.bj-stat b{display:block;font-size:24px;color:#f0d36b}
+
+/* V10.08 mode presentation + sale */
+#battleModePanel{
+ position:fixed!important;inset:0!important;z-index:100085!important;
+ display:none;background:linear-gradient(#f3c933,#d59d12)!important;
+ overflow-y:auto;padding:calc(12px + env(safe-area-inset-top)) 14px calc(28px + env(safe-area-inset-bottom));
+}
+#battleModePanel.show{display:block!important}
+.battle-mode-head{position:sticky;top:0;z-index:4;display:flex;align-items:center;justify-content:space-between;
+ background:#f3c933f2;margin:-12px -14px 10px;padding:12px 14px;border-bottom:2px solid #8d650055}
+.battle-mode-head h2{margin:0;font-size:22px}.battle-mode-head button{border:0;border-radius:999px;background:#241a00;color:#ffd84d;padding:9px 13px;font-weight:1000}
+#gaBattleIntro{background:#f3c933!important;color:#241a00!important;text-shadow:none!important}
+.pack-sale-banner{grid-column:1/-1;background:#b31515;color:#fff;border:3px solid #ffdb55;border-radius:18px;padding:13px;text-align:center;font-weight:1000;box-shadow:0 8px 18px #0003}
+.pack-sale-banner b{display:block;font-size:24px;color:#ffe56d}.sale-tag{display:inline-block;background:#b31515;color:#fff;border-radius:999px;padding:3px 7px;font-size:8px;font-weight:1000;margin-left:6px}
+.old-pack-price{text-decoration:line-through;opacity:.55;font-size:9px;margin-right:5px}
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -411,6 +426,7 @@ button{font:inherit;cursor:pointer}
  <button class="mode-choice" type="button" onclick="gaOpenLobby()"><small>NEW</small><b>GOLDEN ARENA</b><span>8-CARD ARENA</span></button><button class="mode-choice" type="button" onclick="bjOpenHub()"><small>BETA</small><b>BLACKJACK</b><span>CLASSIC 52-CARD TABLE</span></button>
 </div>
 <div id="battleModePanel" style="display:none">
+ <div class="battle-mode-head"><h2>3v3 BATTLE</h2><button type="button" onclick="closeBattleMode()">BACK</button></div>
  <div class="hero"><h1>BATTLE</h1><p>Pick 3 owned cards and fight a random bot. Wins power up the cards you used.</p></div><div class="streak-box"><div><b>WIN STREAK</b><div style="font-size:11px">Base reward: 2K–5K · 3 standing = 100% · 2 standing = 75% · 1 standing = 50%</div></div><div class="streak-num" id="streakNum">0</div></div>
 <div class="panel"><b>BOT DIFFICULTY</b><div class="bot-stars" id="stars">TEAM-BASED MATCHMAKING</div><div style="font-size:12px;font-weight:900;text-align:center;margin-top:8px">Bot strength is matched around your team rating, with some easier and harder opponents.</div></div>
 <div id="teamRatingBox" class="team-rating-box" style="--team-color:#9b9b9b"><span>YOUR TEAM: <b id="teamRatingName">GRAY</b></span><span id="teamRatingStars" class="team-rating-stars">★</span></div><div class="battle-grid" id="teamSlots"></div>
@@ -548,11 +564,11 @@ const MORE_BULLETS_ID=89;
 const ARTLANDER_ID=119;
 const RANDOM_SECRET_ID=149;
 const PACKS=[
-{name:"Common",price:4000,odds:{Common:82,Uncommon:14,Rare:3,Epic:.8,Legendary:.2}},
-{name:"Uncommon",price:12000,odds:{Common:64,Uncommon:27,Rare:7,Epic:1.7,Legendary:.3}},
-{name:"Rare",price:30000,odds:{Common:50,Uncommon:30,Rare:16,Epic:3.5,Legendary:.5}},
-{name:"Epic",price:56000,odds:{Common:44,Uncommon:28,Rare:20,Epic:7,Legendary:1}},
-{name:"Legendary",price:96000,odds:{Common:40,Uncommon:27,Rare:22,Epic:8,Legendary:3}}
+{name:"Common",price:3000,odds:{Common:82,Uncommon:14,Rare:3,Epic:.8,Legendary:.2}},
+{name:"Uncommon",price:9000,odds:{Common:64,Uncommon:27,Rare:7,Epic:1.7,Legendary:.3}},
+{name:"Rare",price:22500,odds:{Common:50,Uncommon:30,Rare:16,Epic:3.5,Legendary:.5}},
+{name:"Epic",price:42000,odds:{Common:44,Uncommon:28,Rare:20,Epic:7,Legendary:1}},
+{name:"Legendary",price:72000,odds:{Common:40,Uncommon:27,Rare:22,Epic:8,Legendary:3}}
 ];
 
 const SAVE_KEY="goldenPullsSave";
@@ -745,7 +761,7 @@ function closeSecretReward(){const o=$("#secretRewardOverlay");if(o)o.classList.
 function render(){
  $("#coins").textContent=fmt(state.coins);
  $("#gift").innerHTML=state.welcome>0?`<div class="gift"><b>WELCOME GIFT</b><div style="font-size:24px;font-weight:1000;margin:5px 0">3 FREE RARE PACKS</div><div style="margin-bottom:12px">${state.welcome} remaining</div><button onclick="openPack('Rare','welcome')">OPEN FREE RARE PACK</button></div>`:"";
- $("#packs").innerHTML=PACKS.map(p=>`<div class="pack"><div class="pack-head"><div class="pack-name" style="color:${R[p.name].color}">${p.name.toUpperCase()} PACK</div><div class="pack-price">● ${fmt(p.price)}</div></div><div class="odds">${Object.entries(p.odds).map(([r,o])=>`<div class="odd" style="background:${R[r].color}">${r[0]}<br>${o}%</div>`).join("")}</div><button onclick="openPack('${p.name}','paid')">BUY + OPEN</button></div>`).join("");
+ $("#packs").innerHTML=`<div class="pack-sale-banner"><b>25% OFF ALL PACKS</b>COMMON → LEGENDARY SALE</div>`+PACKS.map(p=>`<div class="pack"><div class="pack-head"><div class="pack-name" style="color:${R[p.name].color}">${p.name.toUpperCase()} PACK <span class="sale-tag">25% OFF</span></div><div class="pack-price"><span class="old-pack-price">● ${fmt(Math.round(p.price/0.75))}</span>● ${fmt(p.price)}</div></div><div class="odds">${Object.entries(p.odds).map(([r,o])=>`<div class="odd" style="background:${R[r].color}">${r[0]}<br>${o}%</div>`).join("")}</div><button onclick="openPack('${p.name}','paid')">BUY + OPEN</button></div>`).join("");
 
  const now=Date.now(), left=Math.max(0,state.freeUncommonAt-now);
  if(left<=0){
@@ -963,9 +979,17 @@ function winsNeeded(c){
 
 function openBattleMode(){
  const panel=$("#battleModePanel");
- if(panel)panel.style.display="block";
+ if(!panel)return;
  renderBattle();
- setTimeout(()=>panel?.scrollIntoView({behavior:"smooth",block:"start"}),30);
+ panel.style.display="block";
+ panel.classList.add("show");
+ panel.scrollTop=0;
+}
+function closeBattleMode(){
+ const panel=$("#battleModePanel");
+ if(!panel)return;
+ panel.classList.remove("show");
+ panel.style.display="none";
 }
 
 function stats(c){
@@ -1863,7 +1887,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.07;
+const APP_INTERNAL_VERSION=10.08;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
@@ -2534,7 +2558,7 @@ function bjData(){if(!state.blackjack)state.blackjack={wins:0,losses:0,pushes:0,
 function bjOpenHub(){bjData();bjRenderHub();bjTab("play");$("#bjHub").classList.add("show")}function bjCloseHub(){$("#bjHub").classList.remove("show")}
 function bjTab(t){["play","collection","shop","ranked"].forEach(x=>{$("#bjPage"+x[0].toUpperCase()+x.slice(1))?.classList.toggle("active",x===t);$("#bjNav"+x[0].toUpperCase()+x.slice(1))?.classList.toggle("on",x===t)});bjRenderHub()}
 function bjRank(){let p=bjData().rankPoints;return p>=100?"DIAMOND":p>=60?"PLATINUM":p>=35?"GOLD":p>=15?"SILVER":"BRONZE I"}
-function bjRenderHub(){let d=bjData(),r=bjRank();$("#bjRankLabel").textContent=r;$("#bjRankBig").textContent=r;$("#bjRankProgress").textContent=`${d.rankPoints} ranked points · +3 win · +1 push`;$("#bjStats").innerHTML=`<div class="bj-stat"><b>${d.wins}</b>WINS</div><div class="bj-stat"><b>${d.losses}</b>LOSSES</div><div class="bj-stat"><b>${d.pushes}</b>PUSHES</div><div class="bj-stat"><b>${d.blackjacks}</b>BLACKJACKS</div>`;let a=[["classic","Classic Red",0],["midnight","Midnight",15000],["gold","Gold",40000]];$("#bjBackCollection").innerHTML=a.filter(x=>d.ownedBacks.includes(x[0])).map(x=>`<div class="bj-back ${d.equippedBack===x[0]?"on":""}" data-back="${x[0]}" onclick="bjEquipBack('${x[0]}')"><div class="bj-back-art"></div><b>${x[1]}</b></div>`).join("");$("#bjShopBacks").innerHTML=a.map(x=>`<div class="bj-back" data-back="${x[0]}"><div class="bj-back-art"></div><b>${x[1]}</b><div class="bj-small">${d.ownedBacks.includes(x[0])?"OWNED":x[2].toLocaleString()+" coins"}</div>${d.ownedBacks.includes(x[0])?"":`<button class="bj-btn" onclick="bjBuyBack('${x[0]}',${x[2]})">BUY</button>`}</div>`).join("");$("#bjSpecialCollection").innerHTML=d.specialCards.length?d.specialCards.join("<br>"):"<p class='bj-small'>No special card faces unlocked yet.</p>"}
+function bjRenderHub(){let d=bjData(),r=bjRank();$("#bjRankLabel").textContent=r;$("#bjRankBig").textContent=r;$("#bjRankProgress").textContent=`${d.rankPoints} ranked points · +3 win · +1 push`;$("#bjStats").innerHTML=`<div class="bj-stat"><b>${d.wins}</b>WINS</div><div class="bj-stat"><b>${d.losses}</b>LOSSES</div><div class="bj-stat"><b>${d.pushes}</b>PUSHES</div><div class="bj-stat"><b>${d.blackjacks}</b>BLACKJACKS</div>`;let a=[["classic","Classic Red",0],["midnight","Midnight",5000],["gold","Gold",12000]];$("#bjBackCollection").innerHTML=a.filter(x=>d.ownedBacks.includes(x[0])).map(x=>`<div class="bj-back ${d.equippedBack===x[0]?"on":""}" data-back="${x[0]}" onclick="bjEquipBack('${x[0]}')"><div class="bj-back-art"></div><b>${x[1]}</b></div>`).join("");$("#bjShopBacks").innerHTML=a.map(x=>`<div class="bj-back" data-back="${x[0]}"><div class="bj-back-art"></div><b>${x[1]}</b><div class="bj-small">${d.ownedBacks.includes(x[0])?"OWNED":x[2].toLocaleString()+" coins"}</div>${d.ownedBacks.includes(x[0])?"":`<button class="bj-btn" onclick="bjBuyBack('${x[0]}',${x[2]})">BUY</button>`}</div>`).join("");$("#bjSpecialCollection").innerHTML=d.specialCards.length?d.specialCards.join("<br>"):"<p class='bj-small'>No special card faces unlocked yet.</p>"}
 function bjEquipBack(id){let d=bjData();if(d.ownedBacks.includes(id)){d.equippedBack=id;save();bjRenderHub()}}function bjBuyBack(id,c){let d=bjData();if(state.coins<c)return toast("Not enough coins");state.coins-=c;d.ownedBacks.push(id);save();render();bjRenderHub()}
 function bjSetBet(n){BJ.bet=n;$("#bjBetLabel").textContent=n.toLocaleString()}function bjFreshDeck(){let d=[];for(let s of BJ_SUITS)for(let r of BJ_RANKS)d.push({s,r});for(let i=d.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]]}return d}
 function bjPersist(){try{const payload=JSON.stringify(state);localStorage.setItem(SAVE_KEY,payload);localStorage.setItem("goldenPullsV2",payload);localStorage.setItem("goldenPullsV1",payload)}catch(e){console.error("Blackjack save failed",e)}}
