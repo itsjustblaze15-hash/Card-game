@@ -521,3 +521,12 @@ V10.10 BLACKJACK FACE CARDS
 - Visible version remains V10.
 
 V10.11 BLACKJACK: larger cards, animated initial deal, animated Hit, dealer hole-card flip and one-by-one dealer hits, suspense pauses, persistent Victory/Defeat/Push screen with Continue, normal win returns 2x total, loss keeps wager lost, push returns wager, natural blackjack remains 3:2.
+
+V10.12 GAMEPLAY HOTFIX
+- Fixed normal 3v3 Battle starting behind its mode/setup screen. Pressing PLAY now closes the setup screen before showing the live battle.
+- Raised the live 3v3 battle layer above mode screens as an additional safeguard.
+- Fixed Golden Arena regulation timeout resolution. When 5-4-3-2-1 reaches zero and one side is ahead on destroyed towers, the match now stops cleanly and enters the normal Victory/Defeat reward flow.
+- A tied Golden Arena match still enters overtime normally.
+- Removed the final-count overlay when regulation resolves to prevent a frozen-looking end state.
+- Golden Arena deployed character visuals are about 14% larger, with matching wider HP bars. Gameplay stats and hit logic are unchanged.
+- Visible version remains V10.

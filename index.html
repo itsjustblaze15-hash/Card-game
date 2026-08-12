@@ -421,6 +421,13 @@ button{font:inherit;cursor:pointer}
 #bjGame.bj-locked .bj-controls button{opacity:.45;pointer-events:none}
 #bjResultScreen{position:fixed;inset:0;z-index:100300;display:none;align-items:center;justify-content:center;text-align:center;padding:20px;color:#fff}#bjResultScreen.show{display:flex}#bjResultScreen.win{background:radial-gradient(circle,#22b85f,#07381d)}#bjResultScreen.lose{background:radial-gradient(circle,#d82e2e,#450909)}#bjResultScreen.push{background:radial-gradient(circle,#777,#222)}
 .bj-result-card{width:min(360px,100%);border:3px solid #f0d36b;border-radius:22px;padding:22px;background:#07160ee6;box-shadow:0 20px 50px #0009}.bj-result-card h1{font-size:46px;margin:0 0 8px}.bj-result-card p{font-weight:900;margin:7px 0}.bj-result-money{font-size:27px;color:#f0d36b;font-weight:1000;margin:12px 0}.bj-result-card button{width:100%;border:0;border-radius:13px;padding:13px;background:#f0d36b;color:#171100;font-weight:1000;margin-top:10px}
+
+/* V10.12 gameplay hotfix */
+.ga-unit{width:32px!important;height:41px!important}
+.ga-unit-hp{width:33px!important}
+#battleModal{z-index:100220!important}
+
+#resultModal,#gaResult{z-index:100260!important}
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -1437,6 +1444,8 @@ async function startBattle(){
  battleEnemyBenchLocked=[false,false];
 
  battleBusy=true;
+ // The setup screen must disappear before the actual 3v3 arena is shown.
+ closeBattleMode();
  $("#battleModal").style.display="flex";$("#battleModal").classList.add("show");
  $("#arenaLog").textContent="";
  drawArena(team,enemy,php,ehp,pmax,emax,-1,-1,difficulty);
@@ -1920,7 +1929,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.11;
+const APP_INTERNAL_VERSION=10.12;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
@@ -2471,7 +2480,18 @@ function gaClock(){
 
   if(e>=120){
    const p=gaScore("player"),b=gaScore("enemy");
-   if(p!==b){gaFinish(p>b);return}
+   if(p!==b){
+    // Regulation ended with a leader: resolve exactly once and award through the normal result flow.
+    if(!GA.finishing){
+      GA.finishing=true;
+      GA.running=false;
+      gaStopLoops();
+      const fc=$("#gaFinalCount");if(fc)fc.classList.remove("show");
+      setTimeout(()=>{GA.finishing=false;gaFinish(p>b)},260);
+    }
+    return;
+   }
+   // Tied after regulation: only then enter sudden-death overtime.
    GA.overtime=true;GA.otPlayerScore=p;GA.otEnemyScore=b;GA.energyMult=3;GA.lastRegen=Date.now();GA.overtimeStart=Date.now();GA.overtime5x=false;
    $("#gaGame").classList.add("ga-overtime");
    $("#gaTimer").textContent="OVERTIME";
