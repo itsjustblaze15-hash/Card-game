@@ -595,3 +595,16 @@ V10.19 MYSTERY BOX
 - Mystery packs use a premium yellow Golden Pulls-style GP logo treatment.
 - Packs open one at a time using the existing tear/reveal/swipe animation.
 - After each five-card pack, the next Mystery Pack appears until all five are opened.
+
+V10.20 ROMANIA BOSS + MYSTERY BOX UI FIX
+- Added Romania as Tier 4, directly after Artlander.
+- Romania is an Exotic boss-exclusive reward card and uses the supplied Romania image.
+- Boss list is now newest-to-oldest: Romania, Artlander, I Need More Bullets, Ice Agents.
+- Romania has a NEW BOSS badge.
+- Romania unlock progression starts after Artlander and requires 40 fresh normal 3v3 wins.
+- Romania boss uses Artlander's boss difficulty/attack strength with only 8% extra boss HP.
+- Playable Romania is only slightly stronger than a normal Exotic/Artlander-level card.
+- Defeating Romania adds the Romania card to Collection.
+- Fixed Mystery Box 5 PACK BUNDLE tag so it no longer covers the 100,000 price.
+- Changed the guarantee area into a clearly non-button informational panel.
+- Mystery Box purchase/opening logic remains active at 100,000 coins.
