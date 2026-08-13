@@ -445,7 +445,7 @@ button{font:inherit;cursor:pointer}
 .mystery-bundle .bundle-copy{font-weight:900;color:#4d3600;line-height:1.35;margin:9px 0 12px}
 .mystery-bundle .guarantee{background:transparent;color:#4d3600;border:2px dashed #9b7000;border-radius:10px;padding:9px;text-align:left;font-weight:1000;margin-bottom:12px;box-shadow:none;cursor:default}
 .packbag.mystery-pack{--packcolor:#ffd51f!important;background:linear-gradient(145deg,#ffe86b,#ffc400)!important;border-color:#fff3a6!important;color:#201700!important}
-.packbag.mystery-pack>div:before{content:"GP";display:flex;align-items:center;justify-content:center;margin:0 auto 14px;width:88px;height:88px;border-radius:50%;background:#201700;color:#ffd51f;border:5px solid #fff3a6;box-shadow:0 7px 0 #9b7000;font-size:38px;font-weight:1000;letter-spacing:-3px}
+.packbag.mystery-pack>div:before{content:"";display:block;margin:0 auto 14px;width:108px;height:108px;border-radius:24px;background:url("assets/golden_pulls_logo.png") center/cover no-repeat;border:4px solid #fff3a6;box-shadow:0 7px 0 #9b7000}
 .bundle-progress{font-size:12px;font-weight:1000;letter-spacing:.08em;margin-top:8px}
 
 /* V10.20 Romania boss */
@@ -804,18 +804,26 @@ function mysteryRandomCard(rarity,used){
  used.add(c.id);return c;
 }
 function buildMysteryBundle(){
- const odds={Common:48,Uncommon:28,Rare:17,Epic:5.5,Legendary:1.5};
- const slots=Array.from({length:25},()=>pickRarity(odds));
-
- // Randomly place the guaranteed minimum across the full five-pack bundle.
- const positions=[...Array(25).keys()];
- for(let i=positions.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[positions[i],positions[j]]=[positions[j],positions[i]]}
- positions.slice(0,3).forEach(i=>slots[i]="Epic");
- positions.slice(3,5).forEach(i=>slots[i]="Legendary");
-
- // If normal luck already created extra Epic/Legendary cards, they remain.
- // The forced slots ensure the final total can never fall below 3 Epic / 2 Legendary.
- const used=new Set(),cards=slots.map(r=>mysteryRandomCard(r,used)).filter(Boolean);
+ const rarities=["Epic","Epic","Epic","Legendary","Legendary"];
+ for(let i=0;i<20;i++){
+   const roll=Math.random()*100;
+   rarities.push(roll<9?"Legendary":roll<32?"Epic":"Rare");
+ }
+ for(let i=rarities.length-1;i>0;i--){
+   const j=Math.floor(Math.random()*(i+1));
+   [rarities[i],rarities[j]]=[rarities[j],rarities[i]];
+ }
+ const used=new Set();
+ const cards=rarities.map(r=>mysteryRandomCard(r,used)).filter(Boolean);
+ const count=r=>cards.filter(c=>c&&c.rarity===r).length;
+ while(count("Epic")<3){
+   const i=cards.findIndex(c=>c&&c.rarity==="Rare"); if(i<0)break;
+   cards[i]=mysteryRandomCard("Epic",used);
+ }
+ while(count("Legendary")<2){
+   const i=cards.findIndex(c=>c&&c.rarity==="Rare"); if(i<0)break;
+   cards[i]=mysteryRandomCard("Legendary",used);
+ }
  return Array.from({length:5},(_,i)=>cards.slice(i*5,i*5+5));
 }
 function buyMysteryBundle(){
@@ -1812,12 +1820,12 @@ function renderBoss(){
       : `<div class="boss-card compact boss-locked"><div><div class="boss-badge">LOCKED</div><h2>ARTLANDER</h2><p>Win 30 normal battles after clearing Tier 2.</p><div class="boss-progress"><i style="width:${artWins*(100/30)}%"></i></div><b>${artWins} / 30</b></div></div>`;
 
  const romaniaHTML=!romPhase
-  ? `<div class="boss-card compact boss-locked new-boss-card"><div class="boss-badge new-boss-badge">NEW BOSS</div><div><h2>ROMANIA</h2><p>Defeat Artlander first.</p></div></div>`
+  ? `<div class="boss-card compact boss-locked new-boss-card"><div class="boss-badge new-boss-badge">NEW BOSS</div><img src="assets/romania.jpg"><div><h2>ROMANIA</h2><p>EXOTIC · Defeat Artlander first.</p></div></div>`
   : romOwned
     ? `<div class="boss-card compact new-boss-card"><div class="boss-badge new-boss-badge">NEW BOSS · CLEARED</div><img src="assets/romania.jpg"><div><h2>ROMANIA</h2><p>TIER 4 COMPLETED · EXOTIC</p></div></div>`
     : romUnlocked
       ? `<div class="boss-card compact new-boss-card"><div class="boss-badge new-boss-badge">NEW BOSS</div><img src="assets/romania.jpg"><div><h2>ROMANIA</h2><p>TIER 4 BOSS · 40 fresh normal wins.</p><button class="primary" onclick="startRomaniaBoss()">FIGHT BOSS</button></div></div>`
-      : `<div class="boss-card compact boss-locked new-boss-card"><div class="boss-badge new-boss-badge">NEW BOSS</div><div><h2>ROMANIA</h2><p>Win 40 normal battles after clearing Artlander.</p><div class="boss-progress"><i style="width:${romWins*2.5}%"></i></div><b>${romWins} / 40</b></div></div>`;
+      : `<div class="boss-card compact boss-locked new-boss-card"><div class="boss-badge new-boss-badge">NEW BOSS</div><img src="assets/romania.jpg"><div><h2>ROMANIA</h2><p>EXOTIC · Win 40 normal battles after clearing Artlander.</p><div class="boss-progress"><i style="width:${romWins*2.5}%"></i></div><b>${romWins} / 40</b></div></div>`;
 
  // Newest to oldest.
  $("#bossContent").innerHTML=romaniaHTML+artHTML+bulletsHTML+iceHTML;
@@ -2132,7 +2140,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.20;
+const APP_INTERNAL_VERSION=10.21;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
