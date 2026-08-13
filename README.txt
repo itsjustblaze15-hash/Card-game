@@ -585,3 +585,13 @@ V10.18 GOLDEN ARENA 0:00 ROOT-CAUSE FIX
   0:00 -> gameplay stops -> TIME! -> ~0.65 second pause -> Victory/Defeat.
 - True ties still enter overtime.
 - Existing reward flow, 3v3 fixes, upgraded bot cards, Blackjack, and all prior V10 systems remain intact.
+
+V10.19 MYSTERY BOX
+- Added a 100,000-coin Mystery Box above the normal Common pack.
+- Contains five separate Mystery Packs, five cards each (25 cards total).
+- Entire five-pack bundle guarantees at least 3 Epic cards and 2 Legendary cards.
+- Normal luck can produce additional Epic or Legendary cards above the guarantee.
+- Shop listing does not reveal the Mystery Pack rarity odds.
+- Mystery packs use a premium yellow Golden Pulls-style GP logo treatment.
+- Packs open one at a time using the existing tear/reveal/swipe animation.
+- After each five-card pack, the next Mystery Pack appears until all five are opened.

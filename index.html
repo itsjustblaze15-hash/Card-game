@@ -437,6 +437,16 @@ button{font:inherit;cursor:pointer}
 .pick-overlay{z-index:100190!important}
 #pickOverlay{z-index:100190!important}
 .picker{position:relative;z-index:100191!important}
+
+/* V10.19 Mystery Five-Pack Bundle */
+.mystery-bundle{border:3px solid #e3a900!important;background:linear-gradient(145deg,#fff4a8,#ffd326)!important;box-shadow:0 14px 32px #9a6b0055!important;position:relative;overflow:hidden}
+.mystery-bundle:before{content:"5 PACK BUNDLE";position:absolute;right:-34px;top:18px;transform:rotate(38deg);background:#201700;color:#ffd928;padding:5px 40px;font-size:10px;font-weight:1000}
+.mystery-bundle .pack-name{color:#201700!important;font-size:24px}
+.mystery-bundle .bundle-copy{font-weight:900;color:#4d3600;line-height:1.35;margin:9px 0 12px}
+.mystery-bundle .guarantee{background:#201700;color:#ffe45f;border-radius:12px;padding:10px;text-align:center;font-weight:1000;margin-bottom:10px}
+.packbag.mystery-pack{--packcolor:#ffd51f!important;background:linear-gradient(145deg,#ffe86b,#ffc400)!important;border-color:#fff3a6!important;color:#201700!important}
+.packbag.mystery-pack>div:before{content:"GP";display:flex;align-items:center;justify-content:center;margin:0 auto 14px;width:88px;height:88px;border-radius:50%;background:#201700;color:#ffd51f;border:5px solid #fff3a6;box-shadow:0 7px 0 #9b7000;font-size:38px;font-weight:1000;letter-spacing:-3px}
+.bundle-progress{font-size:12px;font-weight:1000;letter-spacing:.08em;margin-top:8px}
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -707,7 +717,7 @@ if(!state.progressionMigrationV2Done){
   state.progressionMigrationV2Done=true;
 }
 
-let current=[],idx=0,packSource="paid",packOwnedBefore=new Set(),ownedFilter="ALL",indexFilter="ALL",spinning=false,pendingWheelPrize=null;
+let current=[],idx=0,packSource="paid",packOwnedBefore=new Set(),ownedFilter="ALL",indexFilter="ALL",spinning=false,pendingWheelPrize=null,mysteryQueue=[],mysteryPackNo=0,mysteryBundleActive=false;
 let collectionSearch="",indexSearch="",dangerAction=null,holdTimer=null,holdStart=0;
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 
@@ -768,6 +778,57 @@ function buildUniquePack(p){
  return cards;
 }
 
+
+function mysteryRandomCard(rarity,used){
+ let pool=CARDS.filter(c=>c.rarity===rarity&&!c.bossExclusive&&!c.secretExclusive&&!used.has(c.id));
+ if(!pool.length)pool=CARDS.filter(c=>c.rarity===rarity&&!c.bossExclusive&&!c.secretExclusive);
+ if(!pool.length)return pickUniquePackCard(rarity,used);
+ const c=pool[Math.floor(Math.random()*pool.length)];
+ used.add(c.id);return c;
+}
+function buildMysteryBundle(){
+ const odds={Common:48,Uncommon:28,Rare:17,Epic:5.5,Legendary:1.5};
+ const slots=Array.from({length:25},()=>pickRarity(odds));
+
+ // Randomly place the guaranteed minimum across the full five-pack bundle.
+ const positions=[...Array(25).keys()];
+ for(let i=positions.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[positions[i],positions[j]]=[positions[j],positions[i]]}
+ positions.slice(0,3).forEach(i=>slots[i]="Epic");
+ positions.slice(3,5).forEach(i=>slots[i]="Legendary");
+
+ // If normal luck already created extra Epic/Legendary cards, they remain.
+ // The forced slots ensure the final total can never fall below 3 Epic / 2 Legendary.
+ const used=new Set(),cards=slots.map(r=>mysteryRandomCard(r,used)).filter(Boolean);
+ return Array.from({length:5},(_,i)=>cards.slice(i*5,i*5+5));
+}
+function buyMysteryBundle(){
+ if(mysteryBundleActive)return;
+ if(state.coins<100000){toast("You need 100,000 coins");return}
+ state.coins-=100000;
+ mysteryQueue=buildMysteryBundle();
+ mysteryPackNo=0;
+ mysteryBundleActive=true;
+ save();
+ openNextMysteryPack();
+}
+function openNextMysteryPack(){
+ if(!mysteryBundleActive||mysteryPackNo>=mysteryQueue.length){
+   mysteryBundleActive=false;mysteryQueue=[];mysteryPackNo=0;
+   $("#modal").classList.remove("show");
+   toast("Mystery bundle added to collection");
+   render();return;
+ }
+ current=mysteryQueue[mysteryPackNo];
+ idx=0;packSource="mystery";
+ packOwnedBefore=new Set(CARDS.filter(c=>(state.owned[c.id]||0)>0).map(c=>c.id));
+ $("#modal").classList.add("show");
+ $("#packStage").style.display="block";$("#reveal").style.display="none";
+ const bag=$("#packbag");
+ bag.classList.add("mystery-pack");
+ bag.style.setProperty("--packcolor","#ffd51f");
+ $("#bagName").innerHTML=`MYSTERY PACK<div class="bundle-progress">PACK ${mysteryPackNo+1} OF 5</div>`;
+ bag.classList.remove("tearing");bag.classList.add("opening-pop");
+}
 function cardSellValue(c,q=1){
  const tier=tierFor(c);
  return Math.round(R[tier].value*(1+Math.max(0,q-1)*.15));
@@ -810,7 +871,7 @@ function closeSecretReward(){const o=$("#secretRewardOverlay");if(o)o.classList.
 function render(){
  $("#coins").textContent=fmt(state.coins);
  $("#gift").innerHTML=state.welcome>0?`<div class="gift"><b>WELCOME GIFT</b><div style="font-size:24px;font-weight:1000;margin:5px 0">3 FREE RARE PACKS</div><div style="margin-bottom:12px">${state.welcome} remaining</div><button onclick="openPack('Rare','welcome')">OPEN FREE RARE PACK</button></div>`:"";
- $("#packs").innerHTML=`<div class="pack-sale-banner"><b>25% OFF ALL PACKS</b>COMMON → LEGENDARY SALE</div>`+PACKS.map(p=>`<div class="pack"><div class="pack-head"><div class="pack-name" style="color:${R[p.name].color}">${p.name.toUpperCase()} PACK <span class="sale-tag">25% OFF</span></div><div class="pack-price"><span class="old-pack-price">● ${fmt(Math.round(p.price/0.75))}</span>● ${fmt(p.price)}</div></div><div class="odds">${Object.entries(p.odds).map(([r,o])=>`<div class="odd" style="background:${R[r].color}">${r[0]}<br>${o}%</div>`).join("")}</div><button onclick="openPack('${p.name}','paid')">BUY + OPEN</button></div>`).join("");
+ $("#packs").innerHTML=`<div class="pack mystery-bundle"><div class="pack-head"><div class="pack-name">MYSTERY BOX</div><div class="pack-price">● 100,000</div></div><div class="bundle-copy">Get 5 mysterious packs. Tear them open one by one and reveal 25 cards.</div><div class="guarantee">GUARANTEED: 2 LEGENDARIES + 3 EPICS</div><button onclick="buyMysteryBundle()">BUY 5 MYSTERY PACKS</button></div><div class="pack-sale-banner"><b>25% OFF ALL PACKS</b>COMMON → LEGENDARY SALE</div>`+PACKS.map(p=>`<div class="pack"><div class="pack-head"><div class="pack-name" style="color:${R[p.name].color}">${p.name.toUpperCase()} PACK <span class="sale-tag">25% OFF</span></div><div class="pack-price"><span class="old-pack-price">● ${fmt(Math.round(p.price/0.75))}</span>● ${fmt(p.price)}</div></div><div class="odds">${Object.entries(p.odds).map(([r,o])=>`<div class="odd" style="background:${R[r].color}">${r[0]}<br>${o}%</div>`).join("")}</div><button onclick="openPack('${p.name}','paid')">BUY + OPEN</button></div>`).join("");
 
  const now=Date.now(), left=Math.max(0,state.freeUncommonAt-now);
  if(left<=0){
@@ -906,7 +967,7 @@ function openPack(name,source="paid"){
  packOwnedBefore=new Set(CARDS.filter(c=>(state.owned[c.id]||0)>0).map(c=>c.id));current=buildUniquePack(p);idx=0;packSource=source;
  save();
  $("#modal").classList.add("show");$("#packStage").style.display="block";$("#reveal").style.display="none";
- $("#packbag").style.setProperty("--packcolor",R[name].color);$("#bagName").textContent=name.toUpperCase()+" PACK";$("#packbag").classList.remove("tearing");$("#packbag").classList.add("opening-pop");
+ $("#packbag").classList.remove("mystery-pack");$("#packbag").style.setProperty("--packcolor",R[name].color);$("#bagName").textContent=name.toUpperCase()+" PACK";$("#packbag").classList.remove("tearing");$("#packbag").classList.add("opening-pop");
 }
 
 function claimFreeUncommon(){
@@ -938,7 +999,21 @@ $("#revealCard").onclick=nextCard;
 let sx=0;$("#revealCard").addEventListener("touchstart",e=>sx=e.touches[0].clientX);$("#revealCard").addEventListener("touchend",e=>{if(sx-e.changedTouches[0].clientX>35)nextCard()});
 $("#doneBtn").onclick=()=>{
  current.forEach(c=>state.owned[c.id]=(state.owned[c.id]||0)+1);
- save();$("#modal").classList.remove("show");toast("5 cards added to collection");
+ save();
+ if(mysteryBundleActive){
+   mysteryPackNo++;
+   if(mysteryPackNo<5){
+     $("#reveal").style.display="none";
+     openNextMysteryPack();
+   }else{
+     mysteryBundleActive=false;mysteryQueue=[];mysteryPackNo=0;
+     $("#modal").classList.remove("show");
+     $("#packbag").classList.remove("mystery-pack");
+     toast("25 cards added from Mystery Box");
+   }
+   return;
+ }
+ $("#modal").classList.remove("show");toast("5 cards added to collection");
 }
 
 const WHEEL_SLOTS=["Common","Uncommon","Rare","Common","Epic","Uncommon","Common","Rare","Epic","Common","Uncommon","Rare"];
@@ -1991,7 +2066,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.18;
+const APP_INTERNAL_VERSION=10.19;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
