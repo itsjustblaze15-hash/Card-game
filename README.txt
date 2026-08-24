@@ -608,3 +608,14 @@ V10.20 ROMANIA BOSS + MYSTERY BOX UI FIX
 - Fixed Mystery Box 5 PACK BUNDLE tag so it no longer covers the 100,000 price.
 - Changed the guarantee area into a clearly non-button informational panel.
 - Mystery Box purchase/opening logic remains active at 100,000 coins.
+
+V10.22 FUS × GP COLLAB
+- Added FUS × GP as a separate Play mode.
+- Entering the mode replaces the GP HUD with a Football Universe Simulator-inspired navy/blue interface.
+- Header shows the real FUS logo and Golden Pulls logo together as FUS × GP.
+- Added a football-only pack shop, separate FUS card collection, and full locked/unlocked FUS index.
+- Football cards are built from the supplied FUS top-player rating dataset and roster identities.
+- FUS cards never enter normal Golden Pulls packs and normal GP cards never enter FUS packs.
+- FUS packs use the same shared Golden Pulls coin balance.
+- Added arbitrary custom wager input to the existing Blackjack wagering screen.
+NOTE: the supplied Golden Pulls build contains Blackjack but no Poker implementation, so no separate Poker code could be modified in this build.

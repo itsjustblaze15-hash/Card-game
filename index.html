@@ -451,6 +451,39 @@ button{font:inherit;cursor:pointer}
 /* V10.20 Romania boss */
 .new-boss-card{border-color:#00e5ff!important;box-shadow:0 10px 28px #00e5ff33!important}
 .new-boss-badge{background:#00e5ff!important;color:#002d33!important}
+
+/* V10.22 FUS × GP COLLAB */
+#fusCollab{position:fixed;inset:0;z-index:100500;display:none;flex-direction:column;overflow:hidden;
+ background:radial-gradient(circle at 15% 10%,rgba(79,156,255,.18),transparent 28%),linear-gradient(180deg,#06101f 0%,#09182d 48%,#06101f 100%);color:#f4f8ff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+#fusCollab.show{display:flex}
+.fusxgp-head{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:13px 16px;background:linear-gradient(135deg,#0b2448,#07152b);border-bottom:1px solid #4f9cff55;box-shadow:0 10px 30px #0007}
+.fusxgp-brand{display:flex;align-items:center;justify-content:center;gap:10px;font-weight:1000;font-size:20px;letter-spacing:.04em}
+.fusxgp-brand img{width:44px;height:44px;object-fit:cover;border-radius:10px;border:1px solid #65a9ff88;background:#07172c}
+.fusxgp-head button{border:1px solid #4f9cff66;background:#0c203d;color:#dcecff;border-radius:11px;padding:9px 12px;font-weight:900}
+.fusxgp-wallet{font-weight:950;color:#8fc1ff;white-space:nowrap}
+.fusxgp-body{flex:1;overflow-y:auto;padding:18px;max-width:1000px;width:100%;margin:0 auto}
+.fusxgp-hero{padding:22px;border:1px solid #4f9cff44;border-radius:20px;background:linear-gradient(135deg,#0d264a,#091a33);box-shadow:0 16px 35px #0005;margin-bottom:16px}
+.fusxgp-hero h1{margin:4px 0 8px;font-size:34px}.fusxgp-hero p{margin:0;color:#a9c8eb;font-weight:650}
+.fusxgp-tabs{display:flex;gap:8px;margin-bottom:15px;background:#07182d;border:1px solid #4f9cff33;padding:7px;border-radius:14px;position:sticky;top:0;z-index:3}
+.fusxgp-tabs button{flex:1;border:0;border-radius:10px;padding:10px;background:transparent;color:#9eb4d0;font-weight:900}.fusxgp-tabs button.on{background:linear-gradient(180deg,#65a9ff,#347ff0);color:#031126}
+.fusxgp-page{display:none}.fusxgp-page.active{display:block}
+.fus-pack-grid{display:grid;gap:12px}.fus-pack{padding:16px;border-radius:18px;background:linear-gradient(180deg,#102b50,#0a1d38);border:1px solid #4f9cff55;box-shadow:0 10px 25px #0004}
+.fus-pack-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.fus-pack h3{margin:0;color:#dcebff}.fus-pack-price{color:#8fc1ff;font-weight:1000}
+.fus-pack p{color:#9eb4d0;font-size:13px}.fus-pack button{width:100%;border:0;border-radius:11px;padding:11px;background:linear-gradient(180deg,#65a9ff,#347ff0);color:#031126;font-weight:1000}
+.fus-card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.fus-card{position:relative;min-height:205px;padding:13px;border-radius:18px;background:radial-gradient(circle at 80% 10%,rgba(79,156,255,.20),transparent 35%),linear-gradient(160deg,#0f2d56,#08192f);border:2px solid var(--fc);box-shadow:0 12px 24px #0004;overflow:hidden}
+.fus-card.locked{filter:saturate(.3);opacity:.55}.fus-card .ovr{font-size:34px;font-weight:1000;color:#fff}.fus-card .pos{font-size:11px;color:#9eb4d0;font-weight:900}.fus-card .player{font-size:16px;font-weight:1000;margin-top:38px}.fus-card .club{font-size:11px;color:#9eb4d0;margin-top:4px}.fus-card .rarity{position:absolute;right:10px;top:10px;font-size:10px;font-weight:1000;border:1px solid #ffffff33;border-radius:999px;padding:5px 7px;color:#dcecff;background:#07182dcc}
+.fus-card.locked:after{content:"LOCKED";position:absolute;inset:auto 10px 10px 10px;text-align:center;padding:6px;background:#030b18cc;border-radius:8px;font-size:10px;font-weight:1000;color:#8fa5c0}
+#fusPackModal{position:fixed;inset:0;z-index:100600;background:#030b18eF;display:none;align-items:center;justify-content:center;padding:18px}
+#fusPackModal.show{display:flex}.fus-open-shell{width:min(420px,100%);text-align:center}
+#fusPackBag{height:330px;border-radius:24px;background:radial-gradient(circle at 50% 35%,#3888ed55,transparent 30%),linear-gradient(150deg,#0e3971,#07182d);border:3px solid #65a9ff;display:grid;place-items:center;box-shadow:0 25px 60px #000a;cursor:pointer}
+#fusPackBag img{width:120px;height:120px;object-fit:contain}.fus-pack-bag-title{font-size:25px;font-weight:1000;margin-top:14px}.fus-pack-bag-hint{font-size:11px;color:#9eb4d0;margin-top:5px}
+#fusReveal{display:none}.fus-reveal-card{min-height:380px;padding:20px;border-radius:25px;background:linear-gradient(160deg,#12396c,#07182d);border:3px solid var(--fc);box-shadow:0 24px 60px #000b;display:grid;align-content:center;justify-items:center}
+.fus-reveal-card .big-ovr{font-size:70px;font-weight:1000}.fus-reveal-card h2{font-size:27px;margin:16px 0 5px}.fus-reveal-card p{color:#aac9ee;margin:3px}.fus-reveal-next{margin-top:12px;color:#9eb4d0;font-weight:900;font-size:12px}
+.fus-mode-choice{border-color:#4f9cff!important;background:linear-gradient(145deg,#07182d,#0c2b52)!important;color:#fff!important}
+.fus-mode-choice small,.fus-mode-choice span{color:#8fc1ff!important}
+.bj-custom-bet{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}.bj-custom-bet input{min-width:0;border:2px solid #f0d36b;border-radius:10px;padding:10px;background:#07180f;color:#fff;font-weight:900}.bj-custom-bet button{border:0;border-radius:10px;background:#f0d36b;color:#171100;font-weight:1000;padding:0 14px}
+@media(max-width:560px){.fusxgp-head{grid-template-columns:auto 1fr}.fusxgp-wallet{grid-column:1/-1;text-align:center}.fusxgp-brand{font-size:16px}.fusxgp-brand img{width:36px;height:36px}.fus-card-grid{grid-template-columns:1fr 1fr}.fusxgp-body{padding:12px}}
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -487,6 +520,7 @@ button{font:inherit;cursor:pointer}
 <div class="mode-chooser">
  <button class="mode-choice" type="button" onclick="openBattleMode()"><small>MAIN MODE</small><b>BATTLE</b><span>3v3 AUTO BATTLE</span></button>
  <button class="mode-choice" type="button" onclick="gaOpenLobby()"><small>NEW</small><b>GOLDEN ARENA</b><span>8-CARD ARENA</span></button><button class="mode-choice" type="button" onclick="bjOpenHub()"><small>BETA</small><b>BLACKJACK</b><span>CLASSIC 52-CARD TABLE</span></button>
+ <button class="mode-choice fus-mode-choice" type="button" onclick="fusOpen()"><small>COLLAB</small><b>FUS × GP</b><span>FOOTBALL CARD PACKS</span></button>
 </div>
 <div id="battleModePanel" style="display:none">
  <div class="battle-mode-head"><h2>3v3 BATTLE</h2><button type="button" onclick="closeBattleMode()">BACK</button></div>
@@ -557,7 +591,7 @@ button{font:inherit;cursor:pointer}
 </div></div>
 
 <div id="bjHub"><div class="bj-head"><div><span class="bj-beta">BETA</span><h1>BLACKJACK</h1></div><button onclick="bjCloseHub()">BACK</button></div><div class="bj-body">
-<section id="bjPagePlay" class="bj-page active"><div class="bj-panel"><h2>BLACKJACK TABLE</h2><div class="bj-small">Real shared 52-card deck. Dealt cards cannot repeat.</div><div class="bj-betrow"><button onclick="bjSetBet(100)">100</button><button onclick="bjSetBet(500)">500</button><button onclick="bjSetBet(1000)">1K</button><button onclick="bjSetBet(5000)">5K</button></div><p style="text-align:center">Bet: <b id="bjBetLabel">500</b> coins</p><button class="bj-btn" style="width:100%" onclick="bjStart()">DEAL</button></div><div class="bj-panel"><div class="bj-rank" id="bjRankLabel"></div><div class="bj-small">Wins increase your Blackjack rank.</div></div></section>
+<section id="bjPagePlay" class="bj-page active"><div class="bj-panel"><h2>BLACKJACK TABLE</h2><div class="bj-small">Real shared 52-card deck. Dealt cards cannot repeat.</div><div class="bj-betrow"><button onclick="bjSetBet(100)">100</button><button onclick="bjSetBet(500)">500</button><button onclick="bjSetBet(1000)">1K</button><button onclick="bjSetBet(5000)">5K</button></div><div class="bj-custom-bet"><input id="bjCustomBet" type="number" inputmode="numeric" min="1" step="1" placeholder="Enter any bet amount"><button onclick="bjApplyCustomBet()">SET BET</button></div><p style="text-align:center">Bet: <b id="bjBetLabel">500</b> coins</p><button class="bj-btn" style="width:100%" onclick="bjStart()">DEAL</button></div><div class="bj-panel"><div class="bj-rank" id="bjRankLabel"></div><div class="bj-small">Wins increase your Blackjack rank.</div></div></section>
 <section id="bjPageCollection" class="bj-page"><div class="bj-panel"><h2>SPECIAL CARDS</h2><div class="bj-small">Blackjack-only character faces can replace artwork for a rank across all four suits without changing card values.</div><div id="bjSpecialCollection"></div></div><div class="bj-panel"><h2>CARD BACKS</h2><div id="bjBackCollection" class="bj-back-grid"></div></div></section>
 <section id="bjPageShop" class="bj-page"><div class="bj-panel"><h2>CARD BACK SHOP</h2><div class="bj-small">Uses the same coins as every other mode.</div><div id="bjShopBacks" class="bj-back-grid"></div></div></section>
 <section id="bjPageRanked" class="bj-page"><div class="bj-panel"><h2>RANKED</h2><div class="bj-rank" id="bjRankBig"></div><div id="bjRankProgress" class="bj-small"></div></div><div class="bj-panel"><h2>STATS</h2><div id="bjStats" class="bj-statgrid"></div></div><div class="bj-panel"><h2>RANK REWARDS</h2><div class="bj-small">Silver unlocks Midnight. Gold unlocks Gold. Higher ranks will get exclusive cosmetics.</div></div></section></div>
@@ -2052,6 +2086,46 @@ $$(".nav button").forEach(b=>b.onclick=()=>{
 });
 setInterval(()=>{if($("#rewards").classList.contains("active"))render()},1000);
 
+
+const FUS_CARDS=[{"id": 1, "name": "Kylian Mbappé", "ovr": 91, "club": "Real Madrid", "pos": "ST", "rarity": "ICON"}, {"id": 2, "name": "Erling Haaland", "ovr": 91, "club": "Manchester City", "pos": "ST", "rarity": "ICON"}, {"id": 3, "name": "Harry Kane", "ovr": 90, "club": "Bayern Munich", "pos": "ST", "rarity": "ELITE"}, {"id": 4, "name": "Jude Bellingham", "ovr": 90, "club": "Real Madrid", "pos": "CAM", "rarity": "ELITE"}, {"id": 5, "name": "Michael Olise", "ovr": 90, "club": "Bayern Munich", "pos": "RW", "rarity": "ELITE"}, {"id": 6, "name": "Rodri", "ovr": 90, "club": "Barcelona", "pos": "CM", "rarity": "ELITE"}, {"id": 7, "name": "Lamine Yamal", "ovr": 90, "club": "Barcelona", "pos": "RW", "rarity": "ELITE"}, {"id": 8, "name": "Ousmane Dembélé", "ovr": 90, "club": "Paris Saint-Germain", "pos": "RW", "rarity": "ELITE"}, {"id": 9, "name": "Thibaut Courtois", "ovr": 90, "club": "Real Madrid", "pos": "GK", "rarity": "ELITE"}, {"id": 10, "name": "Pedri", "ovr": 90, "club": "Barcelona", "pos": "CM", "rarity": "ELITE"}, {"id": 11, "name": "Vitinha", "ovr": 90, "club": "Paris Saint-Germain", "pos": "CM", "rarity": "ELITE"}, {"id": 12, "name": "Gabriel Magalhães", "ovr": 89, "club": "Arsenal", "pos": "CB", "rarity": "WORLD"}, {"id": 13, "name": "Bruno Fernandes", "ovr": 89, "club": "Manchester United", "pos": "CAM", "rarity": "WORLD"}, {"id": 14, "name": "Gianluigi Donnarumma", "ovr": 89, "club": "Manchester City", "pos": "GK", "rarity": "WORLD"}, {"id": 15, "name": "Khvicha Kvaratskhelia", "ovr": 89, "club": "Paris Saint-Germain", "pos": "LW", "rarity": "WORLD"}, {"id": 16, "name": "Nuno Mendes", "ovr": 89, "club": "Paris Saint-Germain", "pos": "LB", "rarity": "WORLD"}, {"id": 17, "name": "Willian Pacho", "ovr": 89, "club": "Paris Saint-Germain", "pos": "CB", "rarity": "WORLD"}, {"id": 18, "name": "Lionel Messi", "ovr": 89, "club": "FUS All-Stars", "pos": "", "rarity": "WORLD"}, {"id": 19, "name": "Vinícius Júnior", "ovr": 89, "club": "Real Madrid", "pos": "LW", "rarity": "WORLD"}, {"id": 20, "name": "Declan Rice", "ovr": 88, "club": "Arsenal", "pos": "CM", "rarity": "STAR"}, {"id": 21, "name": "William Saliba", "ovr": 88, "club": "Arsenal", "pos": "CB", "rarity": "STAR"}, {"id": 22, "name": "Virgil van Dijk", "ovr": 88, "club": "Liverpool", "pos": "CB", "rarity": "STAR"}, {"id": 23, "name": "Jan Oblak", "ovr": 88, "club": "Atlético Madrid", "pos": "GK", "rarity": "STAR"}, {"id": 24, "name": "Achraf Hakimi", "ovr": 88, "club": "Paris Saint-Germain", "pos": "RB", "rarity": "STAR"}, {"id": 25, "name": "João Neves", "ovr": 88, "club": "Paris Saint-Germain", "pos": "CM", "rarity": "STAR"}, {"id": 26, "name": "Joshua Kimmich", "ovr": 88, "club": "Bayern Munich", "pos": "CM", "rarity": "STAR"}, {"id": 27, "name": "Luis Díaz", "ovr": 88, "club": "Bayern Munich", "pos": "LW", "rarity": "STAR"}];
+const FUS_RARITY_COLOR={STAR:"#60a5fa",WORLD:"#3b82f6",ELITE:"#93c5fd",ICON:"#f6c453"};
+const FUS_PACKS=[
+ {name:"SCOUT PACK",price:10000,weights:{STAR:78,WORLD:18,ELITE:3.5,ICON:.5}},
+ {name:"PRO PACK",price:25000,weights:{STAR:50,WORLD:35,ELITE:12,ICON:3}},
+ {name:"ELITE PACK",price:50000,weights:{STAR:25,WORLD:38,ELITE:28,ICON:9}}
+];
+let fusCurrentPack=[],fusRevealIndex=0,fusOpening=false;
+function fusData(){if(!state.fusCollab)state.fusCollab={owned:{},packsOpened:0};return state.fusCollab}
+function fusOpen(){fusData();fusRender();$("#fusCollab").classList.add("show");fusTab("packs")}
+function fusClose(){$("#fusCollab").classList.remove("show")}
+function fusTab(t){["packs","collection","index"].forEach(x=>{$("#fusPage"+x[0].toUpperCase()+x.slice(1))?.classList.toggle("active",x===t);$("#fusTab"+x[0].toUpperCase()+x.slice(1))?.classList.toggle("on",x===t)});fusRender()}
+function fusPickRarity(w){const total=Object.values(w).reduce((a,b)=>a+b,0);let r=Math.random()*total;for(const [k,v] of Object.entries(w)){r-=v;if(r<=0)return k}return "STAR"}
+function fusPickCard(rarity){let pool=FUS_CARDS.filter(c=>c.rarity===rarity);if(!pool.length)pool=FUS_CARDS;return pool[Math.floor(Math.random()*pool.length)]}
+function fusRenderCard(c,locked=false){const col=FUS_RARITY_COLOR[c.rarity]||"#60a5fa";return `<div class="fus-card ${locked?"locked":""}" style="--fc:${col}"><div class="rarity">${c.rarity}</div><div class="ovr">${locked?"??":c.ovr}</div><div class="pos">${locked?"":c.pos}</div><div class="player">${locked?"UNKNOWN PLAYER":c.name}</div><div class="club">${locked?"Unlock from FUS packs":c.club}</div></div>`}
+function fusRender(){
+ const d=fusData();$("#fusCoins").textContent=fmt(state.coins||0);
+ $("#fusPackShop").innerHTML=FUS_PACKS.map(p=>`<div class="fus-pack"><div class="fus-pack-head"><h3>${p.name}</h3><div class="fus-pack-price">● ${fmt(p.price)}</div></div><p>5 football cards · FUS collab collection only.</p><button onclick="fusBuyPack('${p.name.replaceAll("'","\\'")}')">BUY + OPEN</button></div>`).join("");
+ const ownedIds=new Set(Object.keys(d.owned).filter(id=>d.owned[id]>0).map(Number));
+ const owned=FUS_CARDS.filter(c=>ownedIds.has(c.id)).sort((a,b)=>b.ovr-a.ovr);
+ $("#fusCollectionStats").textContent=`${owned.length} / ${FUS_CARDS.length} football cards collected`;
+ $("#fusCollectionGrid").innerHTML=owned.length?owned.map(c=>fusRenderCard(c,false)).join(""):`<div style="color:#9eb4d0">No football cards yet. Open an FUS pack.</div>`;
+ $("#fusIndexStats").textContent=`FULL FUS INDEX · ${owned.length} / ${FUS_CARDS.length} unlocked`;
+ $("#fusIndexGrid").innerHTML=FUS_CARDS.slice().sort((a,b)=>b.ovr-a.ovr).map(c=>fusRenderCard(c,!ownedIds.has(c.id))).join("");
+}
+function fusBuyPack(name){
+ if(fusOpening)return;
+ const p=FUS_PACKS.find(x=>x.name===name);if(!p)return;
+ if((state.coins||0)<p.price){toast("Not enough coins");return}
+ state.coins-=p.price;fusData().packsOpened++;save();
+ fusCurrentPack=Array.from({length:5},()=>fusPickCard(fusPickRarity(p.weights)));
+ fusRevealIndex=0;fusOpening=true;
+ $("#fusPackBagName").textContent=p.name;$("#fusPackBag").style.display="grid";$("#fusReveal").style.display="none";$("#fusPackModal").classList.add("show");fusRender();
+}
+function fusTearPack(){if(!fusOpening)return;$("#fusPackBag").style.display="none";$("#fusReveal").style.display="block";fusShowReveal()}
+function fusShowReveal(){const c=fusCurrentPack[fusRevealIndex];if(!c)return;$("#fusRevealCard").style.setProperty("--fc",FUS_RARITY_COLOR[c.rarity]);$("#fusRevealOVR").textContent=c.ovr;$("#fusRevealPos").textContent=c.pos;$("#fusRevealName").textContent=c.name;$("#fusRevealClub").textContent=c.club;$("#fusRevealRarity").textContent=c.rarity;$("#fusRevealHint").textContent=fusRevealIndex===4?"TAP TO ADD PACK TO COLLECTION":`CARD ${fusRevealIndex+1} OF 5 · TAP FOR NEXT`}
+function fusNextCard(){if(!fusOpening)return;if(fusRevealIndex<4){fusRevealIndex++;fusShowReveal();return}const d=fusData();fusCurrentPack.forEach(c=>d.owned[c.id]=(d.owned[c.id]||0)+1);save();fusOpening=false;fusCurrentPack=[];$("#fusPackModal").classList.remove("show");toast("5 FUS cards added");fusRender()}
+function bjApplyCustomBet(){const input=$("#bjCustomBet");const n=Math.floor(Number(input?.value));if(!Number.isFinite(n)||n<1){toast("Enter a valid bet");return}if(n>(Number(state.coins)||0)){toast("Bet cannot exceed your coins");return}bjSetBet(n);if(input)input.value=""}
+
 // PWA update support
 let swReg=null;
 async function registerSW(){
@@ -2140,7 +2214,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.21;
+const APP_INTERNAL_VERSION=10.22;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
@@ -2981,4 +3055,20 @@ async function bjDouble(){if(!BJ.playing||BJ.busy||BJ.player.length!==2)return;c
 async function bjResolve(r,msg){if(!BJ.playing)return;BJ.playing=false;BJ.holeHidden=false;const d=bjData(),nat=bjIsBlackjack(BJ.player);let pay=0,profit=0;if(r==="win"){d.wins++;d.rankPoints+=3;pay=nat?Math.floor(BJ.bet*2.5):BJ.bet*2;profit=pay-BJ.bet;if(nat)d.blackjacks++}else if(r==="push"){d.pushes++;d.rankPoints++;pay=BJ.bet}else{d.losses++;profit=-BJ.bet}state.coins+=pay;if(d.rankPoints>=15&&!d.ownedBacks.includes("midnight"))d.ownedBacks.push("midnight");if(d.rankPoints>=35&&!d.ownedBacks.includes("gold"))d.ownedBacks.push("gold");bjPersist();bjSyncCoins();bjRenderTable();$("#bjMessage").textContent="";await bjWait(850);bjShowResult(r,nat&&r==="win"?"BLACKJACK!":msg,pay,profit)}
 function bjLeaveGame(){if(BJ.playing){state.coins+=BJ.bet;bjPersist();bjSyncCoins()}BJ.playing=false;$("#bjGame").classList.remove("show");bjOpenHub()}
 </script>
+
+<div id="fusCollab">
+  <div class="fusxgp-head">
+    <button type="button" onclick="fusClose()">BACK</button>
+    <div class="fusxgp-brand"><img src="assets/fus_logo.png" alt="FUS"><span>FUS × GP</span><img src="assets/golden_pulls_logo.png" alt="Golden Pulls"></div>
+    <div class="fusxgp-wallet">● <span id="fusCoins">0</span></div>
+  </div>
+  <div class="fusxgp-body">
+    <div class="fusxgp-hero"><div style="font-size:11px;font-weight:1000;color:#65a9ff;letter-spacing:.12em">FOOTBALL UNIVERSE SIMULATOR × GOLDEN PULLS</div><h1>FUS × GP</h1><p>Open football-only packs, build your collab collection, and complete the full FUS card index.</p></div>
+    <div class="fusxgp-tabs"><button id="fusTabPacks" class="on" onclick="fusTab('packs')">PACKS</button><button id="fusTabCollection" onclick="fusTab('collection')">COLLECTION</button><button id="fusTabIndex" onclick="fusTab('index')">INDEX</button></div>
+    <section id="fusPagePacks" class="fusxgp-page active"><div id="fusPackShop" class="fus-pack-grid"></div></section>
+    <section id="fusPageCollection" class="fusxgp-page"><div id="fusCollectionStats" style="margin-bottom:12px;color:#aac9ee;font-weight:900"></div><div id="fusCollectionGrid" class="fus-card-grid"></div></section>
+    <section id="fusPageIndex" class="fusxgp-page"><div id="fusIndexStats" style="margin-bottom:12px;color:#aac9ee;font-weight:900"></div><div id="fusIndexGrid" class="fus-card-grid"></div></section>
+  </div>
+</div>
+<div id="fusPackModal"><div class="fus-open-shell"><div id="fusPackBag" onclick="fusTearPack()"><div><img src="assets/fus_logo.png"><div id="fusPackBagName" class="fus-pack-bag-title">FUS PACK</div><div class="fus-pack-bag-hint">TAP TO OPEN</div></div></div><div id="fusReveal"><div id="fusRevealCard" class="fus-reveal-card" onclick="fusNextCard()"><div id="fusRevealOVR" class="big-ovr"></div><div id="fusRevealPos"></div><h2 id="fusRevealName"></h2><p id="fusRevealClub"></p><p id="fusRevealRarity"></p></div><div id="fusRevealHint" class="fus-reveal-next">TAP FOR NEXT</div></div></div></div>
 </body></html>
