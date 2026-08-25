@@ -742,3 +742,7 @@ V11.04 FUS ACCOUNT STYLE + EXPANDED CARD SET
 - FUS card set expanded from 27 to 40 players.
 - New cards use existing BLUE / PURPLE / GOLD rarity system and automatically appear in packs, Collection, and Index.
 - Existing saves remain compatible because new cards use new IDs 28-40.
+
+V11.05
+- Added the exact uploaded photos for FUS cards 28-40: Salah, Saka, Palmer, Musiala, Wirtz, Valverde, Raphinha, Lautaro Martinez, Isak, Alisson, Marquinhos, Griezmann, Lewandowski.
+- No player photo was generated or edited.
