@@ -642,3 +642,10 @@ V10.26 UI CLEANUP
 - FUS × GP in-mode header logos were reduced so the wallet stays visible.
 - Global money/value formatting becomes compact at 1,000,000: 1M, 1.25M, etc.
 - FUS pack faces no longer say FOOTBALL CARDS; each pack face is centered around the FUS logo.
+
+V10.27 FUS HEADER + PACK LOGO FIX
+- Top collab header now shows only the FUS logo between BACK and the wallet.
+- Large center hero still shows the full FUS × GP collaboration branding.
+- Fixed Scout, Pro, and Elite pack faces to render the exact embedded FUS PNG directly.
+- Pack-opening bag also refreshes the FUS logo source when opened.
+- No image generation used.

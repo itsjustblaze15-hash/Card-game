@@ -617,6 +617,41 @@ html,body{background-color:#061a35}
  #fusCollab .fusxgp-head>button{padding:7px 9px!important;font-size:13px!important}
  .fus-pack-logo,.fus-pack-logo img{width:74px!important;height:74px!important}
 }
+
+/* V10.27 FUS header + pack logo final fix */
+#fusCollab .fusxgp-brand-fus-only:after{display:none!important;content:none!important}
+#fusCollab .fusxgp-brand-fus-only{justify-content:center!important}
+#fusCollab .fusxgp-brand-fus-only img{
+  width:82px!important;
+  max-width:82px!important;
+  height:38px!important;
+  object-fit:contain!important;
+}
+
+/* The pack logo is a real inline image, centered on every bag */
+.fus-pack-logo{
+  width:100%!important;
+  height:100%!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  margin:0!important;
+}
+.fus-pack-logo img{
+  width:78%!important;
+  height:78%!important;
+  object-fit:contain!important;
+  display:block!important;
+  filter:drop-shadow(0 0 10px rgba(255,255,255,.22))!important;
+}
+
+@media(max-width:560px){
+  #fusCollab .fusxgp-brand-fus-only img{
+    width:72px!important;
+    max-width:72px!important;
+    height:32px!important;
+  }
+}
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -2257,7 +2292,7 @@ function fusRenderCard(c,locked=false){const col=FUS_RARITY_COLOR[c.rarity]||"#6
 function fusRender(){
  fusFixLogoSources();
  const d=fusData();$("#fusCoins").textContent=fmt(state.coins||0);
- $("#fusPackShop").innerHTML=FUS_PACKS.map((p,i)=>`<div class="fus-pack"><div class="fus-pack-art ${i===1?"pro":i===2?"elite":""}"><div class="fus-pack-logo"><img data-fus-logo alt="FUS"></div></div><div class="fus-pack-info"><h3>${p.name}</h3><div class="five">5 football cards</div><p>FUS collab collection only.</p></div><div class="fus-pack-buy"><div class="fus-pack-price">● ${fmt(p.price)}</div><button onclick="fusBuyPack('${p.name.replaceAll("'","\\'")}')">BUY + OPEN</button></div></div>`).join("");
+ $("#fusPackShop").innerHTML=FUS_PACKS.map((p,i)=>`<div class="fus-pack"><div class="fus-pack-art ${i===1?"pro":i===2?"elite":""}"><div class="fus-pack-logo"><img src="${FUS_LOGO_INLINE}" alt="FUS"></div></div><div class="fus-pack-info"><h3>${p.name}</h3><div class="five">5 football cards</div><p>FUS collab collection only.</p></div><div class="fus-pack-buy"><div class="fus-pack-price">● ${fmt(p.price)}</div><button onclick="fusBuyPack('${p.name.replaceAll("'","\\'")}')">BUY + OPEN</button></div></div>`).join("");
  const ownedIds=new Set(Object.keys(d.owned).filter(id=>d.owned[id]>0).map(Number));
  const owned=FUS_CARDS.filter(c=>ownedIds.has(c.id)).sort((a,b)=>b.ovr-a.ovr);
  $("#fusCollectionStats").textContent=`${owned.length} / ${FUS_CARDS.length} football cards collected`;
@@ -2272,7 +2307,7 @@ function fusBuyPack(name){
  state.coins-=p.price;fusData().packsOpened++;save();
  fusCurrentPack=Array.from({length:5},()=>fusPickCard(fusPickRarity(p.weights)));
  fusRevealIndex=0;fusOpening=true;
- $("#fusPackBagName").textContent=p.name;$("#fusPackBag").style.display="grid";$("#fusReveal").style.display="none";$("#fusPackModal").classList.add("show");fusRender();
+ $("#fusPackBagName").textContent=p.name;$("#fusPackBag").style.display="grid";$("#fusReveal").style.display="none";$("#fusPackModal").classList.add("show");fusFixLogoSources();fusRender();
 }
 function fusTearPack(){if(!fusOpening)return;$("#fusPackBag").style.display="none";$("#fusReveal").style.display="block";fusShowReveal()}
 function fusShowReveal(){const c=fusCurrentPack[fusRevealIndex];if(!c)return;$("#fusRevealCard").style.setProperty("--fc",FUS_RARITY_COLOR[c.rarity]);$("#fusRevealOVR").textContent=c.ovr;$("#fusRevealPos").textContent=c.pos;$("#fusRevealName").textContent=c.name;$("#fusRevealClub").textContent=c.club;$("#fusRevealRarity").textContent=c.rarity;$("#fusRevealHint").textContent=fusRevealIndex===4?"TAP TO ADD PACK TO COLLECTION":`CARD ${fusRevealIndex+1} OF 5 · TAP FOR NEXT`}
@@ -2368,7 +2403,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.25;
+const APP_INTERNAL_VERSION=10.27;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
@@ -3213,7 +3248,7 @@ function bjLeaveGame(){if(BJ.playing){state.coins+=BJ.bet;bjPersist();bjSyncCoin
 <div id="fusCollab">
   <div class="fusxgp-head">
     <button type="button" onclick="fusClose()">BACK</button>
-    <div class="fusxgp-brand"><img data-fus-logo alt="FUS"><img data-gp-logo alt="Golden Pulls"></div>
+    <div class="fusxgp-brand fusxgp-brand-fus-only"><img data-fus-logo alt="FUS"></div>
     <div class="fusxgp-wallet">● <span id="fusCoins">0</span></div>
   </div>
   <div class="fusxgp-body">
