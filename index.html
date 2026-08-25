@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Golden Pulls">
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-180.png">
 <link rel="manifest" href="./manifest.webmanifest">
-<title>Golden Pulls V9</title>
+<title>Golden Pulls V11</title>
 <style>
 :root{--gold:#f3c933;--deep:#8d6500;--cream:#fff7d6;--ink:#201700;--common:#9b9b9b;--uncommon:#27c45b;--rare:#2587ff;--epic:#a34cff;--legendary:#ff8a1f}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -874,7 +874,7 @@ html,body{background-color:#061a35}
 <body>
 <div class="app">
 <div class="top">
-  <div class="brand">GOLDEN PULLS <span class="vbadge">V10</span></div>
+  <div class="brand">GOLDEN PULLS <span class="vbadge">V11</span></div>
   <button id="updateBtn" class="update" onclick="checkForUpdate()">UPDATE</button>
   <div class="wallet">● <span id="coins">0</span></div>
 </div>
@@ -2608,7 +2608,7 @@ function fusBuyPack(name){
  bag.style.display="grid";
  bag.classList.remove("tearing");
  bag.classList.add("opening-pop");
- $("#fusRevealStage").style.display="none";
+ $("#fusReveal").style.display="none";
  $("#fusPackModal").classList.add("show");
 }
 
@@ -2784,8 +2784,8 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.33;
-const APP_DISPLAY_VERSION="10";
+const APP_INTERNAL_VERSION=11;
+const APP_DISPLAY_VERSION="11";
 let updateReloading=false;
 
 function hardReloadForUpdate(){

@@ -704,3 +704,11 @@ V10.33 FUS PLAYER PHOTOS + SCROLL FIX
 - FUS PACKS / COLLECTION / INDEX tabs no longer stick over cards while scrolling.
 - Existing Mbappe and Haaland photos are preserved.
 - No player photo was edited, cropped, generated, or replaced.
+
+
+GOLDEN PULLS V11
+- Fixed FUS pack purchases/opening.
+- The FUS buy flow now resets the real reveal container before opening instead of referencing a missing element.
+- Scout, Pro, and Elite FUS packs can be purchased and opened again when the player has enough coins.
+- FUS pack prices, odds, card rarities, selling, saves, layouts, animations, and all other game modes are unchanged.
+- Visible and installed version updated to V11.
