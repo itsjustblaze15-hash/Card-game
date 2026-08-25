@@ -649,3 +649,12 @@ V10.27 FUS HEADER + PACK LOGO FIX
 - Fixed Scout, Pro, and Elite pack faces to render the exact embedded FUS PNG directly.
 - Pack-opening bag also refreshes the FUS logo source when opened.
 - No image generation used.
+
+V10.28 PACK ORDER + FUS SELLING
+- Scout Pack is blue, Pro Pack is purple, Elite Pack is gold.
+- FUS Collection cards can now be sold one copy at a time.
+- FUS sell values: STAR 2,000; WORLD 5,000; ELITE 12,000; ICON 25,000.
+- Every normal Golden Pulls pack now reveals from lowest rarity to highest rarity.
+- Mystery Box sub-packs also reveal from lowest rarity to highest rarity.
+- Every FUS pack reveals STAR -> WORLD -> ELITE -> ICON, with higher OVR later within the same rarity.
+- This keeps the best pull at the end whenever a pack contains a higher-rarity card.
