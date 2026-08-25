@@ -666,3 +666,14 @@ V10.29 FUS PACK ANIMATIONS
 - FUS card reveal timing now matches the regular pack flow.
 - Swipe-left on a FUS revealed card now advances just like the regular pack reveal.
 - Existing worst-to-best reveal order, FUS selling, and pack colors are preserved.
+
+V10.30 FUS PLAYER PHOTOS + PACK BACKGROUNDS
+- Kylian Mbappé uses the exact uploaded photo.
+- Erling Haaland uses the exact uploaded photo.
+- Unlocked FUS collection cards show player photos.
+- Locked Index cards still hide player photos.
+- FUS pack reveals show the photo when that player has one.
+- Scout opening background = blue.
+- Pro opening background = purple.
+- Elite opening background = gold.
+- Existing pack animations, selling, worst-to-best order and all other modes preserved.

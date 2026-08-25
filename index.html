@@ -672,6 +672,25 @@ html,body{background-color:#061a35}
  transform:translateX(-80%) rotate(8deg);animation:cardGlint .65s .12s ease-out both
 }
 #fusRevealCard{position:relative;overflow:hidden;transform-style:preserve-3d}
+
+/* V10.30 exact football photos + pack-color opening stages */
+.fus-player-photo{
+ width:100%;height:128px;object-fit:cover;object-position:center;
+ border-radius:12px;margin:8px 0 10px;border:1px solid #ffffff22;box-shadow:0 8px 18px #0005
+}
+.fus-reveal-player-photo{
+ display:none;width:100%;height:235px;object-fit:cover;object-position:center;
+ border-radius:16px;margin-bottom:15px;border:1px solid #ffffff2b;box-shadow:0 14px 28px #0007
+}
+#fusPackModal.scout-bg{
+ background:radial-gradient(circle at 50% 35%,rgba(43,135,255,.40),transparent 34%),linear-gradient(180deg,#0b3f8f,#051b3b 58%,#020b18)!important
+}
+#fusPackModal.pro-bg{
+ background:radial-gradient(circle at 50% 35%,rgba(170,82,255,.42),transparent 34%),linear-gradient(180deg,#5a1b96,#220c47 58%,#090515)!important
+}
+#fusPackModal.elite-bg{
+ background:radial-gradient(circle at 50% 35%,rgba(255,211,74,.44),transparent 34%),linear-gradient(180deg,#a36d00,#422c00 58%,#140d00)!important
+}
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -2312,7 +2331,7 @@ function fusFixLogoSources(){
     if(img.src!==GP_LOGO_INLINE) img.src=GP_LOGO_INLINE;
   });
 }
-const FUS_CARDS=[{"id": 1, "name": "Kylian Mbappé", "ovr": 91, "club": "Real Madrid", "pos": "ST", "rarity": "ICON"}, {"id": 2, "name": "Erling Haaland", "ovr": 91, "club": "Manchester City", "pos": "ST", "rarity": "ICON"}, {"id": 3, "name": "Harry Kane", "ovr": 90, "club": "Bayern Munich", "pos": "ST", "rarity": "ELITE"}, {"id": 4, "name": "Jude Bellingham", "ovr": 90, "club": "Real Madrid", "pos": "CAM", "rarity": "ELITE"}, {"id": 5, "name": "Michael Olise", "ovr": 90, "club": "Bayern Munich", "pos": "RW", "rarity": "ELITE"}, {"id": 6, "name": "Rodri", "ovr": 90, "club": "Barcelona", "pos": "CM", "rarity": "ELITE"}, {"id": 7, "name": "Lamine Yamal", "ovr": 90, "club": "Barcelona", "pos": "RW", "rarity": "ELITE"}, {"id": 8, "name": "Ousmane Dembélé", "ovr": 90, "club": "Paris Saint-Germain", "pos": "RW", "rarity": "ELITE"}, {"id": 9, "name": "Thibaut Courtois", "ovr": 90, "club": "Real Madrid", "pos": "GK", "rarity": "ELITE"}, {"id": 10, "name": "Pedri", "ovr": 90, "club": "Barcelona", "pos": "CM", "rarity": "ELITE"}, {"id": 11, "name": "Vitinha", "ovr": 90, "club": "Paris Saint-Germain", "pos": "CM", "rarity": "ELITE"}, {"id": 12, "name": "Gabriel Magalhães", "ovr": 89, "club": "Arsenal", "pos": "CB", "rarity": "WORLD"}, {"id": 13, "name": "Bruno Fernandes", "ovr": 89, "club": "Manchester United", "pos": "CAM", "rarity": "WORLD"}, {"id": 14, "name": "Gianluigi Donnarumma", "ovr": 89, "club": "Manchester City", "pos": "GK", "rarity": "WORLD"}, {"id": 15, "name": "Khvicha Kvaratskhelia", "ovr": 89, "club": "Paris Saint-Germain", "pos": "LW", "rarity": "WORLD"}, {"id": 16, "name": "Nuno Mendes", "ovr": 89, "club": "Paris Saint-Germain", "pos": "LB", "rarity": "WORLD"}, {"id": 17, "name": "Willian Pacho", "ovr": 89, "club": "Paris Saint-Germain", "pos": "CB", "rarity": "WORLD"}, {"id": 18, "name": "Lionel Messi", "ovr": 89, "club": "FUS All-Stars", "pos": "", "rarity": "WORLD"}, {"id": 19, "name": "Vinícius Júnior", "ovr": 89, "club": "Real Madrid", "pos": "LW", "rarity": "WORLD"}, {"id": 20, "name": "Declan Rice", "ovr": 88, "club": "Arsenal", "pos": "CM", "rarity": "STAR"}, {"id": 21, "name": "William Saliba", "ovr": 88, "club": "Arsenal", "pos": "CB", "rarity": "STAR"}, {"id": 22, "name": "Virgil van Dijk", "ovr": 88, "club": "Liverpool", "pos": "CB", "rarity": "STAR"}, {"id": 23, "name": "Jan Oblak", "ovr": 88, "club": "Atlético Madrid", "pos": "GK", "rarity": "STAR"}, {"id": 24, "name": "Achraf Hakimi", "ovr": 88, "club": "Paris Saint-Germain", "pos": "RB", "rarity": "STAR"}, {"id": 25, "name": "João Neves", "ovr": 88, "club": "Paris Saint-Germain", "pos": "CM", "rarity": "STAR"}, {"id": 26, "name": "Joshua Kimmich", "ovr": 88, "club": "Bayern Munich", "pos": "CM", "rarity": "STAR"}, {"id": 27, "name": "Luis Díaz", "ovr": 88, "club": "Bayern Munich", "pos": "LW", "rarity": "STAR"}];
+const FUS_CARDS=[{"id": 1, "name": "Kylian Mbappé", "ovr": 91, "club": "Real Madrid", "pos": "ST", "rarity": "ICON", "image": "assets/fus_mbappe.jpg"}, {"id": 2, "name": "Erling Haaland", "ovr": 91, "club": "Manchester City", "pos": "ST", "rarity": "ICON", "image": "assets/fus_haaland.png"}, {"id": 3, "name": "Harry Kane", "ovr": 90, "club": "Bayern Munich", "pos": "ST", "rarity": "ELITE"}, {"id": 4, "name": "Jude Bellingham", "ovr": 90, "club": "Real Madrid", "pos": "CAM", "rarity": "ELITE"}, {"id": 5, "name": "Michael Olise", "ovr": 90, "club": "Bayern Munich", "pos": "RW", "rarity": "ELITE"}, {"id": 6, "name": "Rodri", "ovr": 90, "club": "Barcelona", "pos": "CM", "rarity": "ELITE"}, {"id": 7, "name": "Lamine Yamal", "ovr": 90, "club": "Barcelona", "pos": "RW", "rarity": "ELITE"}, {"id": 8, "name": "Ousmane Dembélé", "ovr": 90, "club": "Paris Saint-Germain", "pos": "RW", "rarity": "ELITE"}, {"id": 9, "name": "Thibaut Courtois", "ovr": 90, "club": "Real Madrid", "pos": "GK", "rarity": "ELITE"}, {"id": 10, "name": "Pedri", "ovr": 90, "club": "Barcelona", "pos": "CM", "rarity": "ELITE"}, {"id": 11, "name": "Vitinha", "ovr": 90, "club": "Paris Saint-Germain", "pos": "CM", "rarity": "ELITE"}, {"id": 12, "name": "Gabriel Magalhães", "ovr": 89, "club": "Arsenal", "pos": "CB", "rarity": "WORLD"}, {"id": 13, "name": "Bruno Fernandes", "ovr": 89, "club": "Manchester United", "pos": "CAM", "rarity": "WORLD"}, {"id": 14, "name": "Gianluigi Donnarumma", "ovr": 89, "club": "Manchester City", "pos": "GK", "rarity": "WORLD"}, {"id": 15, "name": "Khvicha Kvaratskhelia", "ovr": 89, "club": "Paris Saint-Germain", "pos": "LW", "rarity": "WORLD"}, {"id": 16, "name": "Nuno Mendes", "ovr": 89, "club": "Paris Saint-Germain", "pos": "LB", "rarity": "WORLD"}, {"id": 17, "name": "Willian Pacho", "ovr": 89, "club": "Paris Saint-Germain", "pos": "CB", "rarity": "WORLD"}, {"id": 18, "name": "Lionel Messi", "ovr": 89, "club": "FUS All-Stars", "pos": "", "rarity": "WORLD"}, {"id": 19, "name": "Vinícius Júnior", "ovr": 89, "club": "Real Madrid", "pos": "LW", "rarity": "WORLD"}, {"id": 20, "name": "Declan Rice", "ovr": 88, "club": "Arsenal", "pos": "CM", "rarity": "STAR"}, {"id": 21, "name": "William Saliba", "ovr": 88, "club": "Arsenal", "pos": "CB", "rarity": "STAR"}, {"id": 22, "name": "Virgil van Dijk", "ovr": 88, "club": "Liverpool", "pos": "CB", "rarity": "STAR"}, {"id": 23, "name": "Jan Oblak", "ovr": 88, "club": "Atlético Madrid", "pos": "GK", "rarity": "STAR"}, {"id": 24, "name": "Achraf Hakimi", "ovr": 88, "club": "Paris Saint-Germain", "pos": "RB", "rarity": "STAR"}, {"id": 25, "name": "João Neves", "ovr": 88, "club": "Paris Saint-Germain", "pos": "CM", "rarity": "STAR"}, {"id": 26, "name": "Joshua Kimmich", "ovr": 88, "club": "Bayern Munich", "pos": "CM", "rarity": "STAR"}, {"id": 27, "name": "Luis Díaz", "ovr": 88, "club": "Bayern Munich", "pos": "LW", "rarity": "STAR"}];
 const FUS_RARITY_COLOR={STAR:"#60a5fa",WORLD:"#3b82f6",ELITE:"#93c5fd",ICON:"#f6c453"};
 const FUS_PACKS=[
  {name:"SCOUT PACK",price:10000,weights:{STAR:78,WORLD:18,ELITE:3.5,ICON:.5}},
@@ -2341,8 +2360,10 @@ function fusSell(id){
 function fusRenderCard(c,locked=false){
  const col=FUS_RARITY_COLOR[c.rarity]||"#60a5fa";
  const q=fusData().owned[c.id]||0;
+ const photo=(!locked&&c.image)?`<img class="fus-player-photo" src="${c.image}" alt="${c.name}">`:"";
  return `<div class="fus-card ${locked?"locked":""}" style="--fc:${col}">
   <div class="rarity">${c.rarity}</div>
+  ${photo}
   <div class="ovr">${locked?"??":c.ovr}</div>
   <div class="pos">${locked?"":c.pos}</div>
   <div class="player">${locked?"UNKNOWN PLAYER":c.name}</div>
@@ -2350,6 +2371,7 @@ function fusRenderCard(c,locked=false){
   ${locked?"":`<div class="fus-card-qty">OWNED ×${q}</div><button class="fus-sell-btn" onclick="fusSell(${c.id})">SELL · ● ${fmt(fusSellValue(c))}</button>`}
  </div>`;
 }
+
 function fusRender(){
  fusFixLogoSources();
  const d=fusData();$("#fusCoins").textContent=fmt(state.coins||0);
@@ -2364,6 +2386,9 @@ function fusRender(){
 function fusBuyPack(name){
  if(fusOpening)return;
  const p=FUS_PACKS.find(x=>x.name===name);if(!p)return;
+ const modal=$("#fusPackModal");
+ modal.classList.remove("scout-bg","pro-bg","elite-bg");
+ modal.classList.add(name==="SCOUT PACK"?"scout-bg":name==="PRO PACK"?"pro-bg":"elite-bg");
  if((state.coins||0)<p.price){toast("Not enough coins");return}
  state.coins-=p.price;fusData().packsOpened++;save();
  fusCurrentPack=sortFusPackForReveal(Array.from({length:5},()=>fusPickCard(fusPickRarity(p.weights))));
@@ -2398,22 +2423,21 @@ function fusTearPack(){
 function fusShowReveal(){
  const c=fusCurrentPack[fusRevealIndex];if(!c)return;
  const rc=$("#fusRevealCard");
-
  rc.classList.remove("card-enter","card-exit");
  rc.style.setProperty("--fc",FUS_RARITY_COLOR[c.rarity]);
-
+ const img=$("#fusRevealImg");
+ if(img){
+   if(c.image){img.src=c.image;img.style.display="block";img.alt=c.name}
+   else{img.removeAttribute("src");img.style.display="none";img.alt=""}
+ }
  $("#fusRevealOVR").textContent=c.ovr;
  $("#fusRevealPos").textContent=c.pos;
  $("#fusRevealName").textContent=c.name;
  $("#fusRevealClub").textContent=c.club;
  $("#fusRevealRarity").textContent=c.rarity;
- $("#fusRevealHint").textContent=fusRevealIndex===4
-   ?"TAP TO ADD PACK TO COLLECTION"
-   :`CARD ${fusRevealIndex+1} OF 5 · TAP FOR NEXT`;
-
+ $("#fusRevealHint").textContent=fusRevealIndex===4?"TAP TO ADD PACK TO COLLECTION":`CARD ${fusRevealIndex+1} OF 5 · TAP FOR NEXT`;
  void rc.offsetWidth;
  rc.classList.add("card-enter");
-
  const burst=document.createElement("div");
  burst.className="rarity-burst";
  burst.style.setProperty("--burst",FUS_RARITY_COLOR[c.rarity]||"#60a5fa");
@@ -2547,7 +2571,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.29;
+const APP_INTERNAL_VERSION=10.30;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
@@ -3408,5 +3432,5 @@ function bjLeaveGame(){if(BJ.playing){state.coins+=BJ.bet;bjPersist();bjSyncCoin
     <section id="fusPageIndex" class="fusxgp-page"><div id="fusIndexStats" style="margin-bottom:12px;color:#aac9ee;font-weight:900"></div><div id="fusIndexGrid" class="fus-card-grid"></div></section>
   </div>
 </div>
-<div id="fusPackModal"><div class="fus-open-shell"><div id="fusPackBag" onclick="fusTearPack()"><div><img data-fus-logo alt="FUS"><div id="fusPackBagName" class="fus-pack-bag-title">FUS PACK</div><div class="fus-pack-bag-hint">TAP TO OPEN</div></div></div><div id="fusReveal"><div id="fusRevealCard" class="fus-reveal-card" onclick="fusNextCard()"><div id="fusRevealOVR" class="big-ovr"></div><div id="fusRevealPos"></div><h2 id="fusRevealName"></h2><p id="fusRevealClub"></p><p id="fusRevealRarity"></p></div><div id="fusRevealHint" class="fus-reveal-next">TAP FOR NEXT</div></div></div></div>
+<div id="fusPackModal"><div class="fus-open-shell"><div id="fusPackBag" onclick="fusTearPack()"><div><img data-fus-logo alt="FUS"><div id="fusPackBagName" class="fus-pack-bag-title">FUS PACK</div><div class="fus-pack-bag-hint">TAP TO OPEN</div></div></div><div id="fusReveal"><div id="fusRevealCard" class="fus-reveal-card" onclick="fusNextCard()"><img id="fusRevealImg" class="fus-reveal-player-photo" alt=""><div id="fusRevealOVR" class="big-ovr"></div><div id="fusRevealPos"></div><h2 id="fusRevealName"></h2><p id="fusRevealClub"></p><p id="fusRevealRarity"></p></div><div id="fusRevealHint" class="fus-reveal-next">TAP FOR NEXT</div></div></div></div>
 </body></html>
