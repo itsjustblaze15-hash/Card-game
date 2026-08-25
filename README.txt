@@ -736,3 +736,9 @@ V11.03 FUS MODE LEGACY SAVE FIX
 - FUS panel opens before rendering, preventing a render error from making the mode button appear dead.
 - FUS mode button is explicitly touch/pointer enabled.
 - No collection, economy, pack, card, photo, gameplay, or other mode changes.
+
+V11.04 FUS ACCOUNT STYLE + EXPANDED CARD SET
+- FUS account value box now uses dark navy/blue FUS styling instead of GP gold.
+- FUS card set expanded from 27 to 40 players.
+- New cards use existing BLUE / PURPLE / GOLD rarity system and automatically appear in packs, Collection, and Index.
+- Existing saves remain compatible because new cards use new IDs 28-40.
