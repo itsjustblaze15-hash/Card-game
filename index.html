@@ -484,6 +484,58 @@ button{font:inherit;cursor:pointer}
 .fus-mode-choice small,.fus-mode-choice span{color:#8fc1ff!important}
 .bj-custom-bet{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}.bj-custom-bet input{min-width:0;border:2px solid #f0d36b;border-radius:10px;padding:10px;background:#07180f;color:#fff;font-weight:900}.bj-custom-bet button{border:0;border-radius:10px;background:#f0d36b;color:#171100;font-weight:1000;padding:0 14px}
 @media(max-width:560px){.fusxgp-head{grid-template-columns:auto 1fr}.fusxgp-wallet{grid-column:1/-1;text-align:center}.fusxgp-brand{font-size:16px}.fusxgp-brand img{width:36px;height:36px}.fus-card-grid{grid-template-columns:1fr 1fr}.fusxgp-body{padding:12px}}
+
+/* V10.23 approved FUS × GP mockup match */
+#fusCollab{
+ background:
+ radial-gradient(circle at 50% -10%,rgba(32,111,230,.25),transparent 32%),
+ linear-gradient(180deg,#020b18 0%,#06172d 45%,#020b18 100%)!important;
+}
+.fusxgp-head{
+ grid-template-columns:auto 1fr auto!important;
+ padding:18px 30px!important;
+ background:linear-gradient(180deg,#061a35,#031126)!important;
+ border-bottom:1px solid #287ee8!important;
+}
+.fusxgp-brand{gap:18px!important;font-size:0!important}
+.fusxgp-brand:after{content:"×";font-size:32px;color:#2787ff;font-weight:1000;position:absolute;left:50%;transform:translateX(-50%)}
+.fusxgp-brand img{width:126px!important;height:70px!important;object-fit:contain!important;border:0!important;border-radius:0!important;background:transparent!important;filter:drop-shadow(0 0 12px #ffffff22)}
+.fusxgp-wallet{border:1px solid #2e78d0;border-radius:12px;padding:12px 16px;background:#071b36;color:#dbeaff!important;font-size:18px}
+.fusxgp-head>button{font-size:17px!important;padding:13px 18px!important;background:#071b36!important;border:1px solid #2e78d0!important}
+.fusxgp-body{max-width:1040px!important;padding:18px 30px 26px!important}
+.fusxgp-hero{
+ min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+ background:
+ radial-gradient(circle at 50% 45%,rgba(22,100,210,.25),transparent 38%),
+ linear-gradient(180deg,rgba(5,28,57,.82),rgba(2,13,28,.92))!important;
+ border:1px solid #287ee8!important;border-radius:22px!important;position:relative;overflow:hidden;
+}
+.fusxgp-hero:before,.fusxgp-hero:after{content:"";position:absolute;top:50%;width:23%;height:1px;background:#2787ff}
+.fusxgp-hero:before{left:7%}.fusxgp-hero:after{right:7%}
+.fus-collab-logos{display:flex;align-items:center;justify-content:center;gap:28px;width:100%;position:relative;z-index:1}
+.fus-collab-logos img{width:min(31vw,290px);height:150px;object-fit:contain;filter:drop-shadow(0 0 18px #fff4)}
+.fus-collab-x{font-size:62px;font-weight:1000;color:#2787ff}
+.fus-collab-word{font-size:22px;letter-spacing:.34em;color:#2787ff;font-weight:1000;margin-top:2px;position:relative;z-index:1}
+.fus-collab-title{font-size:22px;letter-spacing:.25em;color:#fff;font-weight:900;margin:8px 0 20px;position:relative;z-index:1}
+.fusxgp-hero p{font-size:17px!important;max-width:660px!important;line-height:1.45!important;color:#aec7e6!important;position:relative;z-index:1}
+.fusxgp-tabs{padding:0!important;gap:0!important;border:1px solid #287ee8!important;overflow:hidden;background:#06182e!important;border-radius:18px!important}
+.fusxgp-tabs button{min-height:72px;border-right:1px solid #287ee8!important;border-radius:0!important;font-size:17px!important}
+.fusxgp-tabs button:last-child{border-right:0!important}.fusxgp-tabs button.on{background:linear-gradient(180deg,#2f94ff,#0766dc)!important;color:#fff!important}
+.fus-pack-grid{gap:18px!important}
+.fus-pack{display:grid!important;grid-template-columns:170px 1fr auto!important;align-items:center!important;gap:24px!important;padding:14px 26px!important;min-height:215px!important;background:linear-gradient(90deg,#06172d,#092445)!important;border:1px solid #287ee8!important;border-radius:20px!important}
+.fus-pack-art{height:185px;width:125px;margin:auto;position:relative;display:grid;place-items:center;transform:perspective(500px) rotateY(-4deg);clip-path:polygon(8% 0,92% 0,100% 7%,96% 93%,88% 100%,10% 100%,3% 93%,0 7%);background:linear-gradient(150deg,#086ee4,#031a39 48%,#0a54ad);border:1px solid #4ca4ff;box-shadow:0 0 22px #0d7fff66,inset 0 0 25px #38a0ff33}
+.fus-pack-art.pro{background:linear-gradient(150deg,#3d54ff,#071d56 48%,#101d7a);box-shadow:0 0 22px #3b65ff66,inset 0 0 25px #7a8fff33}
+.fus-pack-art.elite{background:linear-gradient(150deg,#783fff,#17104f 48%,#3d157f);box-shadow:0 0 22px #7b42ff77,inset 0 0 25px #a679ff33}
+.fus-pack-art img{width:88px;height:88px;object-fit:contain;filter:drop-shadow(0 0 8px #fff5)}
+.fus-pack-art small{position:absolute;bottom:20px;font-size:8px;letter-spacing:.16em;color:#c9dcf6;font-weight:900}
+.fus-pack-info h3{font-size:24px!important;margin:0 0 8px!important}.fus-pack-info .five{font-size:16px;color:#2e8fff;font-weight:900}.fus-pack-info p{font-size:14px!important;margin:10px 0 0!important}
+.fus-pack-buy{min-width:250px}.fus-pack-price{font-size:21px!important;text-align:center;margin-bottom:18px!important}.fus-pack-buy button{font-size:18px!important;padding:15px 22px!important}
+.fus-collab-note{text-align:center;color:#9fb9d8;font-size:13px;margin-top:18px}
+@media(max-width:700px){
+ .fusxgp-head{padding:12px 14px!important}.fusxgp-brand img{width:82px!important;height:48px!important}.fusxgp-brand:after{font-size:22px}.fusxgp-wallet{grid-column:auto!important;font-size:14px;padding:8px 10px}.fusxgp-body{padding:14px!important}
+ .fusxgp-hero{min-height:300px}.fus-collab-logos{gap:10px}.fus-collab-logos img{width:38vw;height:105px}.fus-collab-x{font-size:36px}.fusxgp-hero:before,.fusxgp-hero:after{display:none}
+ .fus-pack{grid-template-columns:105px 1fr!important;gap:14px!important;padding:14px!important;min-height:190px!important}.fus-pack-art{width:88px;height:145px}.fus-pack-art img{width:62px;height:62px}.fus-pack-buy{grid-column:1/-1;display:grid;grid-template-columns:1fr 1.5fr;align-items:center;gap:10px;min-width:0}.fus-pack-price{margin:0!important;font-size:18px!important}.fus-pack-buy button{padding:13px 10px!important}
+}
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -2104,7 +2156,7 @@ function fusPickCard(rarity){let pool=FUS_CARDS.filter(c=>c.rarity===rarity);if(
 function fusRenderCard(c,locked=false){const col=FUS_RARITY_COLOR[c.rarity]||"#60a5fa";return `<div class="fus-card ${locked?"locked":""}" style="--fc:${col}"><div class="rarity">${c.rarity}</div><div class="ovr">${locked?"??":c.ovr}</div><div class="pos">${locked?"":c.pos}</div><div class="player">${locked?"UNKNOWN PLAYER":c.name}</div><div class="club">${locked?"Unlock from FUS packs":c.club}</div></div>`}
 function fusRender(){
  const d=fusData();$("#fusCoins").textContent=fmt(state.coins||0);
- $("#fusPackShop").innerHTML=FUS_PACKS.map(p=>`<div class="fus-pack"><div class="fus-pack-head"><h3>${p.name}</h3><div class="fus-pack-price">● ${fmt(p.price)}</div></div><p>5 football cards · FUS collab collection only.</p><button onclick="fusBuyPack('${p.name.replaceAll("'","\\'")}')">BUY + OPEN</button></div>`).join("");
+ $("#fusPackShop").innerHTML=FUS_PACKS.map((p,i)=>`<div class="fus-pack"><div class="fus-pack-art ${i===1?"pro":i===2?"elite":""}"><img src="assets/fus_logo.png" alt=""><small>FOOTBALL CARDS</small></div><div class="fus-pack-info"><h3>${p.name}</h3><div class="five">5 football cards</div><p>FUS collab collection only.</p></div><div class="fus-pack-buy"><div class="fus-pack-price">● ${fmt(p.price)}</div><button onclick="fusBuyPack('${p.name.replaceAll("'","\\'")}')">BUY + OPEN</button></div></div>`).join("");
  const ownedIds=new Set(Object.keys(d.owned).filter(id=>d.owned[id]>0).map(Number));
  const owned=FUS_CARDS.filter(c=>ownedIds.has(c.id)).sort((a,b)=>b.ovr-a.ovr);
  $("#fusCollectionStats").textContent=`${owned.length} / ${FUS_CARDS.length} football cards collected`;
@@ -2214,7 +2266,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.22;
+const APP_INTERNAL_VERSION=10.23;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
@@ -3059,12 +3111,17 @@ function bjLeaveGame(){if(BJ.playing){state.coins+=BJ.bet;bjPersist();bjSyncCoin
 <div id="fusCollab">
   <div class="fusxgp-head">
     <button type="button" onclick="fusClose()">BACK</button>
-    <div class="fusxgp-brand"><img src="assets/fus_logo.png" alt="FUS"><span>FUS × GP</span><img src="assets/golden_pulls_logo.png" alt="Golden Pulls"></div>
+    <div class="fusxgp-brand"><img src="assets/fus_logo.png" alt="FUS"><img src="assets/golden_pulls_logo.png" alt="Golden Pulls"></div>
     <div class="fusxgp-wallet">● <span id="fusCoins">0</span></div>
   </div>
   <div class="fusxgp-body">
-    <div class="fusxgp-hero"><div style="font-size:11px;font-weight:1000;color:#65a9ff;letter-spacing:.12em">FOOTBALL UNIVERSE SIMULATOR × GOLDEN PULLS</div><h1>FUS × GP</h1><p>Open football-only packs, build your collab collection, and complete the full FUS card index.</p></div>
-    <div class="fusxgp-tabs"><button id="fusTabPacks" class="on" onclick="fusTab('packs')">PACKS</button><button id="fusTabCollection" onclick="fusTab('collection')">COLLECTION</button><button id="fusTabIndex" onclick="fusTab('index')">INDEX</button></div>
+    <div class="fusxgp-hero">
+ <div class="fus-collab-logos"><img src="assets/fus_logo.png" alt="FUS"><span class="fus-collab-x">×</span><img src="assets/golden_pulls_logo.png" alt="Golden Pulls"></div>
+ <div class="fus-collab-word">COLLAB</div>
+ <div class="fus-collab-title">FOOTBALL CARDS</div>
+ <p>Open football-only packs, build your collab collection, and complete the full FUS card index.</p>
+</div>
+<div class="fusxgp-tabs"><button id="fusTabPacks" class="on" onclick="fusTab('packs')">PACKS</button><button id="fusTabCollection" onclick="fusTab('collection')">COLLECTION</button><button id="fusTabIndex" onclick="fusTab('index')">INDEX</button></div>
     <section id="fusPagePacks" class="fusxgp-page active"><div id="fusPackShop" class="fus-pack-grid"></div></section>
     <section id="fusPageCollection" class="fusxgp-page"><div id="fusCollectionStats" style="margin-bottom:12px;color:#aac9ee;font-weight:900"></div><div id="fusCollectionGrid" class="fus-card-grid"></div></section>
     <section id="fusPageIndex" class="fusxgp-page"><div id="fusIndexStats" style="margin-bottom:12px;color:#aac9ee;font-weight:900"></div><div id="fusIndexGrid" class="fus-card-grid"></div></section>

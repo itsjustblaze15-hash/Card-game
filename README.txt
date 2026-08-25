@@ -619,3 +619,11 @@ V10.22 FUS × GP COLLAB
 - FUS packs use the same shared Golden Pulls coin balance.
 - Added arbitrary custom wager input to the existing Blackjack wagering screen.
 NOTE: the supplied Golden Pulls build contains Blackjack but no Poker implementation, so no separate Poker code could be modified in this build.
+
+V10.23 FUS × GP APPROVED BLUE UI
+- Rebuilt the FUS × GP mode to closely match the approved blue mockup.
+- Removed the yellow top treatment from the collab mode; the collab interface is blue/navy throughout.
+- Uses the exact FUS and GP PNG logos supplied by the user.
+- Large hero now uses FUS × GP logos, COLLAB, FOOTBALL CARDS, and the short description.
+- Pack shop now uses visual Scout/Pro/Elite pack bags and horizontal pack rows like the approved mockup.
+- Kept Pack / Collection / Index, prices, five-card packs, shared coin balance, and separate collab collection.
