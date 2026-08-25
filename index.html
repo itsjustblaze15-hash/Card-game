@@ -660,6 +660,18 @@ html,body{background-color:#061a35}
 .fus-card .fus-card-qty{margin-top:8px;font-size:11px;font-weight:900;color:#9fc6f4}
 .fus-card .fus-sell-btn{width:100%;margin-top:10px;border:1px solid #4f9cff66;border-radius:10px;padding:9px;background:#0b315e;color:#dcebff;font-weight:1000}
 .fus-card .fus-sell-btn:active{transform:scale(.98)}
+
+/* V10.29 FUS packs use the same animation language as regular GP packs */
+#fusPackBag.opening-pop{animation:packEnter .55s cubic-bezier(.16,.8,.2,1) both,packPulse 1.25s .55s ease-in-out infinite!important}
+#fusPackBag.tearing{animation:packTear .72s cubic-bezier(.2,.8,.2,1) forwards!important}
+#fusRevealCard.card-enter{animation:cardFlipIn .58s cubic-bezier(.16,.85,.2,1) both!important}
+#fusRevealCard.card-exit{animation:cardFlipOut .22s ease-in both!important}
+#fusRevealCard.card-enter:after{
+ content:"";position:absolute;inset:-30%;pointer-events:none;
+ background:linear-gradient(115deg,transparent 38%,#ffffffb8 50%,transparent 62%);
+ transform:translateX(-80%) rotate(8deg);animation:cardGlint .65s .12s ease-out both
+}
+#fusRevealCard{position:relative;overflow:hidden;transform-style:preserve-3d}
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -2356,11 +2368,94 @@ function fusBuyPack(name){
  state.coins-=p.price;fusData().packsOpened++;save();
  fusCurrentPack=sortFusPackForReveal(Array.from({length:5},()=>fusPickCard(fusPickRarity(p.weights))));
  fusRevealIndex=0;fusOpening=true;
- $("#fusPackBagName").textContent=p.name;$("#fusPackBag").style.display="grid";$("#fusReveal").style.display="none";$("#fusPackModal").classList.add("show");fusFixLogoSources();fusRender();
+
+ const bag=$("#fusPackBag");
+ $("#fusPackBagName").textContent=p.name;
+ bag.style.display="grid";
+ bag.classList.remove("tearing");
+ bag.classList.remove("opening-pop");
+ void bag.offsetWidth;
+ bag.classList.add("opening-pop");
+
+ $("#fusReveal").style.display="none";
+ $("#fusPackModal").classList.add("show");
+ fusFixLogoSources();
+ fusRender();
 }
-function fusTearPack(){if(!fusOpening)return;$("#fusPackBag").style.display="none";$("#fusReveal").style.display="block";fusShowReveal()}
-function fusShowReveal(){const c=fusCurrentPack[fusRevealIndex];if(!c)return;$("#fusRevealCard").style.setProperty("--fc",FUS_RARITY_COLOR[c.rarity]);$("#fusRevealOVR").textContent=c.ovr;$("#fusRevealPos").textContent=c.pos;$("#fusRevealName").textContent=c.name;$("#fusRevealClub").textContent=c.club;$("#fusRevealRarity").textContent=c.rarity;$("#fusRevealHint").textContent=fusRevealIndex===4?"TAP TO ADD PACK TO COLLECTION":`CARD ${fusRevealIndex+1} OF 5 · TAP FOR NEXT`}
-function fusNextCard(){if(!fusOpening)return;if(fusRevealIndex<4){fusRevealIndex++;fusShowReveal();return}const d=fusData();fusCurrentPack.forEach(c=>d.owned[c.id]=(d.owned[c.id]||0)+1);save();fusOpening=false;fusCurrentPack=[];$("#fusPackModal").classList.remove("show");toast("5 FUS cards added");fusRender()}
+
+function fusTearPack(){
+ if(!fusOpening)return;
+ const bag=$("#fusPackBag");
+ bag.classList.remove("opening-pop");
+ bag.classList.add("tearing");
+ setTimeout(()=>{
+   bag.style.display="none";
+   $("#fusReveal").style.display="block";
+   fusShowReveal();
+ },620);
+}
+
+function fusShowReveal(){
+ const c=fusCurrentPack[fusRevealIndex];if(!c)return;
+ const rc=$("#fusRevealCard");
+
+ rc.classList.remove("card-enter","card-exit");
+ rc.style.setProperty("--fc",FUS_RARITY_COLOR[c.rarity]);
+
+ $("#fusRevealOVR").textContent=c.ovr;
+ $("#fusRevealPos").textContent=c.pos;
+ $("#fusRevealName").textContent=c.name;
+ $("#fusRevealClub").textContent=c.club;
+ $("#fusRevealRarity").textContent=c.rarity;
+ $("#fusRevealHint").textContent=fusRevealIndex===4
+   ?"TAP TO ADD PACK TO COLLECTION"
+   :`CARD ${fusRevealIndex+1} OF 5 · TAP FOR NEXT`;
+
+ void rc.offsetWidth;
+ rc.classList.add("card-enter");
+
+ const burst=document.createElement("div");
+ burst.className="rarity-burst";
+ burst.style.setProperty("--burst",FUS_RARITY_COLOR[c.rarity]||"#60a5fa");
+ document.body.appendChild(burst);
+ setTimeout(()=>burst.remove(),720);
+}
+
+function fusNextCard(){
+ if(!fusOpening)return;
+ if(fusRevealIndex<4){
+   const rc=$("#fusRevealCard");
+   rc.classList.remove("card-enter");
+   rc.classList.add("card-exit");
+   setTimeout(()=>{
+     fusRevealIndex++;
+     fusShowReveal();
+   },190);
+   return;
+ }
+
+ const d=fusData();
+ fusCurrentPack.forEach(c=>d.owned[c.id]=(d.owned[c.id]||0)+1);
+ save();
+ fusOpening=false;
+ fusCurrentPack=[];
+ $("#fusPackModal").classList.remove("show");
+ toast("5 FUS cards added");
+ fusRender();
+}
+
+/* Match regular packs: tap OR swipe-left advances the reveal */
+let fusSwipeStartX=0;
+document.addEventListener("touchstart",e=>{
+ const rc=e.target.closest?.("#fusRevealCard");
+ if(rc&&e.touches?.[0])fusSwipeStartX=e.touches[0].clientX;
+},{passive:true});
+document.addEventListener("touchend",e=>{
+ const rc=e.target.closest?.("#fusRevealCard");
+ if(!rc||!e.changedTouches?.[0])return;
+ if(fusSwipeStartX-e.changedTouches[0].clientX>35)fusNextCard();
+},{passive:true});
+
 function bjApplyCustomBet(){const input=$("#bjCustomBet");const n=Math.floor(Number(input?.value));if(!Number.isFinite(n)||n<1){toast("Enter a valid bet");return}if(n>(Number(state.coins)||0)){toast("Bet cannot exceed your coins");return}bjSetBet(n);if(input)input.value=""}
 
 document.addEventListener("DOMContentLoaded",fusFixLogoSources,{once:true});
@@ -2452,7 +2547,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.28;
+const APP_INTERNAL_VERSION=10.29;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 

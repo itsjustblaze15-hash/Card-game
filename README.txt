@@ -658,3 +658,11 @@ V10.28 PACK ORDER + FUS SELLING
 - Mystery Box sub-packs also reveal from lowest rarity to highest rarity.
 - Every FUS pack reveals STAR -> WORLD -> ELITE -> ICON, with higher OVR later within the same rarity.
 - This keeps the best pull at the end whenever a pack contains a higher-rarity card.
+
+V10.29 FUS PACK ANIMATIONS
+- FUS pack appears with the same pop-in + floating pulse animation as regular GP packs.
+- Tapping the FUS pack uses the same tear/shrink/flash animation before revealing cards.
+- FUS cards use the same flip-in animation, shine/glint, rarity burst, and flip-out transition.
+- FUS card reveal timing now matches the regular pack flow.
+- Swipe-left on a FUS revealed card now advances just like the regular pack reveal.
+- Existing worst-to-best reveal order, FUS selling, and pack colors are preserved.
