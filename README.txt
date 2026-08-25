@@ -730,3 +730,9 @@ V11.01 FULL REQUESTED FIXES
 - FUS odds: Scout 70/20/10, Pro 50/30/20, Elite 30/40/30.
 - Removed Golden Arena NEW labels and Blackjack BETA labels.
 - Secret completion card is permanently unsellable and self-heals to one copy after it has ever been earned.
+
+V11.03 FUS MODE LEGACY SAVE FIX
+- Repairs older FUS save data where fusCollab exists but owned/packsOpened is missing or invalid.
+- FUS panel opens before rendering, preventing a render error from making the mode button appear dead.
+- FUS mode button is explicitly touch/pointer enabled.
+- No collection, economy, pack, card, photo, gameplay, or other mode changes.

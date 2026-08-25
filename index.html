@@ -932,6 +932,9 @@ html,body{background-color:#061a35}
 #fusRevealCard[data-rarity="BLUE"] .fus-reveal-bottom #fusRevealRarity{background:#176fc9!important}
 #fusRevealCard[data-rarity="PURPLE"] .fus-reveal-bottom #fusRevealRarity{background:#7432c6!important}
 #fusRevealCard[data-rarity="GOLD"] .fus-reveal-bottom #fusRevealRarity{background:#a87509!important;color:#fff!important}
+
+/* V11.03 FUS mode legacy-save + touch reliability fix */
+#fusModeBtn{pointer-events:auto!important;touch-action:manipulation!important;position:relative!important;z-index:2!important}
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -968,7 +971,7 @@ html,body{background-color:#061a35}
 <div class="mode-chooser">
  <button class="mode-choice" type="button" onclick="openBattleMode()"><small>MAIN MODE</small><b>BATTLE</b><span>3v3 AUTO BATTLE</span></button>
  <button class="mode-choice" type="button" onclick="gaOpenLobby()"><b>GOLDEN ARENA</b><span>8-CARD ARENA</span></button><button class="mode-choice" type="button" onclick="bjOpenHub()"><b>BLACKJACK</b><span>CLASSIC 52-CARD TABLE</span></button>
- <button class="mode-choice fus-mode-choice" type="button" onclick="fusOpen()"><small>COLLAB</small><span class="fus-mode-single-logo"><img data-fus-logo alt="FUS"></span></button>
+ <button id="fusModeBtn" class="mode-choice fus-mode-choice" type="button" onclick="fusOpen()"><small>COLLAB</small><span class="fus-mode-single-logo"><img data-fus-logo alt="FUS"></span></button>
 </div>
 <div id="battleModePanel" style="display:none">
  <div class="battle-mode-head"><h2>3v3 BATTLE</h2><button type="button" onclick="closeBattleMode()">BACK</button></div>
@@ -2637,8 +2640,24 @@ const FUS_PACKS=[
  {name:"ELITE PACK",price:100000,weights:{BLUE:30,PURPLE:40,GOLD:30}}
 ];
 let fusCurrentPack=[],fusRevealIndex=0,fusOpening=false,fusOwnedBeforePack=new Set();
-function fusData(){if(!state.fusCollab)state.fusCollab={owned:{},packsOpened:0};return state.fusCollab}
-function fusOpen(){fusData();fusFixLogoSources();fusRender();$("#fusCollab").classList.add("show");fusTab("packs")}
+function fusData(){
+ // Backward-compatible repair for older/corrupt FUS save shapes.
+ if(!state.fusCollab || typeof state.fusCollab!=="object" || Array.isArray(state.fusCollab)) state.fusCollab={};
+ const d=state.fusCollab;
+ if(!d.owned || typeof d.owned!=="object" || Array.isArray(d.owned)) d.owned={};
+ if(!Number.isFinite(Number(d.packsOpened))) d.packsOpened=0;
+ d.packsOpened=Number(d.packsOpened)||0;
+ return d;
+}
+function fusOpen(){
+ const panel=$("#fusCollab");
+ if(!panel){toast("FUS mode failed to load");return}
+ fusData();
+ // Open first, then render. This prevents a legacy-save render issue from making the button look dead.
+ panel.classList.add("show");
+ fusFixLogoSources();
+ fusTab("packs");
+}
 function fusClose(){$("#fusCollab").classList.remove("show")}
 function fusTab(t){["packs","collection","index"].forEach(x=>{$("#fusPage"+x[0].toUpperCase()+x.slice(1))?.classList.toggle("active",x===t);$("#fusTab"+x[0].toUpperCase()+x.slice(1))?.classList.toggle("on",x===t)});fusRender()}
 function fusPickRarity(w){const total=Object.values(w).reduce((a,b)=>a+b,0);let r=Math.random()*total;for(const [k,v] of Object.entries(w)){r-=v;if(r<=0)return k}return "BLUE"}
@@ -2664,13 +2683,15 @@ function fusThemeForPack(name){
  return name==="ELITE PACK"?"GOLD":name==="PRO PACK"?"PURPLE":"BLUE";
 }
 function fusThemeColor(theme){ return FUS_RARITY_COLOR[theme]||"#248cff"; }
-function fusSellValue(c){ const values={BLUE:2500,PURPLE:8000,GOLD:20000}
+function fusSellValue(c){
+ const values={BLUE:2500,PURPLE:8000,GOLD:20000};
+ return values[c.rarity]||2500;
+}
 function fusAccountValue(){
  const d=fusData();let cards=0;
  FUS_CARDS.forEach(c=>cards+=Number(d.owned[c.id]||0)*fusSellValue(c));
  return Number(state.coins||0)+cards;
 }
-; return values[c.rarity]||2500; }
 function fusSell(id){
  const d=fusData(),q=d.owned[id]||0;if(q<=0)return;
  const c=FUS_CARDS.find(x=>x.id===id);if(!c)return;
@@ -2957,7 +2978,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=11.01;
+const APP_INTERNAL_VERSION=11.03;
 const APP_DISPLAY_VERSION="11";
 let updateReloading=false;
 

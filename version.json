@@ -1,5 +1,5 @@
 {
-  "version": "11.01",
+  "version": "11.03",
   "display_version": "11",
-  "build": "v11-01-full-requested-fixes"
+  "build": "fus-legacy-save-mode-fix"
 }
