@@ -746,3 +746,8 @@ V11.04 FUS ACCOUNT STYLE + EXPANDED CARD SET
 V11.05
 - Added the exact uploaded photos for FUS cards 28-40: Salah, Saka, Palmer, Musiala, Wirtz, Valverde, Raphinha, Lautaro Martinez, Isak, Alisson, Marquinhos, Griezmann, Lewandowski.
 - No player photo was generated or edited.
+
+V11.06 FUS PLAYER EXPANSION
+- Expanded FUS from 40 to 53 cards.
+- Added exact uploaded photos for players 41-53 without editing or generation.
+- Existing saves remain compatible; new card ownership starts at 0 until pulled.

@@ -1,4 +1,4 @@
-const CACHE="golden-pulls-v11-05-fus-40-player-photos";
+const CACHE="golden-pulls-v11-06-fus-53-player-photos";
 self.addEventListener("install",()=>self.skipWaiting());
 self.addEventListener("activate",e=>e.waitUntil((async()=>{for(const k of await caches.keys())if(k!==CACHE)await caches.delete(k);await self.clients.claim()})()));
 self.addEventListener("message",e=>{if(e.data&&e.data.type==="SKIP_WAITING")self.skipWaiting()});
