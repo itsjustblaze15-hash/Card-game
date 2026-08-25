@@ -635,3 +635,10 @@ V10.25 FUS × GP LOGO + BLUE STATUS BAR FIX
 - Browser/PWA theme color changed from Golden Pulls yellow to FUS navy blue (#061a35).
 - iOS standalone status bar style set to black-translucent so the blue app chrome extends behind the status area.
 - No image generation used.
+
+V10.26 UI CLEANUP
+- Battle, Golden Arena, Blackjack, and FUS × GP mode buttons are now identical fixed sizes.
+- FUS mode tile now shows only COLLAB + the exact FUS logo.
+- FUS × GP in-mode header logos were reduced so the wallet stays visible.
+- Global money/value formatting becomes compact at 1,000,000: 1M, 1.25M, etc.
+- FUS pack faces no longer say FOOTBALL CARDS; each pack face is centered around the FUS logo.

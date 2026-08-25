@@ -550,6 +550,73 @@ html,body{background-color:#061a35}
 .fus-mode-logos>span{font-size:20px;color:#2f94ff;font-weight:1000}
 #fusCollab{padding-top:env(safe-area-inset-top,0px)}
 #fusCollab .fusxgp-head{background:linear-gradient(180deg,#061a35,#031126)!important}
+
+/* V10.26 mode chooser sizing + compact FUS header */
+.mode-chooser{grid-auto-rows:84px!important}
+.mode-choice{
+ height:84px!important;
+ min-height:84px!important;
+ max-height:84px!important;
+ padding:10px 8px!important;
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:center!important;
+ overflow:hidden!important;
+}
+.mode-choice small{flex:0 0 auto}
+.mode-choice b{flex:0 0 auto}
+
+/* FUS tile: COLLAB + FUS logo only */
+.fus-mode-choice{gap:5px!important}
+.fus-mode-choice .fus-mode-single-logo{
+ display:flex!important;align-items:center;justify-content:center!important;
+ width:100%;height:42px;margin:0!important
+}
+.fus-mode-choice .fus-mode-single-logo img{
+ width:92px!important;height:38px!important;object-fit:contain!important;
+ border:0!important;background:transparent!important;display:block!important
+}
+
+/* Smaller FUS × GP header so wallet never gets pushed off-screen */
+#fusCollab .fusxgp-head{
+ grid-template-columns:auto minmax(0,1fr) auto!important;
+ gap:7px!important;
+ padding:9px 11px!important;
+}
+#fusCollab .fusxgp-brand{gap:6px!important;min-width:0!important}
+#fusCollab .fusxgp-brand img{
+ width:64px!important;height:38px!important;max-width:64px!important;
+ object-fit:contain!important
+}
+#fusCollab .fusxgp-brand:after{font-size:18px!important}
+#fusCollab .fusxgp-wallet{
+ padding:8px 10px!important;
+ font-size:14px!important;
+ min-width:0!important;
+}
+#fusCollab .fusxgp-head>button{
+ padding:8px 10px!important;
+ font-size:14px!important;
+}
+
+/* Pack art is logo-only: remove FOOTBALL CARDS text and let FUS logo own the pack face */
+.fus-pack-art small{display:none!important}
+.fus-pack-logo{width:100px!important;height:100px!important;margin:0!important}
+.fus-pack-logo img{width:100px!important;height:100px!important;object-fit:contain!important}
+
+@media(max-width:560px){
+ .mode-chooser{grid-auto-rows:80px!important}
+ .mode-choice{height:80px!important;min-height:80px!important;max-height:80px!important}
+ .fus-mode-choice .fus-mode-single-logo{height:38px}
+ .fus-mode-choice .fus-mode-single-logo img{width:86px!important;height:34px!important}
+ #fusCollab .fusxgp-head{padding:8px 9px!important;gap:5px!important}
+ #fusCollab .fusxgp-brand img{width:52px!important;height:31px!important;max-width:52px!important}
+ #fusCollab .fusxgp-brand:after{font-size:15px!important}
+ #fusCollab .fusxgp-wallet{padding:7px 8px!important;font-size:13px!important}
+ #fusCollab .fusxgp-head>button{padding:7px 9px!important;font-size:13px!important}
+ .fus-pack-logo,.fus-pack-logo img{width:74px!important;height:74px!important}
+}
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -586,7 +653,7 @@ html,body{background-color:#061a35}
 <div class="mode-chooser">
  <button class="mode-choice" type="button" onclick="openBattleMode()"><small>MAIN MODE</small><b>BATTLE</b><span>3v3 AUTO BATTLE</span></button>
  <button class="mode-choice" type="button" onclick="gaOpenLobby()"><small>NEW</small><b>GOLDEN ARENA</b><span>8-CARD ARENA</span></button><button class="mode-choice" type="button" onclick="bjOpenHub()"><small>BETA</small><b>BLACKJACK</b><span>CLASSIC 52-CARD TABLE</span></button>
- <button class="mode-choice fus-mode-choice" type="button" onclick="fusOpen()"><small>COLLAB</small><span class="fus-mode-logos"><img data-fus-logo alt="FUS"><span>×</span><img data-gp-logo alt="GP"></span><b>FOOTBALL CARDS</b></button>
+ <button class="mode-choice fus-mode-choice" type="button" onclick="fusOpen()"><small>COLLAB</small><span class="fus-mode-single-logo"><img data-fus-logo alt="FUS"></span></button>
 </div>
 <div id="battleModePanel" style="display:none">
  <div class="battle-mode-head"><h2>3v3 BATTLE</h2><button type="button" onclick="closeBattleMode()">BACK</button></div>
@@ -871,7 +938,15 @@ function closeResult(){
  render();
 }
 
-function fmt(n){return Math.round(n).toLocaleString()}
+function fmt(n){
+ n=Math.round(Number(n)||0);
+ const a=Math.abs(n);
+ if(a>=1000000){
+   const m=n/1000000;
+   return (Math.round(m*100)/100).toFixed(2).replace(/\.00$/,"").replace(/(\.\d)0$/,"$1")+"M";
+ }
+ return n.toLocaleString();
+}
 function wait(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
 function pickRarity(odds){let x=Math.random()*100,a=0;for(const k of Object.keys(odds)){a+=odds[k];if(x<a)return k}return "Common"}
 function pickCard(r){let pool=CARDS.filter(c=>c.rarity===r&&!c.bossExclusive&&!c.secretExclusive);if(!pool.length)pool=CARDS.filter(c=>!c.bossExclusive&&!c.secretExclusive);return pool[Math.floor(Math.random()*pool.length)]}
@@ -2182,7 +2257,7 @@ function fusRenderCard(c,locked=false){const col=FUS_RARITY_COLOR[c.rarity]||"#6
 function fusRender(){
  fusFixLogoSources();
  const d=fusData();$("#fusCoins").textContent=fmt(state.coins||0);
- $("#fusPackShop").innerHTML=FUS_PACKS.map((p,i)=>`<div class="fus-pack"><div class="fus-pack-art ${i===1?"pro":i===2?"elite":""}"><div class="fus-pack-logo"><img data-fus-logo alt="FUS"></div><small>FOOTBALL CARDS</small></div><div class="fus-pack-info"><h3>${p.name}</h3><div class="five">5 football cards</div><p>FUS collab collection only.</p></div><div class="fus-pack-buy"><div class="fus-pack-price">● ${fmt(p.price)}</div><button onclick="fusBuyPack('${p.name.replaceAll("'","\\'")}')">BUY + OPEN</button></div></div>`).join("");
+ $("#fusPackShop").innerHTML=FUS_PACKS.map((p,i)=>`<div class="fus-pack"><div class="fus-pack-art ${i===1?"pro":i===2?"elite":""}"><div class="fus-pack-logo"><img data-fus-logo alt="FUS"></div></div><div class="fus-pack-info"><h3>${p.name}</h3><div class="five">5 football cards</div><p>FUS collab collection only.</p></div><div class="fus-pack-buy"><div class="fus-pack-price">● ${fmt(p.price)}</div><button onclick="fusBuyPack('${p.name.replaceAll("'","\\'")}')">BUY + OPEN</button></div></div>`).join("");
  const ownedIds=new Set(Object.keys(d.owned).filter(id=>d.owned[id]>0).map(Number));
  const owned=FUS_CARDS.filter(c=>ownedIds.has(c.id)).sort((a,b)=>b.ovr-a.ovr);
  $("#fusCollectionStats").textContent=`${owned.length} / ${FUS_CARDS.length} football cards collected`;
