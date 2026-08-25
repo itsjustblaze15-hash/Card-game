@@ -916,8 +916,22 @@ html,body{background-color:#061a35}
 #fusSellAllYes:before{content:"";position:absolute;inset:0 auto 0 0;width:0;background:#df3d4e;z-index:-1}
 #fusSellAllYes.holding:before{animation:fusSellAllHold 3s linear forwards}
 @keyframes fusSellAllHold{from{width:0}to{width:100%}}
-.fus-account-value{margin-bottom:14px;background:linear-gradient(145deg,#07182d,#0c2b52)!important;color:#fff!important;border-color:#287ee8!important}.fus-account-value .sub{color:#aac9ee!important}.fus-new-card-badge{top:18px!important;right:18px!important;background:#19c85a!important;color:#fff!important;z-index:8!important}
 
+
+/* V11.01 requested gameplay fixes */
+.fus-account-value{margin:0 0 14px!important;background:#201700!important;color:#fff7d6!important;border:2px solid #ffe57a!important}
+.fus-account-value .big{color:#ffd84d!important}.fus-account-value .sub{color:#fff7d6!important;opacity:.82}
+.fus-new-card-badge{
+ display:none;position:absolute;right:16px;top:16px;z-index:20;
+ background:#19c85a;color:#fff;border:3px solid #eaffef;border-radius:999px;
+ padding:7px 11px;font-size:12px;font-weight:1000;box-shadow:0 5px 18px #0007
+}
+#fusRevealCard[data-rarity="BLUE"]{background:linear-gradient(155deg,#157eea,#071b3d)!important;border-color:#248cff!important;box-shadow:0 0 0 3px #248cff,0 20px 55px #248cff66!important}
+#fusRevealCard[data-rarity="PURPLE"]{background:linear-gradient(155deg,#8a3df0,#25104d)!important;border-color:#9b4dff!important;box-shadow:0 0 0 3px #9b4dff,0 20px 55px #9b4dff66!important}
+#fusRevealCard[data-rarity="GOLD"]{background:linear-gradient(155deg,#d99b13,#4b3100)!important;border-color:#f6c453!important;box-shadow:0 0 0 3px #f6c453,0 20px 55px #f6c45366!important}
+#fusRevealCard[data-rarity="BLUE"] .fus-reveal-bottom #fusRevealRarity{background:#176fc9!important}
+#fusRevealCard[data-rarity="PURPLE"] .fus-reveal-bottom #fusRevealRarity{background:#7432c6!important}
+#fusRevealCard[data-rarity="GOLD"] .fus-reveal-bottom #fusRevealRarity{background:#a87509!important;color:#fff!important}
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -953,7 +967,7 @@ html,body{background-color:#061a35}
 
 <div class="mode-chooser">
  <button class="mode-choice" type="button" onclick="openBattleMode()"><small>MAIN MODE</small><b>BATTLE</b><span>3v3 AUTO BATTLE</span></button>
- <button class="mode-choice" type="button" onclick="gaOpenLobby()"><small>NEW</small><b>GOLDEN ARENA</b><span>8-CARD ARENA</span></button><button class="mode-choice" type="button" onclick="bjOpenHub()"><small>BETA</small><b>BLACKJACK</b><span>CLASSIC 52-CARD TABLE</span></button>
+ <button class="mode-choice" type="button" onclick="gaOpenLobby()"><b>GOLDEN ARENA</b><span>8-CARD ARENA</span></button><button class="mode-choice" type="button" onclick="bjOpenHub()"><b>BLACKJACK</b><span>CLASSIC 52-CARD TABLE</span></button>
  <button class="mode-choice fus-mode-choice" type="button" onclick="fusOpen()"><small>COLLAB</small><span class="fus-mode-single-logo"><img data-fus-logo alt="FUS"></span></button>
 </div>
 <div id="battleModePanel" style="display:none">
@@ -1095,15 +1109,6 @@ const MORE_BULLETS_ID=89;
 const ARTLANDER_ID=119;
 const ROMANIA_ID=152;
 const RANDOM_SECRET_ID=149;
-// Index NEW badges are version-scoped. Future cards can set introducedVersion directly.
-const MAIN_CARD_INTRO_VERSION={150:10,151:10,152:10};
-function cardIntroducedVersion(c){
- if(Number.isFinite(Number(c.introducedVersion)))return Number(c.introducedVersion);
- if(MAIN_CARD_INTRO_VERSION[c.id])return MAIN_CARD_INTRO_VERSION[c.id];
- if(c.id>=120&&c.id<=149)return 9;
- return 8;
-}
-function isCurrentVersionCard(c){return cardIntroducedVersion(c)===APP_INTERNAL_VERSION}
 const PACKS=[
 {name:"Common",price:3000,odds:{Common:82,Uncommon:14,Rare:3,Epic:.8,Legendary:.2}},
 {name:"Uncommon",price:9000,odds:{Common:64,Uncommon:27,Rare:7,Epic:1.7,Legendary:.3}},
@@ -1150,6 +1155,7 @@ if(state.moreBulletsBossWins===undefined) state.moreBulletsBossWins=0;
 if(state.moreBulletsProgress===undefined) state.moreBulletsProgress=0;
 if(state.bossLosses===undefined)state.bossLosses=0;
 if(state.randomSecretAwardShown===undefined)state.randomSecretAwardShown=false;
+if(state.secretCompletionUnlocked===undefined)state.secretCompletionUnlocked=(state.owned[RANDOM_SECRET_ID]||0)>0;
 if(state.artlanderProgress===undefined) state.artlanderProgress=0;
 if(state.artlanderBossUnlocked===undefined) state.artlanderBossUnlocked=false;
 if(state.artlanderUnlocked===undefined) state.artlanderUnlocked=false;
@@ -1214,6 +1220,44 @@ if(!state.progressionMigrationV2Done){
 let current=[],idx=0,packSource="paid",packOwnedBefore=new Set(),ownedFilter="ALL",indexFilter="ALL",spinning=false,pendingWheelPrize=null,mysteryQueue=[],mysteryPackNo=0,mysteryBundleActive=false;
 let collectionSearch="",indexSearch="",dangerAction=null,holdTimer=null,holdStart=0;
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+
+
+/* Version-scoped main-card NEW badge registry.
+   Existing cards are seeded to their historical major release. Any future card
+   not yet known to this install is automatically stamped with the major version
+   in which it is first seen, so its NEW badge naturally expires next major. */
+const CARD_INTRO_REGISTRY_KEY="goldenPullsCardIntroMajor_v1";
+let cardIntroRegistry=(()=>{try{return JSON.parse(localStorage.getItem(CARD_INTRO_REGISTRY_KEY)||"{}")||{}}catch(e){return {}}})();
+function currentMajorVersion(){
+ const n=parseInt(String(APP_DISPLAY_VERSION||APP_INTERNAL_VERSION),10);
+ return Number.isFinite(n)?n:0;
+}
+function legacyIntroMajorForCard(c){
+ const id=Number(c&&c.id||0);
+ if(id>=1&&id<=119)return 8;
+ if(id>=120&&id<=149)return 9;
+ if(id>=150&&id<=152)return 10;
+ return null;
+}
+function ensureCardIntroRegistry(){
+ const major=currentMajorVersion();let dirty=false;
+ for(const c of CARDS){
+   const key=String(c.id);
+   const declared=Number(c.introducedVersion);
+   if(Number.isFinite(declared)&&declared>0){
+     if(Number(cardIntroRegistry[key])!==declared){cardIntroRegistry[key]=declared;dirty=true}
+   }else if(cardIntroRegistry[key]===undefined){
+     const legacy=legacyIntroMajorForCard(c);
+     cardIntroRegistry[key]=legacy===null?major:legacy;
+     dirty=true;
+   }
+ }
+ if(dirty){try{localStorage.setItem(CARD_INTRO_REGISTRY_KEY,JSON.stringify(cardIntroRegistry))}catch(e){}}
+}
+function isCurrentVersionCard(c){
+ ensureCardIntroRegistry();
+ return Number(cardIntroRegistry[String(c.id)])===currentMajorVersion();
+}
 
 function save(){
  const payload=JSON.stringify(state);
@@ -1358,6 +1402,10 @@ function cardSellValue(c,q=1){
  const tier=tierFor(c);
  return Math.round(R[tier].value*(1+Math.max(0,q-1)*.15));
 }
+function isMainCardUnsellable(c){
+ return !!c && (c.bossExclusive || c.id===RANDOM_SECRET_ID || c.secretExclusive);
+}
+
 
 function renderRecords(){
  const wins=Number(state.battleWins||0);
@@ -1377,23 +1425,40 @@ function renderRecords(){
 }
 
 
+function persistStateNoRender(){
+ const payload=JSON.stringify(state);
+ localStorage.setItem(SAVE_KEY,payload);
+ localStorage.setItem("goldenPullsV2",payload);
+ localStorage.setItem("goldenPullsV1",payload);
+}
 function checkSecretCollectionReward(){
- const allOthers=CARDS.filter(c=>c.id!==RANDOM_SECRET_ID).every(c=>(state.owned[c.id]||0)>0);
- if(allOthers && (state.owned[RANDOM_SECRET_ID]||0)<=0){
-   state.owned[RANDOM_SECRET_ID]=1;
+ let changed=false,showReward=false;
+ if((state.owned[RANDOM_SECRET_ID]||0)>0 && !state.secretCompletionUnlocked){
+   state.secretCompletionUnlocked=true;changed=true;
+ }
+ // FUS cards are intentionally not part of CARDS, so they never count here.
+ const allMainCards=CARDS.filter(c=>c.id!==RANDOM_SECRET_ID).every(c=>(state.owned[c.id]||0)>0);
+ if(!state.secretCompletionUnlocked && allMainCards){
+   state.secretCompletionUnlocked=true;
+   state.owned[RANDOM_SECRET_ID]=Math.max(1,Number(state.owned[RANDOM_SECRET_ID]||0));
    state.randomSecretAwardShown=false;
-   save();
+   changed=true;
  }
- if((state.owned[RANDOM_SECRET_ID]||0)>0 && !state.randomSecretAwardShown){
-   state.randomSecretAwardShown=true;
-   save();
-   setTimeout(showSecretReward,180);
+ // Once earned, the completion reward can never disappear from the account.
+ if(state.secretCompletionUnlocked && (state.owned[RANDOM_SECRET_ID]||0)<1){
+   state.owned[RANDOM_SECRET_ID]=1;changed=true;
  }
+ if(state.secretCompletionUnlocked && !state.randomSecretAwardShown){
+   state.randomSecretAwardShown=true;changed=true;showReward=true;
+ }
+ if(changed)persistStateNoRender();
+ if(showReward)setTimeout(showSecretReward,180);
 }
 function showSecretReward(){const o=$("#secretRewardOverlay");if(o)o.classList.add("show")}
 function closeSecretReward(){const o=$("#secretRewardOverlay");if(o)o.classList.remove("show")}
 
 function render(){
+ ensureCardIntroRegistry();
  $("#coins").textContent=fmt(state.coins);
  $("#gift").innerHTML=state.welcome>0?`<div class="gift"><b>WELCOME GIFT</b><div style="font-size:24px;font-weight:1000;margin:5px 0">3 FREE RARE PACKS</div><div style="margin-bottom:12px">${state.welcome} remaining</div><button onclick="openPack('Rare','welcome')">OPEN FREE RARE PACK</button></div>`:"";
  $("#packs").innerHTML=`<div class="pack mystery-bundle"><div class="pack-head"><div class="pack-name">MYSTERY BOX</div><div class="pack-price">● 100,000</div></div><div class="bundle-copy">Get 5 mysterious packs. Tear them open one by one and reveal 25 cards.</div><div class="guarantee"><small>GUARANTEED CONTENT ACROSS ALL 5 PACKS</small><br>2 LEGENDARIES + 3 EPICS MINIMUM</div><button onclick="buyMysteryBundle()">BUY 5 MYSTERY PACKS</button></div><div class="pack-sale-banner"><b>25% OFF ALL PACKS</b>COMMON → LEGENDARY SALE</div>`+PACKS.map(p=>`<div class="pack"><div class="pack-head"><div class="pack-name" style="color:${R[p.name].color}">${p.name.toUpperCase()} PACK <span class="sale-tag">25% OFF</span></div><div class="pack-price"><span class="old-pack-price">● ${fmt(Math.round(p.price/0.75))}</span>● ${fmt(p.price)}</div></div><div class="odds">${Object.entries(p.odds).map(([r,o])=>`<div class="odd" style="background:${R[r].color}">${r[0]}<br>${o}%</div>`).join("")}</div><button onclick="openPack('${p.name}','paid')">BUY + OPEN</button></div>`).join("");
@@ -1432,8 +1497,8 @@ function render(){
  });
  $("#ownedCards").innerHTML=ownList.length?ownList.map(c=>{
  let q=state.owned[c.id]||0,t=tierFor(c),val=cardSellValue(c,q);
- const action=(c.bossExclusive||c.id===RANDOM_SECRET_ID||c.secretExclusive)
-   ? `<button class="sell boss-unsellable" disabled>${c.id===RANDOM_SECRET_ID?"SECRET CARD":"BOSS CARD"} · UNSELLABLE</button>`
+ const action=isMainCardUnsellable(c)
+   ? `<button class="sell boss-unsellable" disabled>${c.id===RANDOM_SECRET_ID||c.secretExclusive?"SECRET CARD":"BOSS CARD"} · UNSELLABLE</button>`
    : `<button class="sell" onclick="sell(${c.id})">SELL 1 · ● ${fmt(val)}</button>`;
  return `<div class="card" style="--rarity:${R[t].color}">${isCurrentVersionCard(c)?`<span class="card-new-v10">NEW</span>`:""}<img src="${c.image}"><div class="nm">${c.name} · OVR ${overall(c)}</div><div class="meta"><span style="color:${R[t].color}">${t}</span><span>x${q}</span></div><div class="ability">${abilityFor(c).name}</div>${action}</div>`;
 }).join(""):`<div style="grid-column:1/-1;text-align:center;padding:28px 12px;font-weight:900">No cards owned in this category yet.</div>`;
@@ -1469,7 +1534,7 @@ function setOwnedFilter(x){ownedFilter=x;render()} function setIndexFilter(x){in
 function sell(id){
  let q=state.owned[id]||0;if(!q)return;
  let c=CARDS.find(x=>x.id===id);
- if(c&&(c.bossExclusive||c.id===RANDOM_SECRET_ID||c.secretExclusive)){toast(c.id===RANDOM_SECRET_ID?"The secret completion card cannot be sold":"Boss cards cannot be sold");return}
+ if(isMainCardUnsellable(c)){toast(c&&c.id===RANDOM_SECRET_ID?"The secret completion card cannot be sold":"This card cannot be sold");return}
  let t=tierFor(c),val=cardSellValue(c,q);
  state.owned[id]=q-1;
  if(state.owned[id]<=0){
@@ -2599,12 +2664,13 @@ function fusThemeForPack(name){
  return name==="ELITE PACK"?"GOLD":name==="PRO PACK"?"PURPLE":"BLUE";
 }
 function fusThemeColor(theme){ return FUS_RARITY_COLOR[theme]||"#248cff"; }
-function fusSellValue(c){ const values={BLUE:2500,PURPLE:8000,GOLD:20000}; return values[c.rarity]||2500; }
+function fusSellValue(c){ const values={BLUE:2500,PURPLE:8000,GOLD:20000}
 function fusAccountValue(){
- const d=fusData();let cardValue=0;
- FUS_CARDS.forEach(c=>cardValue+=Number(d.owned[c.id]||0)*fusSellValue(c));
- return Number(state.coins||0)+cardValue;
+ const d=fusData();let cards=0;
+ FUS_CARDS.forEach(c=>cards+=Number(d.owned[c.id]||0)*fusSellValue(c));
+ return Number(state.coins||0)+cards;
 }
+; return values[c.rarity]||2500; }
 function fusSell(id){
  const d=fusData(),q=d.owned[id]||0;if(q<=0)return;
  const c=FUS_CARDS.find(x=>x.id===id);if(!c)return;
@@ -2686,7 +2752,7 @@ function fusRenderCard(c,locked=false){
 function fusRender(){
  fusFixLogoSources();
  const d=fusData();$("#fusCoins").textContent=fmt(state.coins||0);if($("#fusAccountValue"))$("#fusAccountValue").textContent=fmt(fusAccountValue());
- $("#fusPackShop").innerHTML=FUS_PACKS.map((p,i)=>`<div class="fus-pack"><div class="fus-pack-art ${i===1?"pro":i===2?"elite":""}"><div class="fus-pack-logo"><img src="${FUS_LOGO_INLINE}" alt="FUS"></div></div><div class="fus-pack-info"><h3>${p.name}</h3><div class="five">5 football cards</div><p>Blue ${p.weights.BLUE}% · Purple ${p.weights.PURPLE}% · Gold ${p.weights.GOLD}%</p></div><div class="fus-pack-buy"><div class="fus-pack-price">● ${fmt(p.price)}</div><button onclick="fusBuyPack('${p.name.replaceAll("'","\\'")}')">BUY + OPEN</button></div></div>`).join("");
+ $("#fusPackShop").innerHTML=FUS_PACKS.map((p,i)=>`<div class="fus-pack"><div class="fus-pack-art ${i===1?"pro":i===2?"elite":""}"><div class="fus-pack-logo"><img src="${FUS_LOGO_INLINE}" alt="FUS"></div></div><div class="fus-pack-info"><h3>${p.name}</h3><div class="five">5 football cards</div><p>FUS collab collection only.</p></div><div class="fus-pack-buy"><div class="fus-pack-price">● ${fmt(p.price)}</div><button onclick="fusBuyPack('${p.name.replaceAll("'","\\'")}')">BUY + OPEN</button></div></div>`).join("");
  const ownedIds=new Set(Object.keys(d.owned).filter(id=>d.owned[id]>0).map(Number));
  const owned=FUS_CARDS.filter(c=>ownedIds.has(c.id)).sort((a,b)=>b.ovr-a.ovr);
  $("#fusCollectionStats").textContent=`${owned.length} / ${FUS_CARDS.length} football cards collected`;
@@ -2701,9 +2767,9 @@ function fusBuyPack(name){
  modal.classList.remove("scout-bg","pro-bg","elite-bg");
  modal.classList.add(name==="SCOUT PACK"?"scout-bg":name==="PRO PACK"?"pro-bg":"elite-bg");
  if((state.coins||0)<p.price){toast("Not enough coins");return}
+ fusOwnedBeforePack=new Set(Object.keys(fusData().owned).filter(id=>Number(fusData().owned[id]||0)>0).map(Number));
  state.coins-=p.price;fusData().packsOpened++;save();
  fusCurrentPackName=p.name;
- fusOwnedBeforePack=new Set(Object.keys(fusData().owned).filter(id=>Number(fusData().owned[id]||0)>0).map(Number));
  fusCurrentPackTheme=fusThemeForPack(p.name);
  fusCurrentPack=sortFusPackForReveal(buildUniqueFusPack(p));
  fusRevealIndex=0;fusOpening=true;
@@ -2732,10 +2798,10 @@ function fusTearPack(){
 function fusShowReveal(){
  const c=fusCurrentPack[fusRevealIndex];if(!c)return;
  const rc=$("#fusRevealCard");
- rc.classList.remove("card-enter","card-exit");
- rc.style.setProperty("--fc",fusThemeColor(c.rarity));
- rc.dataset.rarity=c.rarity;
  const newBadge=$("#fusNewCardBadge");if(newBadge)newBadge.style.display=fusOwnedBeforePack.has(c.id)?"none":"block";
+ rc.classList.remove("card-enter","card-exit");
+ rc.style.setProperty("--fc",FUS_RARITY_COLOR[c.rarity]||"#248cff");
+ rc.dataset.rarity=c.rarity;
 
  const img=$("#fusRevealImg");
  if(img){
@@ -2760,7 +2826,7 @@ function fusShowReveal(){
  rc.classList.add("card-enter");
  const burst=document.createElement("div");
  burst.className="rarity-burst";
- burst.style.setProperty("--burst",fusThemeColor(c.rarity));
+ burst.style.setProperty("--burst",FUS_RARITY_COLOR[c.rarity]||"#248cff");
  document.body.appendChild(burst);
  setTimeout(()=>burst.remove(),720);
 }
@@ -2854,14 +2920,14 @@ function executeDanger(action){
  if(action==="sell"){
    let total=0;
    for(const c of CARDS){
-     if(c.bossExclusive||c.id===RANDOM_SECRET_ID||c.secretExclusive)continue;
+     if(isMainCardUnsellable(c))continue;
      const q=Number(state.owned[c.id]||0);
      for(let copy=1;copy<=q;copy++)total+=cardSellValue(c,copy);
      state.owned[c.id]=0;
    }
    state.team=[];state.coins=(state.coins||0)+total;save();closeDanger();toast(`All cards sold for ${fmt(total)} coins`);
  }else if(action==="reset"){
-   const fresh={coins:0,owned:{},welcome:3,freeUncommonAt:0,wheelSpins:0,wheelRotation:0,cardXP:{},cardTier:{},cardCooldown:{},battleWins:0,battleLosses:0,team:[],winStreak:0,bestWinStreak:0,bossWins:0,normalWinsSinceBoss:0,bossUnlocked:false,goldenKingUnlocked:false,moreBulletsBossUnlocked:false,moreBulletsUnlocked:false,moreBulletsBossWins:0,moreBulletsProgress:0,moreBulletsProgressMigrationDone:true,artlanderProgress:0,artlanderBossUnlocked:false,artlanderUnlocked:false,artlanderBossWins:0,romaniaProgress:0,romaniaBossUnlocked:false,romaniaUnlocked:false,romaniaBossWins:0,bossTier:1};
+   const fresh={coins:0,owned:{},welcome:3,secretCompletionUnlocked:false,randomSecretAwardShown:false,freeUncommonAt:0,wheelSpins:0,wheelRotation:0,cardXP:{},cardTier:{},cardCooldown:{},battleWins:0,battleLosses:0,team:[],winStreak:0,bestWinStreak:0,bossWins:0,normalWinsSinceBoss:0,bossUnlocked:false,goldenKingUnlocked:false,moreBulletsBossUnlocked:false,moreBulletsUnlocked:false,moreBulletsBossWins:0,moreBulletsProgress:0,moreBulletsProgressMigrationDone:true,artlanderProgress:0,artlanderBossUnlocked:false,artlanderUnlocked:false,artlanderBossWins:0,romaniaProgress:0,romaniaBossUnlocked:false,romaniaUnlocked:false,romaniaBossWins:0,bossTier:1};
    state=fresh;save();closeDanger();toast("Account reset");
  }
 }
@@ -2891,7 +2957,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=11;
+const APP_INTERNAL_VERSION=11.01;
 const APP_DISPLAY_VERSION="11";
 let updateReloading=false;
 
@@ -3752,7 +3818,7 @@ function bjLeaveGame(){if(BJ.playing){state.coins+=BJ.bet;bjPersist();bjSyncCoin
     <section id="fusPageIndex" class="fusxgp-page"><div id="fusIndexStats" style="margin-bottom:12px;color:#aac9ee;font-weight:900"></div><div id="fusIndexGrid" class="fus-card-grid"></div></section>
   </div>
 </div>
-<div id="fusPackModal"><div class="fus-open-shell"><div id="fusPackBag" onclick="fusTearPack()"><div><img data-fus-logo alt="FUS"><div id="fusPackBagName" class="fus-pack-bag-title">FUS PACK</div><div class="fus-pack-bag-hint">TAP TO OPEN</div></div></div><div id="fusReveal"><div id="fusRevealCard" class="fus-reveal-card" onclick="fusNextCard()"><div id="fusNewCardBadge" class="new-card-badge fus-new-card-badge">NEW CARD</div><img id="fusRevealImg" class="fus-reveal-player-photo" alt=""><div id="fusRevealOVR" class="big-ovr"></div><div class="fus-reveal-bottom"><h2 id="fusRevealName"></h2><div class="fus-reveal-bottom-meta"><div id="fusRevealPos"></div><p id="fusRevealRarity"></p></div></div><p id="fusRevealClub"></p></div><div id="fusRevealPackName"></div><div id="fusRevealHint" class="fus-reveal-next">TAP FOR NEXT</div></div></div></div>
+<div id="fusPackModal"><div class="fus-open-shell"><div id="fusPackBag" onclick="fusTearPack()"><div><img data-fus-logo alt="FUS"><div id="fusPackBagName" class="fus-pack-bag-title">FUS PACK</div><div class="fus-pack-bag-hint">TAP TO OPEN</div></div></div><div id="fusReveal"><div id="fusRevealCard" class="fus-reveal-card" onclick="fusNextCard()"><div id="fusNewCardBadge" class="fus-new-card-badge">NEW CARD</div><img id="fusRevealImg" class="fus-reveal-player-photo" alt=""><div id="fusRevealOVR" class="big-ovr"></div><div class="fus-reveal-bottom"><h2 id="fusRevealName"></h2><div class="fus-reveal-bottom-meta"><div id="fusRevealPos"></div><p id="fusRevealRarity"></p></div></div><p id="fusRevealClub"></p></div><div id="fusRevealPackName"></div><div id="fusRevealHint" class="fus-reveal-next">TAP FOR NEXT</div></div></div></div>
 
 <div id="fusSellAllOverlay" class="fus-sell-all-overlay" onclick="if(event.target===this)fusCloseSellAllConfirm()"><div class="fus-sell-all-box"><h2>SELL ALL FUS CARDS?</h2><p>This will sell every copy of every card currently in your FUS Collection.</p><div class="fus-sell-all-summary"><span id="fusSellAllCount">0 cards</span> · <span id="fusSellAllValue">● 0</span></div><p>Hold YES for 3 seconds to confirm.</p><div class="fus-sell-all-actions"><button type="button" class="fus-sell-all-cancel" onclick="fusCloseSellAllConfirm()">CANCEL</button><button type="button" id="fusSellAllYes" oncontextmenu="return false" onpointerdown="fusStartSellAllHold(event)" onpointerup="fusCancelSellAllHold()" onpointerleave="fusCancelSellAllHold()" onpointercancel="fusCancelSellAllHold()">HOLD YES 3 SEC</button></div></div></div>
 </body></html>

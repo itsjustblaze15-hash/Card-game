@@ -722,5 +722,11 @@ V11 FUS REVEAL + SELL ALL UPDATE
 - Selling all pays the normal per-card sell value for every owned copy.
 - Visible version remains V11.
 
-
-V11 gameplay fixes: version-scoped Index NEW badges; FUS account value and first-copy NEW CARD reveal; exact FUS odds Scout 70/20/10, Pro 50/30/20, Elite 30/40/30; reveal rarity styling follows actual pull; Golden Arena NEW and Blackjack BETA labels removed; Random Secret completion card permanently unsellable and FUS excluded from completion.
+V11.01 FULL REQUESTED FIXES
+- Main Index NEW badge is now major-version scoped via a persistent first-seen release registry.
+- FUS Collection shows Account Value using shared coins + FUS sell values.
+- First-ever FUS pulls show NEW CARD; duplicates do not.
+- FUS reveal border/glow/card treatment now follows the pulled BLUE/PURPLE/GOLD rarity, not pack type.
+- FUS odds: Scout 70/20/10, Pro 50/30/20, Elite 30/40/30.
+- Removed Golden Arena NEW labels and Blackjack BETA labels.
+- Secret completion card is permanently unsellable and self-heals to one copy after it has ever been earned.
