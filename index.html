@@ -866,6 +866,57 @@ html,body{background-color:#061a35}
 .fus-card{
   position:relative;
 }
+
+
+/* V11 FUS reveal layout + collection Sell All */
+#fusRevealCard #fusRevealOVR{
+ position:absolute!important;left:18px!important;top:18px!important;right:auto!important;bottom:auto!important;
+ z-index:4!important;color:#fff!important;font-size:58px!important;line-height:1!important;
+ font-weight:1000!important;text-shadow:0 3px 10px #000!important;text-align:left!important;
+}
+#fusRevealCard .fus-reveal-bottom{
+ position:absolute!important;left:18px!important;right:18px!important;bottom:24px!important;z-index:4!important;
+ display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ text-align:center!important;pointer-events:none;
+}
+#fusRevealCard .fus-reveal-bottom #fusRevealName{
+ position:static!important;inset:auto!important;width:100%!important;margin:0 0 7px!important;
+ color:#fff!important;font-size:28px!important;line-height:1.05!important;font-weight:1000!important;
+ text-align:center!important;text-shadow:0 3px 10px #000!important;
+}
+#fusRevealCard .fus-reveal-bottom-meta{
+ display:flex!important;align-items:center!important;justify-content:center!important;gap:9px!important;flex-wrap:wrap!important;
+}
+#fusRevealCard .fus-reveal-bottom #fusRevealPos,
+#fusRevealCard .fus-reveal-bottom #fusRevealRarity{
+ position:static!important;inset:auto!important;margin:0!important;color:#fff!important;
+ font-size:12px!important;line-height:1!important;font-weight:1000!important;text-shadow:0 2px 8px #000!important;
+}
+#fusRevealCard .fus-reveal-bottom #fusRevealPos{
+ background:rgba(2,11,24,.68)!important;border:1px solid #ffffff38!important;border-radius:999px!important;padding:7px 10px!important;
+}
+#fusRevealCard .fus-reveal-bottom #fusRevealRarity{
+ background:color-mix(in srgb,var(--fc) 72%,#07182d)!important;border:1px solid #ffffff55!important;border-radius:999px!important;padding:7px 10px!important;
+}
+.fus-collection-headrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.fus-collection-headrow #fusCollectionStats{margin:0!important;flex:1;min-width:170px}
+.fus-sell-all-btn{
+ border:1px solid #ff6d6d!important;border-radius:11px!important;padding:10px 13px!important;background:#3b0d16!important;
+ color:#ffb0b0!important;font-weight:1000!important;font-size:11px!important;white-space:nowrap!important;
+}
+.fus-sell-all-overlay{position:fixed;inset:0;z-index:100800;background:#020812e8;display:none;align-items:center;justify-content:center;padding:18px}
+.fus-sell-all-overlay.show{display:flex}
+.fus-sell-all-box{width:min(390px,100%);background:linear-gradient(180deg,#0d274b,#06162b);color:#fff;border:2px solid #ff5f6d;border-radius:20px;padding:20px;text-align:center;box-shadow:0 24px 60px #000b}
+.fus-sell-all-box h2{margin:0 0 9px;font-size:24px}.fus-sell-all-box p{margin:7px 0;color:#bdd1e9;font-weight:750;font-size:13px;line-height:1.35}
+.fus-sell-all-summary{margin:14px 0;padding:11px;border-radius:12px;background:#07182d;border:1px solid #ffffff1f;color:#fff;font-weight:1000;font-size:12px}
+.fus-sell-all-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.fus-sell-all-actions button{border:0;border-radius:12px;padding:13px;font-weight:1000}
+.fus-sell-all-cancel{background:#17365d;color:#d9eaff}
+#fusSellAllYes{position:relative;overflow:hidden;background:#9f1d2d;color:#fff;isolation:isolate;touch-action:none;user-select:none;-webkit-user-select:none}
+#fusSellAllYes:before{content:"";position:absolute;inset:0 auto 0 0;width:0;background:#df3d4e;z-index:-1}
+#fusSellAllYes.holding:before{animation:fusSellAllHold 3s linear forwards}
+@keyframes fusSellAllHold{from{width:0}to{width:100%}}
+
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -2547,6 +2598,44 @@ function fusSell(id){
  state.coins=(state.coins||0)+val;
  save();toast(`Sold ${c.name} for ${fmt(val)} coins`);fusRender();render();
 }
+
+let fusSellAllHoldTimer=null;
+function fusSellAllTotals(){
+ const d=fusData();let cards=0,total=0;
+ FUS_CARDS.forEach(c=>{const q=Number(d.owned[c.id]||0);if(q>0){cards+=q;total+=q*fusSellValue(c)}});
+ return {cards,total};
+}
+function fusOpenSellAllConfirm(){
+ const t=fusSellAllTotals();
+ if(!t.cards){toast("No FUS cards to sell");return}
+ $("#fusSellAllCount").textContent=`${t.cards} card${t.cards===1?"":"s"}`;
+ $("#fusSellAllValue").textContent=`● ${fmt(t.total)}`;
+ $("#fusSellAllOverlay").classList.add("show");
+}
+function fusResetSellAllHold(){
+ if(fusSellAllHoldTimer){clearTimeout(fusSellAllHoldTimer);fusSellAllHoldTimer=null}
+ const b=$("#fusSellAllYes");if(b){b.classList.remove("holding");b.textContent="HOLD YES 3 SEC"}
+}
+function fusCloseSellAllConfirm(){fusResetSellAllHold();$("#fusSellAllOverlay")?.classList.remove("show")}
+function fusStartSellAllHold(e){
+ if(e){e.preventDefault();e.stopPropagation()}
+ if(fusSellAllHoldTimer)return;
+ const b=$("#fusSellAllYes");if(!b)return;
+ b.classList.remove("holding");void b.offsetWidth;b.classList.add("holding");b.textContent="KEEP HOLDING...";
+ fusSellAllHoldTimer=setTimeout(()=>{fusSellAllHoldTimer=null;fusExecuteSellAll()},3000);
+}
+function fusCancelSellAllHold(){
+ if(!fusSellAllHoldTimer)return;
+ clearTimeout(fusSellAllHoldTimer);fusSellAllHoldTimer=null;
+ const b=$("#fusSellAllYes");if(b){b.classList.remove("holding");b.textContent="HOLD YES 3 SEC"}
+}
+function fusExecuteSellAll(){
+ const d=fusData();let cards=0,total=0;
+ FUS_CARDS.forEach(c=>{const q=Number(d.owned[c.id]||0);if(q>0){cards+=q;total+=q*fusSellValue(c);d.owned[c.id]=0}});
+ if(!cards){fusCloseSellAllConfirm();toast("No FUS cards to sell");return}
+ state.coins=(state.coins||0)+total;
+ save();fusCloseSellAllConfirm();toast(`Sold ${cards} FUS cards for ${fmt(total)} coins`);fusRender();render();
+}
 function fusRenderCard(c,locked=false){
  const col=FUS_RARITY_COLOR[c.rarity]||"#248cff";
  const q=fusData().owned[c.id]||0;
@@ -3641,9 +3730,11 @@ function bjLeaveGame(){if(BJ.playing){state.coins+=BJ.bet;bjPersist();bjSyncCoin
 </div>
 <div class="fusxgp-tabs"><button id="fusTabPacks" class="on" onclick="fusTab('packs')">PACKS</button><button id="fusTabCollection" onclick="fusTab('collection')">COLLECTION</button><button id="fusTabIndex" onclick="fusTab('index')">INDEX</button></div>
     <section id="fusPagePacks" class="fusxgp-page active"><div id="fusPackShop" class="fus-pack-grid"></div></section>
-    <section id="fusPageCollection" class="fusxgp-page"><div id="fusCollectionStats" style="margin-bottom:12px;color:#aac9ee;font-weight:900"></div><div id="fusCollectionGrid" class="fus-card-grid"></div></section>
+    <section id="fusPageCollection" class="fusxgp-page"><div class="fus-collection-headrow"><div id="fusCollectionStats" style="color:#aac9ee;font-weight:900"></div><button type="button" class="fus-sell-all-btn" onclick="fusOpenSellAllConfirm()">SELL ALL</button></div><div id="fusCollectionGrid" class="fus-card-grid"></div></section>
     <section id="fusPageIndex" class="fusxgp-page"><div id="fusIndexStats" style="margin-bottom:12px;color:#aac9ee;font-weight:900"></div><div id="fusIndexGrid" class="fus-card-grid"></div></section>
   </div>
 </div>
-<div id="fusPackModal"><div class="fus-open-shell"><div id="fusPackBag" onclick="fusTearPack()"><div><img data-fus-logo alt="FUS"><div id="fusPackBagName" class="fus-pack-bag-title">FUS PACK</div><div class="fus-pack-bag-hint">TAP TO OPEN</div></div></div><div id="fusReveal"><div id="fusRevealCard" class="fus-reveal-card" onclick="fusNextCard()"><img id="fusRevealImg" class="fus-reveal-player-photo" alt=""><div id="fusRevealOVR" class="big-ovr"></div><div id="fusRevealPos"></div><h2 id="fusRevealName"></h2><p id="fusRevealClub"></p><p id="fusRevealRarity"></p></div><div id="fusRevealPackName"></div><div id="fusRevealHint" class="fus-reveal-next">TAP FOR NEXT</div></div></div></div>
+<div id="fusPackModal"><div class="fus-open-shell"><div id="fusPackBag" onclick="fusTearPack()"><div><img data-fus-logo alt="FUS"><div id="fusPackBagName" class="fus-pack-bag-title">FUS PACK</div><div class="fus-pack-bag-hint">TAP TO OPEN</div></div></div><div id="fusReveal"><div id="fusRevealCard" class="fus-reveal-card" onclick="fusNextCard()"><img id="fusRevealImg" class="fus-reveal-player-photo" alt=""><div id="fusRevealOVR" class="big-ovr"></div><div class="fus-reveal-bottom"><h2 id="fusRevealName"></h2><div class="fus-reveal-bottom-meta"><div id="fusRevealPos"></div><p id="fusRevealRarity"></p></div></div><p id="fusRevealClub"></p></div><div id="fusRevealPackName"></div><div id="fusRevealHint" class="fus-reveal-next">TAP FOR NEXT</div></div></div></div>
+
+<div id="fusSellAllOverlay" class="fus-sell-all-overlay" onclick="if(event.target===this)fusCloseSellAllConfirm()"><div class="fus-sell-all-box"><h2>SELL ALL FUS CARDS?</h2><p>This will sell every copy of every card currently in your FUS Collection.</p><div class="fus-sell-all-summary"><span id="fusSellAllCount">0 cards</span> · <span id="fusSellAllValue">● 0</span></div><p>Hold YES for 3 seconds to confirm.</p><div class="fus-sell-all-actions"><button type="button" class="fus-sell-all-cancel" onclick="fusCloseSellAllConfirm()">CANCEL</button><button type="button" id="fusSellAllYes" oncontextmenu="return false" onpointerdown="fusStartSellAllHold(event)" onpointerup="fusCancelSellAllHold()" onpointerleave="fusCancelSellAllHold()" onpointercancel="fusCancelSellAllHold()">HOLD YES 3 SEC</button></div></div></div>
 </body></html>

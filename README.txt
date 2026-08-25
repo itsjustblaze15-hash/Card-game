@@ -712,3 +712,12 @@ GOLDEN PULLS V11
 - Scout, Pro, and Elite FUS packs can be purchased and opened again when the player has enough coins.
 - FUS pack prices, odds, card rarities, selling, saves, layouts, animations, and all other game modes are unchanged.
 - Visible and installed version updated to V11.
+
+
+V11 FUS REVEAL + SELL ALL UPDATE
+- FUS pack reveal rating/OVR is fixed at the top-left.
+- Player name, position, and rarity are centered at the bottom of the reveal card.
+- Added SELL ALL to the FUS Collection.
+- SELL ALL opens a confirmation prompt and requires holding YES for 3 seconds.
+- Selling all pays the normal per-card sell value for every owned copy.
+- Visible version remains V11.
