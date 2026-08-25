@@ -627,3 +627,11 @@ V10.23 FUS × GP APPROVED BLUE UI
 - Large hero now uses FUS × GP logos, COLLAB, FOOTBALL CARDS, and the short description.
 - Pack shop now uses visual Scout/Pro/Elite pack bags and horizontal pack rows like the approved mockup.
 - Kept Pack / Collection / Index, prices, five-card packs, shared coin balance, and separate collab collection.
+
+V10.25 FUS × GP LOGO + BLUE STATUS BAR FIX
+- Exact user-supplied FUS and GP PNGs are now embedded directly inside index.html as data URLs.
+- The collab no longer depends on external logo file paths, so broken ? image boxes cannot occur from missing asset URLs.
+- The exact logos are used in the top header, hero, mode tile, pack art, and FUS pack opening.
+- Browser/PWA theme color changed from Golden Pulls yellow to FUS navy blue (#061a35).
+- iOS standalone status bar style set to black-translucent so the blue app chrome extends behind the status area.
+- No image generation used.
