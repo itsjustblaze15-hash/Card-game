@@ -688,3 +688,11 @@ V10.31 FUS CARD REDESIGN
 - FUS All-Stars renamed to GOATs.
 - Existing Mbappe and Haaland exact player photos are preserved.
 - No new image assets were added.
+
+V10.32
+- FUS quantity shows X1 / X2 / X3 instead of OWNED ×.
+- FUS collection/index/reveal card text moved into cleaner bottom info panels.
+- FUS pack prices raised: Scout 20k, Pro 50k, Elite 100k.
+- FUS pack reveal card shell now matches pack type color.
+- Pack opening labels are white.
+- FUS packs cannot contain duplicate cards within the same pack.
