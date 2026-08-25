@@ -536,6 +536,12 @@ button{font:inherit;cursor:pointer}
  .fusxgp-hero{min-height:300px}.fus-collab-logos{gap:10px}.fus-collab-logos img{width:38vw;height:105px}.fus-collab-x{font-size:36px}.fusxgp-hero:before,.fusxgp-hero:after{display:none}
  .fus-pack{grid-template-columns:105px 1fr!important;gap:14px!important;padding:14px!important;min-height:190px!important}.fus-pack-art{width:88px;height:145px}.fus-pack-art img{width:62px;height:62px}.fus-pack-buy{grid-column:1/-1;display:grid;grid-template-columns:1fr 1.5fr;align-items:center;gap:10px;min-width:0}.fus-pack-price{margin:0!important;font-size:18px!important}.fus-pack-buy button{padding:13px 10px!important}
 }
+
+/* V10.24 real-logo loading fix */
+.fus-pack-logo{width:82px;height:82px;display:grid;place-items:center;margin-top:-8px}
+.fus-pack-logo img{display:block!important;width:82px!important;height:82px!important;object-fit:contain!important}
+.fusxgp-brand img,.fus-collab-logos img,#fusPackBag img{display:block}
+.fusxgp-brand img:not([src]),.fus-collab-logos img:not([src]),.fus-pack-logo img:not([src]){visibility:hidden}
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -2139,6 +2145,15 @@ $$(".nav button").forEach(b=>b.onclick=()=>{
 setInterval(()=>{if($("#rewards").classList.contains("active"))render()},1000);
 
 
+
+function fusAssetUrl(file){
+  const base=new URL("./",document.baseURI);
+  return new URL("assets/"+file,base).href;
+}
+function fusFixLogoSources(){
+  document.querySelectorAll('img[data-fus-logo]').forEach(img=>img.src=fusAssetUrl("fus_logo.png"));
+  document.querySelectorAll('img[data-gp-logo]').forEach(img=>img.src=fusAssetUrl("golden_pulls_logo.png"));
+}
 const FUS_CARDS=[{"id": 1, "name": "Kylian Mbappé", "ovr": 91, "club": "Real Madrid", "pos": "ST", "rarity": "ICON"}, {"id": 2, "name": "Erling Haaland", "ovr": 91, "club": "Manchester City", "pos": "ST", "rarity": "ICON"}, {"id": 3, "name": "Harry Kane", "ovr": 90, "club": "Bayern Munich", "pos": "ST", "rarity": "ELITE"}, {"id": 4, "name": "Jude Bellingham", "ovr": 90, "club": "Real Madrid", "pos": "CAM", "rarity": "ELITE"}, {"id": 5, "name": "Michael Olise", "ovr": 90, "club": "Bayern Munich", "pos": "RW", "rarity": "ELITE"}, {"id": 6, "name": "Rodri", "ovr": 90, "club": "Barcelona", "pos": "CM", "rarity": "ELITE"}, {"id": 7, "name": "Lamine Yamal", "ovr": 90, "club": "Barcelona", "pos": "RW", "rarity": "ELITE"}, {"id": 8, "name": "Ousmane Dembélé", "ovr": 90, "club": "Paris Saint-Germain", "pos": "RW", "rarity": "ELITE"}, {"id": 9, "name": "Thibaut Courtois", "ovr": 90, "club": "Real Madrid", "pos": "GK", "rarity": "ELITE"}, {"id": 10, "name": "Pedri", "ovr": 90, "club": "Barcelona", "pos": "CM", "rarity": "ELITE"}, {"id": 11, "name": "Vitinha", "ovr": 90, "club": "Paris Saint-Germain", "pos": "CM", "rarity": "ELITE"}, {"id": 12, "name": "Gabriel Magalhães", "ovr": 89, "club": "Arsenal", "pos": "CB", "rarity": "WORLD"}, {"id": 13, "name": "Bruno Fernandes", "ovr": 89, "club": "Manchester United", "pos": "CAM", "rarity": "WORLD"}, {"id": 14, "name": "Gianluigi Donnarumma", "ovr": 89, "club": "Manchester City", "pos": "GK", "rarity": "WORLD"}, {"id": 15, "name": "Khvicha Kvaratskhelia", "ovr": 89, "club": "Paris Saint-Germain", "pos": "LW", "rarity": "WORLD"}, {"id": 16, "name": "Nuno Mendes", "ovr": 89, "club": "Paris Saint-Germain", "pos": "LB", "rarity": "WORLD"}, {"id": 17, "name": "Willian Pacho", "ovr": 89, "club": "Paris Saint-Germain", "pos": "CB", "rarity": "WORLD"}, {"id": 18, "name": "Lionel Messi", "ovr": 89, "club": "FUS All-Stars", "pos": "", "rarity": "WORLD"}, {"id": 19, "name": "Vinícius Júnior", "ovr": 89, "club": "Real Madrid", "pos": "LW", "rarity": "WORLD"}, {"id": 20, "name": "Declan Rice", "ovr": 88, "club": "Arsenal", "pos": "CM", "rarity": "STAR"}, {"id": 21, "name": "William Saliba", "ovr": 88, "club": "Arsenal", "pos": "CB", "rarity": "STAR"}, {"id": 22, "name": "Virgil van Dijk", "ovr": 88, "club": "Liverpool", "pos": "CB", "rarity": "STAR"}, {"id": 23, "name": "Jan Oblak", "ovr": 88, "club": "Atlético Madrid", "pos": "GK", "rarity": "STAR"}, {"id": 24, "name": "Achraf Hakimi", "ovr": 88, "club": "Paris Saint-Germain", "pos": "RB", "rarity": "STAR"}, {"id": 25, "name": "João Neves", "ovr": 88, "club": "Paris Saint-Germain", "pos": "CM", "rarity": "STAR"}, {"id": 26, "name": "Joshua Kimmich", "ovr": 88, "club": "Bayern Munich", "pos": "CM", "rarity": "STAR"}, {"id": 27, "name": "Luis Díaz", "ovr": 88, "club": "Bayern Munich", "pos": "LW", "rarity": "STAR"}];
 const FUS_RARITY_COLOR={STAR:"#60a5fa",WORLD:"#3b82f6",ELITE:"#93c5fd",ICON:"#f6c453"};
 const FUS_PACKS=[
@@ -2148,15 +2163,16 @@ const FUS_PACKS=[
 ];
 let fusCurrentPack=[],fusRevealIndex=0,fusOpening=false;
 function fusData(){if(!state.fusCollab)state.fusCollab={owned:{},packsOpened:0};return state.fusCollab}
-function fusOpen(){fusData();fusRender();$("#fusCollab").classList.add("show");fusTab("packs")}
+function fusOpen(){fusData();fusFixLogoSources();fusRender();$("#fusCollab").classList.add("show");fusTab("packs")}
 function fusClose(){$("#fusCollab").classList.remove("show")}
 function fusTab(t){["packs","collection","index"].forEach(x=>{$("#fusPage"+x[0].toUpperCase()+x.slice(1))?.classList.toggle("active",x===t);$("#fusTab"+x[0].toUpperCase()+x.slice(1))?.classList.toggle("on",x===t)});fusRender()}
 function fusPickRarity(w){const total=Object.values(w).reduce((a,b)=>a+b,0);let r=Math.random()*total;for(const [k,v] of Object.entries(w)){r-=v;if(r<=0)return k}return "STAR"}
 function fusPickCard(rarity){let pool=FUS_CARDS.filter(c=>c.rarity===rarity);if(!pool.length)pool=FUS_CARDS;return pool[Math.floor(Math.random()*pool.length)]}
 function fusRenderCard(c,locked=false){const col=FUS_RARITY_COLOR[c.rarity]||"#60a5fa";return `<div class="fus-card ${locked?"locked":""}" style="--fc:${col}"><div class="rarity">${c.rarity}</div><div class="ovr">${locked?"??":c.ovr}</div><div class="pos">${locked?"":c.pos}</div><div class="player">${locked?"UNKNOWN PLAYER":c.name}</div><div class="club">${locked?"Unlock from FUS packs":c.club}</div></div>`}
 function fusRender(){
+ fusFixLogoSources();
  const d=fusData();$("#fusCoins").textContent=fmt(state.coins||0);
- $("#fusPackShop").innerHTML=FUS_PACKS.map((p,i)=>`<div class="fus-pack"><div class="fus-pack-art ${i===1?"pro":i===2?"elite":""}"><img src="assets/fus_logo.png" alt=""><small>FOOTBALL CARDS</small></div><div class="fus-pack-info"><h3>${p.name}</h3><div class="five">5 football cards</div><p>FUS collab collection only.</p></div><div class="fus-pack-buy"><div class="fus-pack-price">● ${fmt(p.price)}</div><button onclick="fusBuyPack('${p.name.replaceAll("'","\\'")}')">BUY + OPEN</button></div></div>`).join("");
+ $("#fusPackShop").innerHTML=FUS_PACKS.map((p,i)=>`<div class="fus-pack"><div class="fus-pack-art ${i===1?"pro":i===2?"elite":""}"><div class="fus-pack-logo"><img data-fus-logo alt="FUS"></div><small>FOOTBALL CARDS</small></div><div class="fus-pack-info"><h3>${p.name}</h3><div class="five">5 football cards</div><p>FUS collab collection only.</p></div><div class="fus-pack-buy"><div class="fus-pack-price">● ${fmt(p.price)}</div><button onclick="fusBuyPack('${p.name.replaceAll("'","\\'")}')">BUY + OPEN</button></div></div>`).join("");
  const ownedIds=new Set(Object.keys(d.owned).filter(id=>d.owned[id]>0).map(Number));
  const owned=FUS_CARDS.filter(c=>ownedIds.has(c.id)).sort((a,b)=>b.ovr-a.ovr);
  $("#fusCollectionStats").textContent=`${owned.length} / ${FUS_CARDS.length} football cards collected`;
@@ -2266,7 +2282,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.23;
+const APP_INTERNAL_VERSION=10.24;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
@@ -3111,12 +3127,12 @@ function bjLeaveGame(){if(BJ.playing){state.coins+=BJ.bet;bjPersist();bjSyncCoin
 <div id="fusCollab">
   <div class="fusxgp-head">
     <button type="button" onclick="fusClose()">BACK</button>
-    <div class="fusxgp-brand"><img src="assets/fus_logo.png" alt="FUS"><img src="assets/golden_pulls_logo.png" alt="Golden Pulls"></div>
+    <div class="fusxgp-brand"><img data-fus-logo alt="FUS"><img data-gp-logo alt="Golden Pulls"></div>
     <div class="fusxgp-wallet">● <span id="fusCoins">0</span></div>
   </div>
   <div class="fusxgp-body">
     <div class="fusxgp-hero">
- <div class="fus-collab-logos"><img src="assets/fus_logo.png" alt="FUS"><span class="fus-collab-x">×</span><img src="assets/golden_pulls_logo.png" alt="Golden Pulls"></div>
+ <div class="fus-collab-logos"><img data-fus-logo alt="FUS"><span class="fus-collab-x">×</span><img data-gp-logo alt="Golden Pulls"></div>
  <div class="fus-collab-word">COLLAB</div>
  <div class="fus-collab-title">FOOTBALL CARDS</div>
  <p>Open football-only packs, build your collab collection, and complete the full FUS card index.</p>
@@ -3127,5 +3143,5 @@ function bjLeaveGame(){if(BJ.playing){state.coins+=BJ.bet;bjPersist();bjSyncCoin
     <section id="fusPageIndex" class="fusxgp-page"><div id="fusIndexStats" style="margin-bottom:12px;color:#aac9ee;font-weight:900"></div><div id="fusIndexGrid" class="fus-card-grid"></div></section>
   </div>
 </div>
-<div id="fusPackModal"><div class="fus-open-shell"><div id="fusPackBag" onclick="fusTearPack()"><div><img src="assets/fus_logo.png"><div id="fusPackBagName" class="fus-pack-bag-title">FUS PACK</div><div class="fus-pack-bag-hint">TAP TO OPEN</div></div></div><div id="fusReveal"><div id="fusRevealCard" class="fus-reveal-card" onclick="fusNextCard()"><div id="fusRevealOVR" class="big-ovr"></div><div id="fusRevealPos"></div><h2 id="fusRevealName"></h2><p id="fusRevealClub"></p><p id="fusRevealRarity"></p></div><div id="fusRevealHint" class="fus-reveal-next">TAP FOR NEXT</div></div></div></div>
+<div id="fusPackModal"><div class="fus-open-shell"><div id="fusPackBag" onclick="fusTearPack()"><div><img data-fus-logo alt="FUS"><div id="fusPackBagName" class="fus-pack-bag-title">FUS PACK</div><div class="fus-pack-bag-hint">TAP TO OPEN</div></div></div><div id="fusReveal"><div id="fusRevealCard" class="fus-reveal-card" onclick="fusNextCard()"><div id="fusRevealOVR" class="big-ovr"></div><div id="fusRevealPos"></div><h2 id="fusRevealName"></h2><p id="fusRevealClub"></p><p id="fusRevealRarity"></p></div><div id="fusRevealHint" class="fus-reveal-next">TAP FOR NEXT</div></div></div></div>
 </body></html>
