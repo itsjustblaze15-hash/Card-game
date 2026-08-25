@@ -677,3 +677,14 @@ V10.30 FUS PLAYER PHOTOS + PACK BACKGROUNDS
 - Pro opening background = purple.
 - Elite opening background = gold.
 - Existing pack animations, selling, worst-to-best order and all other modes preserved.
+
+V10.31 FUS CARD REDESIGN
+- FUS now has exactly three rarities: BLUE, PURPLE, GOLD.
+- OVR 88 = BLUE, OVR 89 = PURPLE, OVR 90-91 = GOLD.
+- FUS card photos are full-bleed across the entire card.
+- Rating is white at top-left over the photo.
+- Player name is white over the photo.
+- Club/team remains visible in Collection but is hidden during pack reveals.
+- FUS All-Stars renamed to GOATs.
+- Existing Mbappe and Haaland exact player photos are preserved.
+- No new image assets were added.

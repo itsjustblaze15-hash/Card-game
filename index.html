@@ -691,6 +691,106 @@ html,body{background-color:#061a35}
 #fusPackModal.elite-bg{
  background:radial-gradient(circle at 50% 35%,rgba(255,211,74,.44),transparent 34%),linear-gradient(180deg,#a36d00,#422c00 58%,#140d00)!important
 }
+
+/* V10.31 FUS 3-rarity full-photo card design */
+.fus-card.fus-card-photo{
+ min-height:300px!important;
+ padding:0!important;
+ overflow:hidden!important;
+ display:block!important;
+ background:#07182d!important;
+ border:3px solid var(--fc)!important;
+}
+.fus-card.fus-card-photo .fus-player-photo{
+ position:absolute!important;
+ inset:0!important;
+ width:100%!important;
+ height:100%!important;
+ margin:0!important;
+ border:0!important;
+ border-radius:0!important;
+ object-fit:cover!important;
+ object-position:center!important;
+ box-shadow:none!important;
+ z-index:0!important;
+}
+.fus-card.fus-card-photo .fus-photo-placeholder{
+ position:absolute;inset:0;display:grid;place-items:center;
+ background:linear-gradient(160deg,#12315b,#061326);z-index:0;color:#8eabc9;
+ font-size:10px;font-weight:1000;letter-spacing:.08em;text-align:center;padding:15px
+}
+.fus-card.fus-card-photo .fus-card-overlay{
+ position:absolute;inset:0;z-index:1;
+ background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,transparent 38%,rgba(0,0,0,.86) 100%)
+}
+.fus-card.fus-card-photo .rarity{
+ position:absolute!important;right:10px!important;top:10px!important;z-index:3!important;
+ color:white!important;background:rgba(2,11,24,.72)!important
+}
+.fus-card.fus-card-photo .ovr{
+ position:absolute!important;left:12px!important;top:10px!important;z-index:3!important;
+ color:#fff!important;font-size:35px!important;line-height:1!important;text-shadow:0 2px 8px #000!important
+}
+.fus-card.fus-card-photo .player{
+ position:absolute!important;left:12px!important;right:12px!important;bottom:83px!important;z-index:3!important;
+ margin:0!important;color:#fff!important;font-size:18px!important;line-height:1.05!important;
+ text-shadow:0 2px 9px #000!important;white-space:normal!important
+}
+.fus-card.fus-card-photo .pos{
+ position:absolute!important;left:12px!important;bottom:63px!important;z-index:3!important;
+ color:#fff!important;font-size:11px!important;font-weight:1000!important;text-shadow:0 2px 7px #000!important
+}
+.fus-card.fus-card-photo .club{
+ position:absolute!important;left:12px!important;right:12px!important;bottom:43px!important;z-index:3!important;
+ color:#d9e9fb!important;font-size:10px!important;text-shadow:0 2px 7px #000!important
+}
+.fus-card.fus-card-photo .fus-card-qty{
+ position:absolute!important;left:12px!important;bottom:23px!important;z-index:3!important;
+ margin:0!important;color:#fff!important;text-shadow:0 2px 7px #000!important
+}
+.fus-card.fus-card-photo .fus-sell-btn{
+ position:absolute!important;right:8px!important;bottom:8px!important;z-index:4!important;
+ width:auto!important;margin:0!important;padding:7px 9px!important;font-size:9px!important
+}
+
+/* Full-photo pack reveal */
+#fusRevealCard{
+ position:relative!important;
+ min-height:500px!important;
+ padding:0!important;
+ overflow:hidden!important;
+ background:#07182d!important;
+}
+#fusRevealCard .fus-reveal-player-photo{
+ display:none;
+ position:absolute!important;inset:0!important;
+ width:100%!important;height:100%!important;max-height:none!important;
+ margin:0!important;border:0!important;border-radius:0!important;
+ object-fit:cover!important;object-position:center!important;z-index:0!important
+}
+#fusRevealCard.has-player-photo:before{
+ content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+ background:linear-gradient(180deg,rgba(0,0,0,.22),transparent 42%,rgba(0,0,0,.82))
+}
+#fusRevealCard #fusRevealOVR{
+ position:absolute!important;left:16px!important;top:16px!important;z-index:3!important;
+ color:white!important;font-size:58px!important;line-height:1!important;text-shadow:0 3px 10px #000!important
+}
+#fusRevealCard #fusRevealName{
+ position:absolute!important;left:16px!important;right:16px!important;bottom:70px!important;z-index:3!important;
+ color:white!important;font-size:28px!important;margin:0!important;text-align:left!important;
+ text-shadow:0 3px 10px #000!important
+}
+#fusRevealCard #fusRevealPos{
+ position:absolute!important;left:18px!important;bottom:48px!important;z-index:3!important;
+ color:white!important;font-size:13px!important;font-weight:1000!important;text-shadow:0 2px 8px #000!important
+}
+#fusRevealCard #fusRevealRarity{
+ position:absolute!important;right:16px!important;top:18px!important;z-index:3!important;
+ color:white!important;background:rgba(2,11,24,.68)!important;border-radius:999px!important;
+ padding:6px 9px!important;font-size:11px!important;font-weight:1000!important
+}
+#fusRevealCard #fusRevealClub{display:none!important}
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -1028,10 +1128,7 @@ function gpPackRevealRank(c){
 function sortGpPackForReveal(cards){
  return cards.slice().sort((a,b)=>gpPackRevealRank(a)-gpPackRevealRank(b));
 }
-function fusPackRevealRank(c){
- const order={STAR:0,WORLD:1,ELITE:2,ICON:3};
- return order[c?.rarity]??0;
-}
+function fusPackRevealRank(c){ const order={BLUE:0,PURPLE:1,GOLD:2}; return order[c?.rarity]??0; }
 function sortFusPackForReveal(cards){
  return cards.slice().sort((a,b)=>{
    const r=fusPackRevealRank(a)-fusPackRevealRank(b);
@@ -2331,24 +2428,21 @@ function fusFixLogoSources(){
     if(img.src!==GP_LOGO_INLINE) img.src=GP_LOGO_INLINE;
   });
 }
-const FUS_CARDS=[{"id": 1, "name": "Kylian Mbappé", "ovr": 91, "club": "Real Madrid", "pos": "ST", "rarity": "ICON", "image": "assets/fus_mbappe.jpg"}, {"id": 2, "name": "Erling Haaland", "ovr": 91, "club": "Manchester City", "pos": "ST", "rarity": "ICON", "image": "assets/fus_haaland.png"}, {"id": 3, "name": "Harry Kane", "ovr": 90, "club": "Bayern Munich", "pos": "ST", "rarity": "ELITE"}, {"id": 4, "name": "Jude Bellingham", "ovr": 90, "club": "Real Madrid", "pos": "CAM", "rarity": "ELITE"}, {"id": 5, "name": "Michael Olise", "ovr": 90, "club": "Bayern Munich", "pos": "RW", "rarity": "ELITE"}, {"id": 6, "name": "Rodri", "ovr": 90, "club": "Barcelona", "pos": "CM", "rarity": "ELITE"}, {"id": 7, "name": "Lamine Yamal", "ovr": 90, "club": "Barcelona", "pos": "RW", "rarity": "ELITE"}, {"id": 8, "name": "Ousmane Dembélé", "ovr": 90, "club": "Paris Saint-Germain", "pos": "RW", "rarity": "ELITE"}, {"id": 9, "name": "Thibaut Courtois", "ovr": 90, "club": "Real Madrid", "pos": "GK", "rarity": "ELITE"}, {"id": 10, "name": "Pedri", "ovr": 90, "club": "Barcelona", "pos": "CM", "rarity": "ELITE"}, {"id": 11, "name": "Vitinha", "ovr": 90, "club": "Paris Saint-Germain", "pos": "CM", "rarity": "ELITE"}, {"id": 12, "name": "Gabriel Magalhães", "ovr": 89, "club": "Arsenal", "pos": "CB", "rarity": "WORLD"}, {"id": 13, "name": "Bruno Fernandes", "ovr": 89, "club": "Manchester United", "pos": "CAM", "rarity": "WORLD"}, {"id": 14, "name": "Gianluigi Donnarumma", "ovr": 89, "club": "Manchester City", "pos": "GK", "rarity": "WORLD"}, {"id": 15, "name": "Khvicha Kvaratskhelia", "ovr": 89, "club": "Paris Saint-Germain", "pos": "LW", "rarity": "WORLD"}, {"id": 16, "name": "Nuno Mendes", "ovr": 89, "club": "Paris Saint-Germain", "pos": "LB", "rarity": "WORLD"}, {"id": 17, "name": "Willian Pacho", "ovr": 89, "club": "Paris Saint-Germain", "pos": "CB", "rarity": "WORLD"}, {"id": 18, "name": "Lionel Messi", "ovr": 89, "club": "FUS All-Stars", "pos": "", "rarity": "WORLD"}, {"id": 19, "name": "Vinícius Júnior", "ovr": 89, "club": "Real Madrid", "pos": "LW", "rarity": "WORLD"}, {"id": 20, "name": "Declan Rice", "ovr": 88, "club": "Arsenal", "pos": "CM", "rarity": "STAR"}, {"id": 21, "name": "William Saliba", "ovr": 88, "club": "Arsenal", "pos": "CB", "rarity": "STAR"}, {"id": 22, "name": "Virgil van Dijk", "ovr": 88, "club": "Liverpool", "pos": "CB", "rarity": "STAR"}, {"id": 23, "name": "Jan Oblak", "ovr": 88, "club": "Atlético Madrid", "pos": "GK", "rarity": "STAR"}, {"id": 24, "name": "Achraf Hakimi", "ovr": 88, "club": "Paris Saint-Germain", "pos": "RB", "rarity": "STAR"}, {"id": 25, "name": "João Neves", "ovr": 88, "club": "Paris Saint-Germain", "pos": "CM", "rarity": "STAR"}, {"id": 26, "name": "Joshua Kimmich", "ovr": 88, "club": "Bayern Munich", "pos": "CM", "rarity": "STAR"}, {"id": 27, "name": "Luis Díaz", "ovr": 88, "club": "Bayern Munich", "pos": "LW", "rarity": "STAR"}];
-const FUS_RARITY_COLOR={STAR:"#60a5fa",WORLD:"#3b82f6",ELITE:"#93c5fd",ICON:"#f6c453"};
+const FUS_CARDS=[{"id":1,"name":"Kylian Mbappé","ovr":91,"club":"Real Madrid","pos":"ST","rarity":"GOLD","image":"assets/fus_mbappe.jpg"},{"id":2,"name":"Erling Haaland","ovr":91,"club":"Manchester City","pos":"ST","rarity":"GOLD","image":"assets/fus_haaland.png"},{"id":3,"name":"Harry Kane","ovr":90,"club":"Bayern Munich","pos":"ST","rarity":"GOLD"},{"id":4,"name":"Jude Bellingham","ovr":90,"club":"Real Madrid","pos":"CAM","rarity":"GOLD"},{"id":5,"name":"Michael Olise","ovr":90,"club":"Bayern Munich","pos":"RW","rarity":"GOLD"},{"id":6,"name":"Rodri","ovr":90,"club":"Barcelona","pos":"CM","rarity":"GOLD"},{"id":7,"name":"Lamine Yamal","ovr":90,"club":"Barcelona","pos":"RW","rarity":"GOLD"},{"id":8,"name":"Ousmane Dembélé","ovr":90,"club":"Paris Saint-Germain","pos":"RW","rarity":"GOLD"},{"id":9,"name":"Thibaut Courtois","ovr":90,"club":"Real Madrid","pos":"GK","rarity":"GOLD"},{"id":10,"name":"Pedri","ovr":90,"club":"Barcelona","pos":"CM","rarity":"GOLD"},{"id":11,"name":"Vitinha","ovr":90,"club":"Paris Saint-Germain","pos":"CM","rarity":"GOLD"},{"id":12,"name":"Gabriel Magalhães","ovr":89,"club":"Arsenal","pos":"CB","rarity":"PURPLE"},{"id":13,"name":"Bruno Fernandes","ovr":89,"club":"Manchester United","pos":"CAM","rarity":"PURPLE"},{"id":14,"name":"Gianluigi Donnarumma","ovr":89,"club":"Manchester City","pos":"GK","rarity":"PURPLE"},{"id":15,"name":"Khvicha Kvaratskhelia","ovr":89,"club":"Paris Saint-Germain","pos":"LW","rarity":"PURPLE"},{"id":16,"name":"Nuno Mendes","ovr":89,"club":"Paris Saint-Germain","pos":"LB","rarity":"PURPLE"},{"id":17,"name":"Willian Pacho","ovr":89,"club":"Paris Saint-Germain","pos":"CB","rarity":"PURPLE"},{"id":18,"name":"Lionel Messi","ovr":89,"club":"GOATs","pos":"","rarity":"PURPLE"},{"id":19,"name":"Vinícius Júnior","ovr":89,"club":"Real Madrid","pos":"LW","rarity":"PURPLE"},{"id":20,"name":"Declan Rice","ovr":88,"club":"Arsenal","pos":"CM","rarity":"BLUE"},{"id":21,"name":"William Saliba","ovr":88,"club":"Arsenal","pos":"CB","rarity":"BLUE"},{"id":22,"name":"Virgil van Dijk","ovr":88,"club":"Liverpool","pos":"CB","rarity":"BLUE"},{"id":23,"name":"Jan Oblak","ovr":88,"club":"Atlético Madrid","pos":"GK","rarity":"BLUE"},{"id":24,"name":"Achraf Hakimi","ovr":88,"club":"Paris Saint-Germain","pos":"RB","rarity":"BLUE"},{"id":25,"name":"João Neves","ovr":88,"club":"Paris Saint-Germain","pos":"CM","rarity":"BLUE"},{"id":26,"name":"Joshua Kimmich","ovr":88,"club":"Bayern Munich","pos":"CM","rarity":"BLUE"},{"id":27,"name":"Luis Díaz","ovr":88,"club":"Bayern Munich","pos":"LW","rarity":"BLUE"}];
+const FUS_RARITY_COLOR={BLUE:"#248cff",PURPLE:"#9b4dff",GOLD:"#f6c453"};
 const FUS_PACKS=[
- {name:"SCOUT PACK",price:10000,weights:{STAR:78,WORLD:18,ELITE:3.5,ICON:.5}},
- {name:"PRO PACK",price:25000,weights:{STAR:50,WORLD:35,ELITE:12,ICON:3}},
- {name:"ELITE PACK",price:50000,weights:{STAR:25,WORLD:38,ELITE:28,ICON:9}}
+ {name:"SCOUT PACK",price:10000,weights:{BLUE:82,PURPLE:16,GOLD:2}},
+ {name:"PRO PACK",price:25000,weights:{BLUE:50,PURPLE:40,GOLD:10}},
+ {name:"ELITE PACK",price:50000,weights:{BLUE:24,PURPLE:46,GOLD:30}}
 ];
 let fusCurrentPack=[],fusRevealIndex=0,fusOpening=false;
 function fusData(){if(!state.fusCollab)state.fusCollab={owned:{},packsOpened:0};return state.fusCollab}
 function fusOpen(){fusData();fusFixLogoSources();fusRender();$("#fusCollab").classList.add("show");fusTab("packs")}
 function fusClose(){$("#fusCollab").classList.remove("show")}
 function fusTab(t){["packs","collection","index"].forEach(x=>{$("#fusPage"+x[0].toUpperCase()+x.slice(1))?.classList.toggle("active",x===t);$("#fusTab"+x[0].toUpperCase()+x.slice(1))?.classList.toggle("on",x===t)});fusRender()}
-function fusPickRarity(w){const total=Object.values(w).reduce((a,b)=>a+b,0);let r=Math.random()*total;for(const [k,v] of Object.entries(w)){r-=v;if(r<=0)return k}return "STAR"}
+function fusPickRarity(w){const total=Object.values(w).reduce((a,b)=>a+b,0);let r=Math.random()*total;for(const [k,v] of Object.entries(w)){r-=v;if(r<=0)return k}return "BLUE"}
 function fusPickCard(rarity){let pool=FUS_CARDS.filter(c=>c.rarity===rarity);if(!pool.length)pool=FUS_CARDS;return pool[Math.floor(Math.random()*pool.length)]}
-function fusSellValue(c){
- const values={STAR:2000,WORLD:5000,ELITE:12000,ICON:25000};
- return values[c.rarity]||2000;
-}
+function fusSellValue(c){ const values={BLUE:2500,PURPLE:8000,GOLD:20000}; return values[c.rarity]||2500; }
 function fusSell(id){
  const d=fusData(),q=d.owned[id]||0;if(q<=0)return;
  const c=FUS_CARDS.find(x=>x.id===id);if(!c)return;
@@ -2358,17 +2452,30 @@ function fusSell(id){
  save();toast(`Sold ${c.name} for ${fmt(val)} coins`);fusRender();render();
 }
 function fusRenderCard(c,locked=false){
- const col=FUS_RARITY_COLOR[c.rarity]||"#60a5fa";
+ const col=FUS_RARITY_COLOR[c.rarity]||"#248cff";
  const q=fusData().owned[c.id]||0;
- const photo=(!locked&&c.image)?`<img class="fus-player-photo" src="${c.image}" alt="${c.name}">`:"";
- return `<div class="fus-card ${locked?"locked":""}" style="--fc:${col}">
+ if(locked){
+   return `<div class="fus-card locked fus-card-photo" style="--fc:${col}">
+    <div class="rarity">${c.rarity}</div>
+    <div class="fus-photo-placeholder"></div>
+    <div class="ovr">??</div>
+    <div class="player">UNKNOWN PLAYER</div>
+    <div class="club">Unlock from FUS packs</div>
+   </div>`;
+ }
+ const media=c.image
+   ?`<img class="fus-player-photo" src="${c.image}" alt="${c.name}">`
+   :`<div class="fus-photo-placeholder"><span>PHOTO COMING SOON</span></div>`;
+ return `<div class="fus-card fus-card-photo" style="--fc:${col}">
+  ${media}
+  <div class="fus-card-overlay"></div>
   <div class="rarity">${c.rarity}</div>
-  ${photo}
-  <div class="ovr">${locked?"??":c.ovr}</div>
-  <div class="pos">${locked?"":c.pos}</div>
-  <div class="player">${locked?"UNKNOWN PLAYER":c.name}</div>
-  <div class="club">${locked?"Unlock from FUS packs":c.club}</div>
-  ${locked?"":`<div class="fus-card-qty">OWNED ×${q}</div><button class="fus-sell-btn" onclick="fusSell(${c.id})">SELL · ● ${fmt(fusSellValue(c))}</button>`}
+  <div class="ovr">${c.ovr}</div>
+  <div class="player">${c.name}</div>
+  <div class="pos">${c.pos||""}</div>
+  <div class="club">${c.club}</div>
+  <div class="fus-card-qty">OWNED ×${q}</div>
+  <button class="fus-sell-btn" onclick="fusSell(${c.id})">SELL · ● ${fmt(fusSellValue(c))}</button>
  </div>`;
 }
 
@@ -2424,23 +2531,31 @@ function fusShowReveal(){
  const c=fusCurrentPack[fusRevealIndex];if(!c)return;
  const rc=$("#fusRevealCard");
  rc.classList.remove("card-enter","card-exit");
- rc.style.setProperty("--fc",FUS_RARITY_COLOR[c.rarity]);
+ rc.style.setProperty("--fc",FUS_RARITY_COLOR[c.rarity]||"#248cff");
+
  const img=$("#fusRevealImg");
  if(img){
-   if(c.image){img.src=c.image;img.style.display="block";img.alt=c.name}
-   else{img.removeAttribute("src");img.style.display="none";img.alt=""}
+   if(c.image){
+     img.src=c.image;img.style.display="block";img.alt=c.name;
+     rc.classList.add("has-player-photo");
+   }else{
+     img.removeAttribute("src");img.style.display="none";img.alt="";
+     rc.classList.remove("has-player-photo");
+   }
  }
  $("#fusRevealOVR").textContent=c.ovr;
- $("#fusRevealPos").textContent=c.pos;
+ $("#fusRevealPos").textContent=c.pos||"";
  $("#fusRevealName").textContent=c.name;
- $("#fusRevealClub").textContent=c.club;
+ $("#fusRevealClub").textContent="";
+ $("#fusRevealClub").style.display="none";
  $("#fusRevealRarity").textContent=c.rarity;
  $("#fusRevealHint").textContent=fusRevealIndex===4?"TAP TO ADD PACK TO COLLECTION":`CARD ${fusRevealIndex+1} OF 5 · TAP FOR NEXT`;
+
  void rc.offsetWidth;
  rc.classList.add("card-enter");
  const burst=document.createElement("div");
  burst.className="rarity-burst";
- burst.style.setProperty("--burst",FUS_RARITY_COLOR[c.rarity]||"#60a5fa");
+ burst.style.setProperty("--burst",FUS_RARITY_COLOR[c.rarity]||"#248cff");
  document.body.appendChild(burst);
  setTimeout(()=>burst.remove(),720);
 }
@@ -2571,7 +2686,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.30;
+const APP_INTERNAL_VERSION=10.31;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 
