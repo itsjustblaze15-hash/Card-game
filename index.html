@@ -854,6 +854,18 @@ html,body{background-color:#061a35}
 .fus-pack-art.scout{background:linear-gradient(160deg,#0a58c8,#1e8fff)!important}
 .fus-pack-art.pro{background:linear-gradient(160deg,#5d2bf6,#b45cff)!important}
 .fus-pack-art.elite{background:linear-gradient(160deg,#c98b05,#ffd657)!important}
+
+/* V10.33 FUS scroll fix: tabs stay in normal document flow */
+.fusxgp-tabs{
+  position:relative!important;
+  top:auto!important;
+  z-index:1!important;
+}
+.fusxgp-page,
+.fus-card-grid,
+.fus-card{
+  position:relative;
+}
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -2491,7 +2503,7 @@ function fusFixLogoSources(){
     if(img.src!==GP_LOGO_INLINE) img.src=GP_LOGO_INLINE;
   });
 }
-const FUS_CARDS=[{"id":1,"name":"Kylian Mbappé","ovr":91,"club":"Real Madrid","pos":"ST","rarity":"GOLD","image":"assets/fus_mbappe.jpg"},{"id":2,"name":"Erling Haaland","ovr":91,"club":"Manchester City","pos":"ST","rarity":"GOLD","image":"assets/fus_haaland.png"},{"id":3,"name":"Harry Kane","ovr":90,"club":"Bayern Munich","pos":"ST","rarity":"GOLD"},{"id":4,"name":"Jude Bellingham","ovr":90,"club":"Real Madrid","pos":"CAM","rarity":"GOLD"},{"id":5,"name":"Michael Olise","ovr":90,"club":"Bayern Munich","pos":"RW","rarity":"GOLD"},{"id":6,"name":"Rodri","ovr":90,"club":"Barcelona","pos":"CM","rarity":"GOLD"},{"id":7,"name":"Lamine Yamal","ovr":90,"club":"Barcelona","pos":"RW","rarity":"GOLD"},{"id":8,"name":"Ousmane Dembélé","ovr":90,"club":"Paris Saint-Germain","pos":"RW","rarity":"GOLD"},{"id":9,"name":"Thibaut Courtois","ovr":90,"club":"Real Madrid","pos":"GK","rarity":"GOLD"},{"id":10,"name":"Pedri","ovr":90,"club":"Barcelona","pos":"CM","rarity":"GOLD"},{"id":11,"name":"Vitinha","ovr":90,"club":"Paris Saint-Germain","pos":"CM","rarity":"GOLD"},{"id":12,"name":"Gabriel Magalhães","ovr":89,"club":"Arsenal","pos":"CB","rarity":"PURPLE"},{"id":13,"name":"Bruno Fernandes","ovr":89,"club":"Manchester United","pos":"CAM","rarity":"PURPLE"},{"id":14,"name":"Gianluigi Donnarumma","ovr":89,"club":"Manchester City","pos":"GK","rarity":"PURPLE"},{"id":15,"name":"Khvicha Kvaratskhelia","ovr":89,"club":"Paris Saint-Germain","pos":"LW","rarity":"PURPLE"},{"id":16,"name":"Nuno Mendes","ovr":89,"club":"Paris Saint-Germain","pos":"LB","rarity":"PURPLE"},{"id":17,"name":"Willian Pacho","ovr":89,"club":"Paris Saint-Germain","pos":"CB","rarity":"PURPLE"},{"id":18,"name":"Lionel Messi","ovr":89,"club":"GOATs","pos":"","rarity":"PURPLE"},{"id":19,"name":"Vinícius Júnior","ovr":89,"club":"Real Madrid","pos":"LW","rarity":"PURPLE"},{"id":20,"name":"Declan Rice","ovr":88,"club":"Arsenal","pos":"CM","rarity":"BLUE"},{"id":21,"name":"William Saliba","ovr":88,"club":"Arsenal","pos":"CB","rarity":"BLUE"},{"id":22,"name":"Virgil van Dijk","ovr":88,"club":"Liverpool","pos":"CB","rarity":"BLUE"},{"id":23,"name":"Jan Oblak","ovr":88,"club":"Atlético Madrid","pos":"GK","rarity":"BLUE"},{"id":24,"name":"Achraf Hakimi","ovr":88,"club":"Paris Saint-Germain","pos":"RB","rarity":"BLUE"},{"id":25,"name":"João Neves","ovr":88,"club":"Paris Saint-Germain","pos":"CM","rarity":"BLUE"},{"id":26,"name":"Joshua Kimmich","ovr":88,"club":"Bayern Munich","pos":"CM","rarity":"BLUE"},{"id":27,"name":"Luis Díaz","ovr":88,"club":"Bayern Munich","pos":"LW","rarity":"BLUE"}];
+const FUS_CARDS=[{"id":1,"name":"Kylian Mbappé","ovr":91,"club":"Real Madrid","pos":"ST","rarity":"GOLD","image":"assets/fus_mbappe.jpg"},{"id":2,"name":"Erling Haaland","ovr":91,"club":"Manchester City","pos":"ST","rarity":"GOLD","image":"assets/fus_haaland.png"},{"id":3,"name":"Harry Kane","ovr":90,"club":"Bayern Munich","pos":"ST","rarity":"GOLD","image":"assets/fus_harry_kane.jpeg"},{"id":4,"name":"Jude Bellingham","ovr":90,"club":"Real Madrid","pos":"CAM","rarity":"GOLD","image":"assets/fus_jude_bellingham.jpeg"},{"id":5,"name":"Michael Olise","ovr":90,"club":"Bayern Munich","pos":"RW","rarity":"GOLD","image":"assets/fus_michael_olise.png"},{"id":6,"name":"Rodri","ovr":90,"club":"Barcelona","pos":"CM","rarity":"GOLD","image":"assets/fus_rodri.jpeg"},{"id":7,"name":"Lamine Yamal","ovr":90,"club":"Barcelona","pos":"RW","rarity":"GOLD","image":"assets/fus_lamine_yamal.jpeg"},{"id":8,"name":"Ousmane Dembélé","ovr":90,"club":"Paris Saint-Germain","pos":"RW","rarity":"GOLD","image":"assets/fus_ousmane_dembele.jpeg"},{"id":9,"name":"Thibaut Courtois","ovr":90,"club":"Real Madrid","pos":"GK","rarity":"GOLD","image":"assets/fus_thibaut_courtois.png"},{"id":10,"name":"Pedri","ovr":90,"club":"Barcelona","pos":"CM","rarity":"GOLD","image":"assets/fus_pedri.png"},{"id":11,"name":"Vitinha","ovr":90,"club":"Paris Saint-Germain","pos":"CM","rarity":"GOLD","image":"assets/fus_vitinha.png"},{"id":12,"name":"Gabriel Magalhães","ovr":89,"club":"Arsenal","pos":"CB","rarity":"PURPLE","image":"assets/fus_gabriel_magalhaes.png"},{"id":13,"name":"Bruno Fernandes","ovr":89,"club":"Manchester United","pos":"CAM","rarity":"PURPLE","image":"assets/fus_bruno_fernandes.png"},{"id":14,"name":"Gianluigi Donnarumma","ovr":89,"club":"Manchester City","pos":"GK","rarity":"PURPLE"},{"id":15,"name":"Khvicha Kvaratskhelia","ovr":89,"club":"Paris Saint-Germain","pos":"LW","rarity":"PURPLE"},{"id":16,"name":"Nuno Mendes","ovr":89,"club":"Paris Saint-Germain","pos":"LB","rarity":"PURPLE"},{"id":17,"name":"Willian Pacho","ovr":89,"club":"Paris Saint-Germain","pos":"CB","rarity":"PURPLE"},{"id":18,"name":"Lionel Messi","ovr":89,"club":"GOATs","pos":"","rarity":"PURPLE"},{"id":19,"name":"Vinícius Júnior","ovr":89,"club":"Real Madrid","pos":"LW","rarity":"PURPLE"},{"id":20,"name":"Declan Rice","ovr":88,"club":"Arsenal","pos":"CM","rarity":"BLUE"},{"id":21,"name":"William Saliba","ovr":88,"club":"Arsenal","pos":"CB","rarity":"BLUE"},{"id":22,"name":"Virgil van Dijk","ovr":88,"club":"Liverpool","pos":"CB","rarity":"BLUE"},{"id":23,"name":"Jan Oblak","ovr":88,"club":"Atlético Madrid","pos":"GK","rarity":"BLUE"},{"id":24,"name":"Achraf Hakimi","ovr":88,"club":"Paris Saint-Germain","pos":"RB","rarity":"BLUE"},{"id":25,"name":"João Neves","ovr":88,"club":"Paris Saint-Germain","pos":"CM","rarity":"BLUE"},{"id":26,"name":"Joshua Kimmich","ovr":88,"club":"Bayern Munich","pos":"CM","rarity":"BLUE"},{"id":27,"name":"Luis Díaz","ovr":88,"club":"Bayern Munich","pos":"LW","rarity":"BLUE"}];
 const FUS_RARITY_COLOR={BLUE:"#248cff",PURPLE:"#9b4dff",GOLD:"#f6c453"};
 const FUS_PACKS=[
  {name:"SCOUT PACK",price:20000,weights:{BLUE:82,PURPLE:16,GOLD:2}},
@@ -2772,7 +2784,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=10.32;
+const APP_INTERNAL_VERSION=10.33;
 const APP_DISPLAY_VERSION="10";
 let updateReloading=false;
 

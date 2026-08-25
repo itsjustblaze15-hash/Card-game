@@ -1,5 +1,5 @@
 {
-  "version": "10.32",
+  "version": "10.33",
   "display_version": "10",
-  "build": "fus-cleanup-unique-higher-prices"
+  "build": "fus-player-photos-scroll-fix"
 }

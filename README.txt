@@ -696,3 +696,11 @@ V10.32
 - FUS pack reveal card shell now matches pack type color.
 - Pack opening labels are white.
 - FUS packs cannot contain duplicate cards within the same pack.
+
+V10.33 FUS PLAYER PHOTOS + SCROLL FIX
+- Added exact uploaded photos for Harry Kane, Jude Bellingham, Michael Olise, Rodri,
+  Lamine Yamal, Ousmane Dembele, Thibaut Courtois, Pedri, Vitinha,
+  Gabriel Magalhaes, and Bruno Fernandes.
+- FUS PACKS / COLLECTION / INDEX tabs no longer stick over cards while scrolling.
+- Existing Mbappe and Haaland photos are preserved.
+- No player photo was edited, cropped, generated, or replaced.
