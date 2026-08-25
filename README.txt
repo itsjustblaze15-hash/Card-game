@@ -721,3 +721,6 @@ V11 FUS REVEAL + SELL ALL UPDATE
 - SELL ALL opens a confirmation prompt and requires holding YES for 3 seconds.
 - Selling all pays the normal per-card sell value for every owned copy.
 - Visible version remains V11.
+
+
+V11 gameplay fixes: version-scoped Index NEW badges; FUS account value and first-copy NEW CARD reveal; exact FUS odds Scout 70/20/10, Pro 50/30/20, Elite 30/40/30; reveal rarity styling follows actual pull; Golden Arena NEW and Blackjack BETA labels removed; Random Secret completion card permanently unsellable and FUS excluded from completion.
