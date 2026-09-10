@@ -945,6 +945,11 @@ html,body{background-color:#061a35}
 /* V11.03 FUS mode legacy-save + touch reliability fix */
 #fusModeBtn{pointer-events:auto!important;touch-action:manipulation!important;position:relative!important;z-index:2!important}
 
+/* V11.08 account button moved below header so wallet stays unobstructed */
+#gpAccountDock{display:flex;justify-content:flex-end;padding:0 28px 4px;max-width:1180px;margin:0 auto}
+#gpAccountDock .gp-account-btn{max-width:150px}
+@media(max-width:600px){#gpAccountDock{padding:0 28px 2px}}
+
 /* V11.07 username/password account gate */
 .gp-auth-overlay{position:fixed;inset:0;z-index:100500;display:none;align-items:center;justify-content:center;padding:calc(22px + env(safe-area-inset-top)) 18px calc(22px + env(safe-area-inset-bottom));background:radial-gradient(circle at 50% 0,#fff2a0 0,#efc42d 42%,#9b6900 100%);overflow:auto}
 .gp-auth-overlay.show{display:flex}
@@ -999,9 +1004,10 @@ html,body{background-color:#061a35}
 <div class="top">
   <div class="brand">GOLDEN PULLS <span class="vbadge">V11</span></div>
   <button id="updateBtn" class="update" onclick="checkForUpdate()">UPDATE</button>
-  <button id="gpAccountBtn" class="gp-account-btn" type="button" onclick="gpLogoutPrompt()" title="Account">ACCOUNT</button>
   <div class="wallet">● <span id="coins">0</span></div>
 </div>
+
+<div id="gpAccountDock"><button id="gpAccountBtn" class="gp-account-btn" type="button" onclick="gpLogoutPrompt()" title="Account">ACCOUNT</button></div>
 
 <section id="shop" class="screen active">
   <div class="hero"><h1>PACK SHOP</h1><p>Five cards in every pack. Odds are shown before you buy.</p></div>
