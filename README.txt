@@ -751,3 +751,11 @@ V11.06 FUS PLAYER EXPANSION
 - Expanded FUS from 40 to 53 cards.
 - Added exact uploaded photos for players 41-53 without editing or generation.
 - Existing saves remain compatible; new card ownership starts at 0 until pulled.
+
+V11.07 USERNAME + PASSWORD ACCOUNTS
+- Forced account gate: Log In or Create Account. No guest mode.
+- Existing local progress is linked to the first account created on that device.
+- Username/password account records use salted SHA-256 password hashes, never plain-text passwords.
+- Each local username gets its own independent Golden Pulls save slot.
+- Logout clears the active legacy save slots after safely storing the account save.
+- This build is local-account capable; cross-device cloud sync still requires Supabase project credentials.

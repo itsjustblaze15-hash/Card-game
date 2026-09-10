@@ -944,16 +944,62 @@ html,body{background-color:#061a35}
 
 /* V11.03 FUS mode legacy-save + touch reliability fix */
 #fusModeBtn{pointer-events:auto!important;touch-action:manipulation!important;position:relative!important;z-index:2!important}
+
+/* V11.07 username/password account gate */
+.gp-auth-overlay{position:fixed;inset:0;z-index:100500;display:none;align-items:center;justify-content:center;padding:calc(22px + env(safe-area-inset-top)) 18px calc(22px + env(safe-area-inset-bottom));background:radial-gradient(circle at 50% 0,#fff2a0 0,#efc42d 42%,#9b6900 100%);overflow:auto}
+.gp-auth-overlay.show{display:flex}
+.gp-auth-box{width:min(420px,100%);background:#171100;color:#fff7d6;border:2px solid #ffe16b;border-radius:26px;padding:22px;box-shadow:0 28px 70px #0008}
+.gp-auth-logo{text-align:center;font-size:29px;font-weight:1000;letter-spacing:.5px;color:#ffd84d;margin-bottom:4px}
+.gp-auth-sub{text-align:center;font-size:12px;font-weight:800;color:#d8c990;margin-bottom:18px}
+.gp-auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.gp-auth-tabs button{border:1px solid #5b4700;border-radius:12px;background:#2d2300;color:#ddca7b;padding:10px;font-weight:1000}
+.gp-auth-tabs button.on{background:#ffd84d;color:#241900;border-color:#ffd84d}
+.gp-auth-form{display:none}.gp-auth-form.on{display:block}
+.gp-auth-form label{display:block;font-size:11px;font-weight:1000;color:#ffd84d;margin:11px 0 6px}
+.gp-auth-form input{width:100%;border:1px solid #6d5500;border-radius:12px;background:#0c0900;color:white;padding:13px 14px;font:inherit;font-weight:800;outline:none}
+.gp-auth-form input:focus{border-color:#ffd84d;box-shadow:0 0 0 3px #ffd84d20}
+.gp-auth-submit{width:100%;margin-top:16px;border:0;border-radius:13px;background:linear-gradient(#ffe36d,#e6aa0c);padding:13px;font-weight:1000;color:#261900}
+.gp-auth-error{min-height:18px;margin-top:10px;color:#ff8a8a;font-size:11px;font-weight:900;text-align:center}
+.gp-auth-progress{margin-top:12px;padding:10px 11px;border-radius:11px;background:#08274d;color:#b9d9ff;font-size:11px;font-weight:850;text-align:center;display:none}
+.gp-auth-progress.show{display:block}
+.gp-account-btn{border:1px solid #ffe888;border-radius:999px;background:#241a00;color:#ffd84d;padding:7px 9px;font-weight:1000;font-size:10px;max-width:92px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:390px){.gp-account-btn{max-width:68px;padding:7px 7px}.brand{font-size:17px}.update{padding:7px 7px}}
+
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
 <link rel="preload" as="image" href="./assets/HarOUT.jpg">
 </head>
 <body>
+<div id="gpAuthOverlay" class="gp-auth-overlay" aria-hidden="true">
+ <div class="gp-auth-box">
+  <div class="gp-auth-logo">GOLDEN PULLS</div>
+  <div class="gp-auth-sub">YOUR ACCOUNT · YOUR PROGRESS</div>
+  <div class="gp-auth-tabs">
+   <button id="gpAuthLoginTab" type="button" onclick="gpAuthTab('login')">LOG IN</button>
+   <button id="gpAuthCreateTab" type="button" onclick="gpAuthTab('create')">CREATE ACCOUNT</button>
+  </div>
+  <form id="gpLoginForm" class="gp-auth-form" onsubmit="gpLogin(event)">
+   <label>USERNAME</label><input id="gpLoginUsername" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="16">
+   <label>PASSWORD</label><input id="gpLoginPassword" type="password" autocomplete="current-password" maxlength="64">
+   <button class="gp-auth-submit" type="submit">LOG IN</button>
+  </form>
+  <form id="gpCreateForm" class="gp-auth-form" onsubmit="gpCreateAccount(event)">
+   <label>USERNAME</label><input id="gpCreateUsername" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="16">
+   <label>PASSWORD</label><input id="gpCreatePassword" type="password" autocomplete="new-password" maxlength="64">
+   <label>CONFIRM PASSWORD</label><input id="gpCreateConfirm" type="password" autocomplete="new-password" maxlength="64">
+   <button class="gp-auth-submit" type="submit">CREATE ACCOUNT</button>
+   <div id="gpProgressImportNote" class="gp-auth-progress">Your current Golden Pulls progress will be linked to this account.</div>
+  </form>
+  <div id="gpAuthError" class="gp-auth-error"></div>
+ </div>
+</div>
+
 <div class="app">
 <div class="top">
   <div class="brand">GOLDEN PULLS <span class="vbadge">V11</span></div>
   <button id="updateBtn" class="update" onclick="checkForUpdate()">UPDATE</button>
+  <button id="gpAccountBtn" class="gp-account-btn" type="button" onclick="gpLogoutPrompt()" title="Account">ACCOUNT</button>
   <div class="wallet">● <span id="coins">0</span></div>
 </div>
 
@@ -1114,6 +1160,20 @@ html,body{background-color:#061a35}
 </div></div>
 
 <script>
+(function(){
+ try{
+  const user=localStorage.getItem("gpActiveUserV1");
+  if(!user)return;
+  const payload=localStorage.getItem("gpUserSaveV1:"+user);
+  if(!payload)return;
+  localStorage.setItem("goldenPullsSave",payload);
+  localStorage.setItem("goldenPullsV2",payload);
+  localStorage.setItem("goldenPullsV1",payload);
+ }catch(e){console.warn("GP account bootstrap skipped",e)}
+})();
+</script>
+
+<script>
 const CARDS = [{"id":1,"character":"TIGGY","name":"TIGGY #01","rarity":"Common","image":"assets/card_001.jpeg"},{"id":2,"character":"TIGGY","name":"TIGGY #02","rarity":"Common","image":"assets/card_002.jpeg"},{"id":3,"character":"TIGGY","name":"TIGGY #03","rarity":"Common","image":"assets/card_003.jpg"},{"id":4,"character":"TIGGY","name":"TIGGY #04","rarity":"Common","image":"assets/card_004.jpg"},{"id":5,"character":"TIGGY","name":"TIGGY #05","rarity":"Common","image":"assets/card_005.jpeg"},{"id":6,"character":"TIGGY","name":"TIGGY #06","rarity":"Common","image":"assets/card_006.jpg"},{"id":7,"character":"TIGGY","name":"TIGGY #07","rarity":"Common","image":"assets/card_007.jpg"},{"id":8,"character":"TIGGY","name":"TIGGY #08","rarity":"Common","image":"assets/card_008.jpg"},{"id":9,"character":"TIGGY","name":"TIGGY #09","rarity":"Common","image":"assets/card_009.jpg"},{"id":10,"character":"TIGGY","name":"TIGGY #10","rarity":"Common","image":"assets/card_010.jpg"},{"id":11,"character":"TIGGY","name":"TIGGY #11","rarity":"Common","image":"assets/card_011.jpg"},{"id":12,"character":"TIGGY","name":"TIGGY #12","rarity":"Common","image":"assets/card_012.jpg"},{"id":13,"character":"TIGGY","name":"TIGGY #13","rarity":"Common","image":"assets/card_013.jpg"},{"id":14,"character":"TIGGY","name":"TIGGY #14","rarity":"Common","image":"assets/card_014.jpg"},{"id":15,"character":"TIGGY","name":"TIGGY #15","rarity":"Common","image":"assets/card_015.jpg"},{"id":16,"character":"TIGGY","name":"TIGGY #16","rarity":"Common","image":"assets/card_016.jpg"},{"id":17,"character":"TIGGY","name":"TIGGY #17","rarity":"Common","image":"assets/card_017.jpeg"},{"id":18,"character":"TIGGY","name":"TIGGY #18","rarity":"Common","image":"assets/card_018.jpeg"},{"id":19,"character":"TIGGY","name":"TIGGY #19","rarity":"Common","image":"assets/card_019.jpeg"},{"id":20,"character":"TIGGY","name":"TIGGY #20","rarity":"Common","image":"assets/card_020.jpeg"},{"id":21,"character":"TIGGY","name":"TIGGY #21","rarity":"Common","image":"assets/card_021.jpeg"},{"id":22,"character":"TIGGY","name":"TIGGY #22","rarity":"Common","image":"assets/card_022.jpg"},{"id":23,"character":"TIGGY","name":"TIGGY #23","rarity":"Common","image":"assets/card_023.jpg"},{"id":24,"character":"TIGGY","name":"TIGGY #24","rarity":"Common","image":"assets/card_024.jpg"},{"id":25,"character":"TIGGY","name":"TIGGY #25","rarity":"Uncommon","image":"assets/card_025.jpg"},{"id":26,"character":"TIGGY","name":"TIGGY #26","rarity":"Uncommon","image":"assets/card_026.jpeg"},{"id":27,"character":"TIGGY","name":"TIGGY #27","rarity":"Uncommon","image":"assets/card_027.jpeg"},{"id":28,"character":"TIGGY","name":"TIGGY #28","rarity":"Uncommon","image":"assets/card_028.jpeg"},{"id":29,"character":"TIGGY","name":"TIGGY #29","rarity":"Uncommon","image":"assets/card_029.jpeg"},{"id":30,"character":"TIGGY","name":"TIGGY #30","rarity":"Uncommon","image":"assets/card_030.jpeg"},{"id":31,"character":"TIGGY","name":"TIGGY #31","rarity":"Uncommon","image":"assets/card_031.jpeg"},{"id":32,"character":"TIGGY","name":"TIGGY #32","rarity":"Rare","image":"assets/card_032.jpeg"},{"id":33,"character":"TIGGY","name":"TIGGY #33","rarity":"Rare","image":"assets/card_033.jpeg"},{"id":34,"character":"TIGGY","name":"TIGGY #34","rarity":"Rare","image":"assets/card_034.jpeg"},{"id":35,"character":"TIGGY","name":"TIGGY #35","rarity":"Rare","image":"assets/card_035.jpeg"},{"id":36,"character":"TIGGY","name":"TIGGY #36","rarity":"Epic","image":"assets/card_036.jpeg"},{"id":37,"character":"TIGGY","name":"TIGGY #37","rarity":"Epic","image":"assets/card_037.jpeg"},{"id":38,"character":"VGO","name":"VGO #01","rarity":"Common","image":"assets/card_038.jpeg"},{"id":39,"character":"VGO","name":"VGO #02","rarity":"Common","image":"assets/card_039.jpg"},{"id":40,"character":"VGO","name":"VGO #03","rarity":"Common","image":"assets/card_040.jpg"},{"id":41,"character":"VGO","name":"VGO #04","rarity":"Common","image":"assets/card_041.jpg"},{"id":42,"character":"VGO","name":"VGO #05","rarity":"Common","image":"assets/card_042.jpg"},{"id":43,"character":"VGO","name":"VGO #06","rarity":"Common","image":"assets/card_043.jpg"},{"id":44,"character":"VGO","name":"VGO #07","rarity":"Common","image":"assets/card_044.jpg"},{"id":45,"character":"VGO","name":"VGO #08","rarity":"Common","image":"assets/card_045.jpeg"},{"id":46,"character":"VGO","name":"VGO #09","rarity":"Common","image":"assets/card_046.jpeg"},{"id":47,"character":"VGO","name":"VGO #10","rarity":"Uncommon","image":"assets/card_047.jpg"},{"id":48,"character":"VGO","name":"VGO #11","rarity":"Uncommon","image":"assets/card_048.jpeg"},{"id":49,"character":"VGO","name":"VGO #12","rarity":"Uncommon","image":"assets/card_049.jpeg"},{"id":50,"character":"VGO","name":"VGO #13","rarity":"Rare","image":"assets/card_050.jpeg"},{"id":51,"character":"VGO","name":"VGO #14","rarity":"Epic","image":"assets/card_051.jpeg"},{"id":52,"character":"HAYK THE THUG","name":"HAYK THE THUG #01","rarity":"Common","image":"assets/card_052.jpeg"},{"id":53,"character":"HAYK THE THUG","name":"HAYK THE THUG #02","rarity":"Common","image":"assets/card_053.jpg"},{"id":54,"character":"HAYK THE THUG","name":"HAYK THE THUG #03","rarity":"Common","image":"assets/card_054.jpg"},{"id":55,"character":"HAYK THE THUG","name":"HAYK THE THUG #04","rarity":"Common","image":"assets/card_055.jpg"},{"id":56,"character":"HAYK THE THUG","name":"HAYK THE THUG #05","rarity":"Common","image":"assets/card_056.jpg"},{"id":57,"character":"HAYK THE THUG","name":"HAYK THE THUG #06","rarity":"Common","image":"assets/card_057.jpeg"},{"id":58,"character":"HAYK THE THUG","name":"HAYK THE THUG #07","rarity":"Common","image":"assets/card_058.jpg"},{"id":59,"character":"HAYK THE THUG","name":"HAYK THE THUG #08","rarity":"Common","image":"assets/card_059.jpg"},{"id":60,"character":"HAYK THE THUG","name":"HAYK THE THUG #09","rarity":"Common","image":"assets/card_060.jpg"},{"id":61,"character":"HAYK THE THUG","name":"HAYK THE THUG #10","rarity":"Uncommon","image":"assets/card_061.jpg"},{"id":62,"character":"HAYK THE THUG","name":"HAYK THE THUG #11","rarity":"Uncommon","image":"assets/card_062.jpg"},{"id":63,"character":"HAYK THE THUG","name":"HAYK THE THUG #12","rarity":"Uncommon","image":"assets/card_063.jpg"},{"id":64,"character":"HAYK THE THUG","name":"HAYK THE THUG #13","rarity":"Uncommon","image":"assets/card_064.jpg"},{"id":65,"character":"HAYK THE THUG","name":"HAYK THE THUG #14","rarity":"Uncommon","image":"assets/card_065.jpeg"},{"id":66,"character":"HAYK THE THUG","name":"HAYK THE THUG #15","rarity":"Uncommon","image":"assets/card_066.jpeg"},{"id":67,"character":"HAYK THE THUG","name":"HAYK THE THUG #16","rarity":"Rare","image":"assets/card_067.jpeg"},{"id":68,"character":"HAYK THE THUG","name":"HAYK THE THUG #17","rarity":"Rare","image":"assets/card_068.jpeg"},{"id":69,"character":"HAYK THE THUG","name":"HAYK THE THUG #18","rarity":"Epic","image":"assets/card_069.jpg"},{"id":70,"character":"THE GOOF","name":"THE GOOF #01","rarity":"Rare","image":"assets/card_070.jpeg"},{"id":71,"character":"THE GOOF","name":"THE GOOF #02","rarity":"Epic","image":"assets/card_071.jpeg"},{"id":72,"character":"THE GOOF","name":"THE GOOF #03","rarity":"Epic","image":"assets/card_072.jpeg"},{"id":73,"character":"THE 3 NERDS","name":"THE 3 NERDS #01","rarity":"Uncommon","image":"assets/card_073.jpg"},{"id":74,"character":"THE 3 NERDS","name":"THE 3 NERDS #02","rarity":"Uncommon","image":"assets/card_074.jpeg"},{"id":75,"character":"THE 3 NERDS","name":"THE 3 NERDS #03","rarity":"Rare","image":"assets/card_075.jpeg"},{"id":76,"character":"THE 3 NERDS","name":"THE 3 NERDS #04","rarity":"Rare","image":"assets/card_076.jpeg"},{"id":77,"character":"THE 3 NERDS","name":"THE 3 NERDS #05","rarity":"Epic","image":"assets/card_077.jpeg"},{"id":78,"character":"THE 3 NERDS","name":"THE 3 NERDS #06","rarity":"Uncommon","image":"assets/card_078.jpeg"},{"id":79,"character":"THE 3 NERDS","name":"THE 3 NERDS #07","rarity":"Rare","image":"assets/card_079.jpeg"},{"id":80,"character":"THE 3 NERDS","name":"THE 3 NERDS #08","rarity":"Epic","image":"assets/card_080.jpeg"},{"id":81,"character":"BOSS EXCLUSIVE","name":"Ice Agents","rarity":"Exotic","image":"assets/ice_agents.jpeg","bossExclusive":true},{"id":82,"character":"Shant","name":"Shant Uncommon","rarity":"Uncommon","image":"assets/shant_uncommon.jpeg"},{"id":83,"character":"Shant","name":"Shant Rare","rarity":"Uncommon","image":"assets/shant_rare.JPG"},{"id":84,"character":"Shant","name":"Shant Epic","rarity":"Rare","image":"assets/shant_epic.jpeg"},{"id":85,"character":"Shant","name":"Shant Legendary","rarity":"Epic","image":"assets/shant_legendary.JPG"},{"id":86,"character":"Gaylex","name":"Gaylex 1","rarity":"Common","image":"assets/gaylex_common_1.JPG"},{"id":87,"character":"Gaylex","name":"Gaylex 2","rarity":"Common","image":"assets/gaylex_common_2.JPG"},{"id":88,"character":"Gaylex","name":"Gaylex 3","rarity":"Common","image":"assets/gaylex_common_3.jpeg"},{"id":89,"character":"I Need More Bullets","name":"I Need More Bullets","rarity":"Exotic","image":"assets/i_need_more_bullets.JPG","bossExclusive":true},{"id":90,"character":"Balery","name":"Balery 1","rarity":"Uncommon","image":"assets/balery_rare_1.JPG"},{"id":91,"character":"Balery","name":"Balery 2","rarity":"Uncommon","image":"assets/balery_rare_2.JPG"},{"id":92,"character":"Balery","name":"Balery 3","rarity":"Uncommon","image":"assets/balery_rare_3.jpeg"},{"id":93,"character":"Balery","name":"Balery 4","rarity":"Uncommon","image":"assets/balery_rare_4.JPG"},{"id":94,"character":"Random","name":"Random 1","rarity":"Rare","image":"assets/random_epic_1.JPG"},{"id":95,"character":"Random","name":"Random 2","rarity":"Rare","image":"assets/random_epic_2.jpeg"},{"id":96,"character":"Random","name":"Random 3","rarity":"Epic","image":"assets/random_legendary_1.JPG"},{"id":97,"character":"Random","name":"Random 4","rarity":"Legendary","image":"assets/random_legendary_2.jpg"},{"id":98,"character":"HarOUT","name":"HarOUT 1","rarity":"Common","image":"assets/harout_1.JPG"},{"id":99,"character":"HarOUT","name":"HarOUT 2","rarity":"Uncommon","image":"assets/harout_2.JPG"},{"id":100,"character":"HarOUT","name":"HarOUT 3","rarity":"Uncommon","image":"assets/harout_3.JPG"},{"id":101,"character":"HarOUT","name":"HarOUT 4","rarity":"Rare","image":"assets/harout_4.JPG"},{"id":102,"character":"HarOUT","name":"HarOUT 5","rarity":"Legendary","image":"assets/harout_5.JPG"},{"id":103,"character":"HarOUT","name":"HarOUT 6","rarity":"Uncommon","image":"assets/harout_6.JPG"},{"id":104,"character":"HarOUT","name":"HarOUT 7","rarity":"Rare","image":"assets/harout_7.JPG"},{"id":105,"character":"HarOUT","name":"HarOUT 8","rarity":"Legendary","image":"assets/harout_8.JPG"},{"id":106,"character":"VGO","name":"VGO #15","rarity":"Uncommon","image":"assets/vgo_new_1.JPG"},{"id":107,"character":"VGO","name":"VGO #16","rarity":"Rare","image":"assets/vgo_new_2.JPG"},{"id":108,"character":"VGO","name":"VGO #17","rarity":"Legendary","image":"assets/vgo_new_3.JPG"},{"id":109,"character":"VGO","name":"VGO #18","rarity":"Uncommon","image":"assets/vgo_new_4.JPG"},{"id":110,"character":"Hayko The Thug","name":"Hayko The Thug 1","rarity":"Common","image":"assets/hayko_1.JPG"},{"id":111,"character":"Hayko The Thug","name":"Hayko The Thug 2","rarity":"Uncommon","image":"assets/hayko_2.JPG"},{"id":112,"character":"Hayko The Thug","name":"Hayko The Thug 3","rarity":"Uncommon","image":"assets/hayko_3.JPG"},{"id":113,"character":"Hayko The Thug","name":"Hayko The Thug 4","rarity":"Rare","image":"assets/hayko_4.JPG"},{"id":114,"character":"Hayko The Thug","name":"Hayko The Thug 5","rarity":"Legendary","image":"assets/hayko_5.JPG"},{"id":115,"character":"Hayko The Thug","name":"Hayko The Thug 6","rarity":"Uncommon","image":"assets/hayko_6.JPG"},{"id":116,"character":"Hayko The Thug","name":"Hayko The Thug 7","rarity":"Rare","image":"assets/hayko_7.JPG"},{"id":117,"character":"The 3 Nerds","name":"The 3 Nerds 1","rarity":"Uncommon","image":"assets/three_nerds_1.JPG"},{"id":118,"character":"The 3 Nerds","name":"The 3 Nerds 2","rarity":"Uncommon","image":"assets/three_nerds_2.JPG"},{"id":119,"character":"Artlander","name":"Artlander","rarity":"Exotic","image":"assets/artlander.PNG","bossExclusive":true},{"id":120,"character":"VGO","name":"VGO V9 #01","rarity":"Uncommon","image":"assets/vgo_v9_01.jpg"},{"id":121,"character":"VGO","name":"VGO V9 #02","rarity":"Epic","image":"assets/vgo_v9_02.jpg"},{"id":122,"character":"VGO","name":"VGO V9 #03","rarity":"Legendary","image":"assets/vgo_v9_03.jpg"},{"id":123,"character":"VGO","name":"VGO V9 #04","rarity":"Rare","image":"assets/vgo_v9_04.jpg"},{"id":124,"character":"TIGGY","name":"TIGGY V9 #01","rarity":"Legendary","image":"assets/tiggy_v9_01.jpg"},{"id":125,"character":"TIGGY","name":"TIGGY V9 #02","rarity":"Epic","image":"assets/tiggy_v9_02.jpg"},{"id":126,"character":"TIGGY","name":"TIGGY V9 #03","rarity":"Rare","image":"assets/tiggy_v9_03.jpg"},{"id":127,"character":"TIGGY","name":"TIGGY V9 #04","rarity":"Uncommon","image":"assets/tiggy_v9_04.jpg"},{"id":128,"character":"TIGGY","name":"TIGGY V9 #05","rarity":"Epic","image":"assets/tiggy_v9_05.jpg"},{"id":129,"character":"TIGGY","name":"TIGGY V9 #06","rarity":"Rare","image":"assets/tiggy_v9_06.jpg"},{"id":130,"character":"THE 3 NERDS","name":"THE 3 NERDS V9 #01","rarity":"Rare","image":"assets/the_3_nerds_v9_01.jpg"},{"id":131,"character":"THE 3 NERDS","name":"THE 3 NERDS V9 #02","rarity":"Epic","image":"assets/the_3_nerds_v9_02.jpg"},{"id":132,"character":"THE 3 NERDS","name":"THE 3 NERDS V9 #03","rarity":"Legendary","image":"assets/the_3_nerds_v9_03.jpg"},{"id":133,"character":"THE 3 NERDS","name":"THE 3 NERDS V9 #04","rarity":"Uncommon","image":"assets/the_3_nerds_v9_04.jpg"},{"id":134,"character":"Hayko The Thug","name":"Hayko The Thug V9 #01","rarity":"Common","image":"assets/hayko_the_thug_v9_01.jpg"},{"id":135,"character":"Hayko The Thug","name":"Hayko The Thug V9 #02","rarity":"Uncommon","image":"assets/hayko_the_thug_v9_02.jpg"},{"id":136,"character":"Hayko The Thug","name":"Hayko The Thug V9 #03","rarity":"Rare","image":"assets/hayko_the_thug_v9_03.jpg"},{"id":137,"character":"Hayko The Thug","name":"Hayko The Thug V9 #04","rarity":"Epic","image":"assets/hayko_the_thug_v9_04.jpg"},{"id":138,"character":"Hayko The Thug","name":"Hayko The Thug V9 #05","rarity":"Legendary","image":"assets/hayko_the_thug_v9_05.jpg"},{"id":139,"character":"Hayko The Thug","name":"Hayko The Thug V9 #06","rarity":"Rare","image":"assets/hayko_the_thug_v9_06.jpg"},{"id":140,"character":"Hayko The Thug","name":"Hayko The Thug V9 #07","rarity":"Epic","image":"assets/hayko_the_thug_v9_07.jpg"},{"id":141,"character":"Shant","name":"Shant V9 #01","rarity":"Common","image":"assets/shant_v9_01.jpg"},{"id":142,"character":"Shant","name":"Shant V9 #02","rarity":"Rare","image":"assets/shant_v9_02.jpg"},{"id":143,"character":"Random","name":"Random V9 #01","rarity":"Common","image":"assets/random_v9_01.jpg"},{"id":144,"character":"Random","name":"Random V9 #02","rarity":"Uncommon","image":"assets/random_v9_02.jpeg"},{"id":145,"character":"Random","name":"Random V9 #03","rarity":"Rare","image":"assets/random_v9_03.jpg"},{"id":146,"character":"Random","name":"Random V9 #04","rarity":"Epic","image":"assets/random_v9_04.jpg"},{"id":147,"character":"Random","name":"Random V9 #05","rarity":"Legendary","image":"assets/random_v9_05.jpg"},{"id":148,"character":"HarOUT","name":"HarOUT V9 #01","rarity":"Rare","image":"assets/harout_v9_01.jpg"},{"id":149,"character":"Random","name":"Random Secret","rarity":"Epic","image":"assets/random_secret_v9.jpg","secretExclusive":true},{"id":150,"character":"Random","name":"Random","rarity":"Rare","image":"assets/Random.jpg"},{"id":151,"character":"HarOUT","name":"HarOUT","rarity":"Epic","image":"assets/HarOUT.jpg"},{"id":152,"character":"Romania","name":"Romania","rarity":"Exotic","image":"assets/romania.jpg","bossExclusive":true}];
 const R={Common:{color:"#9b9b9b",value:250},Uncommon:{color:"#27c45b",value:700},Rare:{color:"#2587ff",value:1800},Epic:{color:"#a34cff",value:5000},Legendary:{color:"#ff8a1f",value:15000},Exotic:{color:"#00e5ff",value:35000}};
 const ICE_AGENTS_ID=81;
@@ -1271,11 +1331,103 @@ function isCurrentVersionCard(c){
  return Number(cardIntroRegistry[String(c.id)])===currentMajorVersion();
 }
 
-function save(){
- const payload=JSON.stringify(state);
+
+const GP_ACCOUNTS_KEY="gpAccountsV1";
+const GP_SESSION_KEY="gpActiveUserV1";
+const GP_USER_SAVE_PREFIX="gpUserSaveV1:";
+function gpAccounts(){const a=safeParse(localStorage.getItem(GP_ACCOUNTS_KEY));return a&&typeof a==="object"?a:{}}
+function gpCurrentUser(){return localStorage.getItem(GP_SESSION_KEY)||""}
+function gpNormalizeUsername(v){return String(v||"").trim().toLowerCase()}
+function gpValidUsername(v){return /^[a-z0-9_]{3,16}$/.test(v)}
+function gpRandomSalt(){const b=new Uint8Array(16);crypto.getRandomValues(b);return Array.from(b,x=>x.toString(16).padStart(2,"0")).join("")}
+async function gpPasswordHash(password,salt){
+ const data=new TextEncoder().encode(salt+":"+password);
+ const buf=await crypto.subtle.digest("SHA-256",data);
+ return Array.from(new Uint8Array(buf),x=>x.toString(16).padStart(2,"0")).join("");
+}
+function gpPersistPayload(payload){
+ const user=gpCurrentUser();
+ if(user)localStorage.setItem(GP_USER_SAVE_PREFIX+user,payload);
  localStorage.setItem(SAVE_KEY,payload);
  localStorage.setItem("goldenPullsV2",payload);
  localStorage.setItem("goldenPullsV1",payload);
+}
+function gpCopyAccountSaveToLegacy(user){
+ const payload=localStorage.getItem(GP_USER_SAVE_PREFIX+user);
+ if(!payload)return false;
+ localStorage.setItem(SAVE_KEY,payload);localStorage.setItem("goldenPullsV2",payload);localStorage.setItem("goldenPullsV1",payload);return true;
+}
+function gpAuthTab(which){
+ const login=which==="login";
+ $("#gpAuthLoginTab")?.classList.toggle("on",login);
+ $("#gpAuthCreateTab")?.classList.toggle("on",!login);
+ $("#gpLoginForm")?.classList.toggle("on",login);
+ $("#gpCreateForm")?.classList.toggle("on",!login);
+ const err=$("#gpAuthError");if(err)err.textContent="";
+}
+function gpShowAuth(){const o=$("#gpAuthOverlay");if(!o)return;o.classList.add("show");o.setAttribute("aria-hidden","false");document.body.style.overflow="hidden"}
+function gpHideAuth(){const o=$("#gpAuthOverlay");if(!o)return;o.classList.remove("show");o.setAttribute("aria-hidden","true");document.body.style.overflow=""}
+function gpAuthError(msg){const e=$("#gpAuthError");if(e)e.textContent=msg||""}
+function gpHasMeaningfulProgress(){return saveScore(state)>0 || Number(state.battleWins||0)>0 || Object.keys(state.fusCollab?.owned||{}).some(k=>Number(state.fusCollab.owned[k])>0)}
+async function gpCreateAccount(ev){
+ ev?.preventDefault();gpAuthError("");
+ const username=gpNormalizeUsername($("#gpCreateUsername")?.value);
+ const password=String($("#gpCreatePassword")?.value||"");
+ const confirm=String($("#gpCreateConfirm")?.value||"");
+ if(!gpValidUsername(username))return gpAuthError("Username: 3–16 letters, numbers, or _");
+ if(password.length<4)return gpAuthError("Password must be at least 4 characters");
+ if(password!==confirm)return gpAuthError("Passwords do not match");
+ const accounts=gpAccounts();if(accounts[username])return gpAuthError("That username already exists");
+ const salt=gpRandomSalt(),hash=await gpPasswordHash(password,salt);
+ accounts[username]={salt,hash,createdAt:Date.now()};
+ localStorage.setItem(GP_ACCOUNTS_KEY,JSON.stringify(accounts));
+ const payload=JSON.stringify(state);
+ localStorage.setItem(GP_USER_SAVE_PREFIX+username,payload);
+ localStorage.setItem(GP_SESSION_KEY,username);
+ gpCopyAccountSaveToLegacy(username);
+ location.reload();
+}
+async function gpLogin(ev){
+ ev?.preventDefault();gpAuthError("");
+ const username=gpNormalizeUsername($("#gpLoginUsername")?.value);
+ const password=String($("#gpLoginPassword")?.value||"");
+ const account=gpAccounts()[username];
+ if(!account)return gpAuthError("Username or password is wrong");
+ const hash=await gpPasswordHash(password,account.salt);
+ if(hash!==account.hash)return gpAuthError("Username or password is wrong");
+ localStorage.setItem(GP_SESSION_KEY,username);
+ if(!gpCopyAccountSaveToLegacy(username)){
+  const fresh=JSON.stringify({coins:0,owned:{},welcome:3});
+  localStorage.setItem(GP_USER_SAVE_PREFIX+username,fresh);gpCopyAccountSaveToLegacy(username);
+ }
+ location.reload();
+}
+function gpLogoutPrompt(){
+ const user=gpCurrentUser();if(!user)return gpShowAuth();
+ if(!confirm(`Log out of ${user}?`))return;
+ try{gpPersistPayload(JSON.stringify(state))}catch(e){}
+ localStorage.removeItem(GP_SESSION_KEY);
+ localStorage.removeItem(SAVE_KEY);localStorage.removeItem("goldenPullsV2");localStorage.removeItem("goldenPullsV1");
+ location.reload();
+}
+function gpInitAuth(){
+ const user=gpCurrentUser(),accounts=gpAccounts(),btn=$("#gpAccountBtn");
+ if(user&&accounts[user]){
+  if(btn)btn.textContent=user.toUpperCase();
+  gpHideAuth();return;
+ }
+ if(user&&!accounts[user])localStorage.removeItem(GP_SESSION_KEY);
+ if(btn)btn.textContent="ACCOUNT";
+ const hasAccounts=Object.keys(accounts).length>0;
+ gpAuthTab(hasAccounts?"login":"create");
+ const note=$("#gpProgressImportNote");if(note)note.classList.toggle("show",!hasAccounts&&gpHasMeaningfulProgress());
+ gpShowAuth();
+}
+document.addEventListener("DOMContentLoaded",gpInitAuth,{once:true});
+
+function save(){
+ const payload=JSON.stringify(state);
+ gpPersistPayload(payload);
  render();
 }
 function cleanTeam(){
@@ -1439,9 +1591,7 @@ function renderRecords(){
 
 function persistStateNoRender(){
  const payload=JSON.stringify(state);
- localStorage.setItem(SAVE_KEY,payload);
- localStorage.setItem("goldenPullsV2",payload);
- localStorage.setItem("goldenPullsV1",payload);
+ gpPersistPayload(payload);
 }
 function checkSecretCollectionReward(){
  let changed=false,showReward=false;
@@ -2987,7 +3137,7 @@ function maybeShowWhatsNew(){
    setTimeout(show,350);
  }
 }
-const APP_INTERNAL_VERSION=11.06;
+const APP_INTERNAL_VERSION=11.07;
 const APP_DISPLAY_VERSION="11";
 let updateReloading=false;
 
@@ -3796,7 +3946,7 @@ function bjRank(){let p=bjData().rankPoints;return p>=100?"DIAMOND":p>=60?"PLATI
 function bjRenderHub(){let d=bjData(),r=bjRank();$("#bjRankLabel").textContent=r;$("#bjRankBig").textContent=r;$("#bjRankProgress").textContent=`${d.rankPoints} ranked points · +3 win · +1 push`;$("#bjStats").innerHTML=`<div class="bj-stat"><b>${d.wins}</b>WINS</div><div class="bj-stat"><b>${d.losses}</b>LOSSES</div><div class="bj-stat"><b>${d.pushes}</b>PUSHES</div><div class="bj-stat"><b>${d.blackjacks}</b>BLACKJACKS</div>`;let a=[["classic","Classic Red",0],["midnight","Midnight",5000],["gold","Gold",12000]];$("#bjBackCollection").innerHTML=a.filter(x=>d.ownedBacks.includes(x[0])).map(x=>`<div class="bj-back ${d.equippedBack===x[0]?"on":""}" data-back="${x[0]}" onclick="bjEquipBack('${x[0]}')"><div class="bj-back-art"></div><b>${x[1]}</b></div>`).join("");$("#bjShopBacks").innerHTML=a.map(x=>`<div class="bj-back" data-back="${x[0]}"><div class="bj-back-art"></div><b>${x[1]}</b><div class="bj-small">${d.ownedBacks.includes(x[0])?"OWNED":x[2].toLocaleString()+" coins"}</div>${d.ownedBacks.includes(x[0])?"":`<button class="bj-btn" onclick="bjBuyBack('${x[0]}',${x[2]})">BUY</button>`}</div>`).join("");$("#bjSpecialCollection").innerHTML=d.specialCards.length?d.specialCards.join("<br>"):"<p class='bj-small'>No special card faces unlocked yet.</p>"}
 function bjEquipBack(id){let d=bjData();if(d.ownedBacks.includes(id)){d.equippedBack=id;save();bjRenderHub()}}function bjBuyBack(id,c){let d=bjData();if(state.coins<c)return toast("Not enough coins");state.coins-=c;d.ownedBacks.push(id);save();render();bjRenderHub()}
 function bjSetBet(n){BJ.bet=n;$("#bjBetLabel").textContent=n.toLocaleString()}function bjFreshDeck(){let d=[];for(let s of BJ_SUITS)for(let r of BJ_RANKS)d.push({s,r});for(let i=d.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]]}return d}
-function bjPersist(){try{const payload=JSON.stringify(state);localStorage.setItem(SAVE_KEY,payload);localStorage.setItem("goldenPullsV2",payload);localStorage.setItem("goldenPullsV1",payload)}catch(e){console.error("Blackjack save failed",e)}}
+function bjPersist(){try{const payload=JSON.stringify(state);gpPersistPayload(payload)}catch(e){console.error("Blackjack save failed",e)}}
 function bjSyncCoins(){const n=Number(state.coins)||0;state.coins=n;const w=$("#coins");if(w)w.textContent=fmt(n);const g=$("#bjGameCoins");if(g)g.textContent=n.toLocaleString()}
 function bjValue(a){let n=0,z=0;for(let c of a){if(c.r==="A"){n+=11;z++}else if(["J","Q","K"].includes(c.r))n+=10;else n+=+c.r}while(n>21&&z){n-=10;z--}return n}function bjIsBlackjack(a){return a.length===2&&bjValue(a)===21}function bjDraw(){return BJ.deck.pop()}
 async function bjStart(){
