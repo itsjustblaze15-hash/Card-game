@@ -759,3 +759,10 @@ V11.07 USERNAME + PASSWORD ACCOUNTS
 - Each local username gets its own independent Golden Pulls save slot.
 - Logout clears the active legacy save slots after safely storing the account save.
 - This build is local-account capable; cross-device cloud sync still requires Supabase project credentials.
+
+
+V11.11 FEATURE HUB + FUS 73
+- Added 20 new FUS players using the exact uploaded photos, bringing FUS to 73 cards.
+- Cristiano Ronaldo added as 89 OVR PURPLE.
+- Added Daily Missions, Season Pass, Limited Event, Golden Cup Tournament, Profile, Achievements, Card Evolution visuals, and a separate 24-hour Daily Rare Pack.
+- Existing saves and account slots are preserved with additive state migration only.
