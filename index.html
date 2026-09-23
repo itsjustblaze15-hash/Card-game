@@ -4128,10 +4128,10 @@ function bjLeaveGame(){if(BJ.playing){state.coins+=BJ.bet;bjPersist();bjSyncCoin
 <style>
 #gpAdOverlay{position:fixed;inset:0;z-index:2147483000;background:#000;display:none;align-items:center;justify-content:center}.gp-ad-wrap{position:relative;width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center}#gpAdVideo{width:100%;height:100%;object-fit:contain;background:#000}.gp-ad-skip{position:absolute;right:18px;top:max(18px,env(safe-area-inset-top));border:1px solid rgba(255,255,255,.45);background:rgba(0,0,0,.68);color:#fff;border-radius:10px;padding:11px 15px;font:800 14px/1 system-ui;z-index:2}.gp-ad-skip:disabled{opacity:.65}
 </style>
-<div id="gpAdOverlay" aria-hidden="true"><div class="gp-ad-wrap"><video id="gpAdVideo" playsinline preload="metadata"><source src="assets/gp_ad_01.mp4" type="video/mp4"></video><button id="gpAdSkip" class="gp-ad-skip" disabled>SKIP IN 5</button></div></div>
+<div id="gpAdOverlay" aria-hidden="true"><div class="gp-ad-wrap"><video id="gpAdVideo" playsinline preload="metadata"><source src="ads/custom_ad_01.mp4" type="video/mp4"></video><button id="gpAdSkip" class="gp-ad-skip" disabled>SKIP IN 5</button></div></div>
 <script>
 (()=>{
- const FIRST_MIN=5*60*1000, MIN_GAP=5*60*1000, MAX_GAP=10*60*1000;
+ const FIRST_MIN=5000, MIN_GAP=5*60*1000, MAX_GAP=10*60*1000;
  const overlay=document.getElementById('gpAdOverlay'), video=document.getElementById('gpAdVideo'), skip=document.getElementById('gpAdSkip');
  let showing=false, timer=null, unlockTimer=null, lastInteraction=Date.now();
  const rndGap=()=>MIN_GAP+Math.random()*(MAX_GAP-MIN_GAP);
@@ -4156,8 +4156,9 @@ function bjLeaveGame(){if(BJ.playing){state.coins+=BJ.bet;bjPersist();bjSyncCoin
  function closeAd(){if(!showing)return;showing=false;clearInterval(unlockTimer);video.pause();overlay.style.display='none';overlay.setAttribute('aria-hidden','true');schedule()}
  skip.addEventListener('click',()=>{if(!skip.disabled)closeAd()});
  video.addEventListener('ended',closeAd);
+ video.addEventListener('error',()=>{closeAd()});
  // Never show on startup. First possible ad is after at least five minutes.
- schedule(FIRST_MIN+Math.random()*MIN_GAP);
+ schedule(FIRST_MIN);
 })();
 </script>
 
