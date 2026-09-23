@@ -4133,31 +4133,38 @@ function bjLeaveGame(){if(BJ.playing){state.coins+=BJ.bet;bjPersist();bjSyncCoin
 (()=>{
  const FIRST_MIN=5000, MIN_GAP=5*60*1000, MAX_GAP=10*60*1000;
  const overlay=document.getElementById('gpAdOverlay'), video=document.getElementById('gpAdVideo'), skip=document.getElementById('gpAdSkip');
- let showing=false, timer=null, unlockTimer=null, lastInteraction=Date.now();
+ let showing=false, timer=null, unlockTimer=null, lastInteraction=Date.now(), firstAdPending=true;
  const rndGap=()=>MIN_GAP+Math.random()*(MAX_GAP-MIN_GAP);
  ['pointerdown','keydown','touchstart'].forEach(e=>document.addEventListener(e,()=>{lastInteraction=Date.now()},{passive:true}));
- function blocked(){
+ function blocked(ignoreRecentInteraction=false){
    if(document.hidden||showing) return true;
    // Never interrupt pack openings, games, results, dialogs, or other full-screen gameplay overlays.
    const selectors=['#fusPackModal','.pack-modal','#packModal','#battleScreen','#battleGame','#blackjackScreen','#bjScreen','#goldenArenaScreen','.modal.show','.modal.active','dialog[open]'];
    for(const sel of selectors){for(const el of document.querySelectorAll(sel)){const st=getComputedStyle(el);if(st.display!=='none'&&st.visibility!=='hidden'&&st.opacity!=='0')return true;}}
    const bodyText=(document.body.className||'')+' '+(document.body.id||'');
    if(/battle-playing|pack-opening|blackjack-playing|arena-playing/i.test(bodyText))return true;
-   return Date.now()-lastInteraction<12000; // don't pop immediately after a click/action
+   return !ignoreRecentInteraction && Date.now()-lastInteraction<12000;
  }
  function schedule(ms=rndGap()){clearTimeout(timer);timer=setTimeout(tryShow,ms)}
- function tryShow(){if(blocked()){schedule(30000+Math.random()*60000);return;}showAd()}
+ function tryShow(){
+   const isFirst=firstAdPending;
+   if(blocked(isFirst)){schedule(isFirst?1000:30000+Math.random()*60000);return;}
+   firstAdPending=false;
+   showAd();
+ }
  function showAd(){
    showing=true;overlay.style.display='flex';overlay.setAttribute('aria-hidden','false');skip.disabled=true;
    let n=5;skip.textContent='SKIP IN '+n;
    clearInterval(unlockTimer);unlockTimer=setInterval(()=>{n--;if(n<=0){clearInterval(unlockTimer);skip.disabled=false;skip.textContent='SKIP AD'}else skip.textContent='SKIP IN '+n},1000);
-   video.currentTime=0;video.play().catch(()=>{});
+   video.currentTime=0;video.load();
+   const playPromise=video.play();
+   if(playPromise&&typeof playPromise.catch==='function')playPromise.catch(()=>{});
  }
  function closeAd(){if(!showing)return;showing=false;clearInterval(unlockTimer);video.pause();overlay.style.display='none';overlay.setAttribute('aria-hidden','true');schedule()}
  skip.addEventListener('click',()=>{if(!skip.disabled)closeAd()});
  video.addEventListener('ended',closeAd);
  video.addEventListener('error',()=>{closeAd()});
- // Never show on startup. First possible ad is after at least five minutes.
+ // TEST MODE: first ad attempts to appear 5 seconds after startup. Later ads return to the normal random 5–10 minute gap.
  schedule(FIRST_MIN);
 })();
 </script>
