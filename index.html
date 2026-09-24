@@ -973,6 +973,10 @@ html,body{background-color:#061a35}
 
 /* V11.11 FEATURE HUB */
 .feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.feature-card{background:#fff8db;border:2px solid #4f3a00;border-radius:18px;padding:16px;box-shadow:0 8px 0 #6d5200}.feature-card h2,.feature-card h3{margin:0 0 8px}.feature-card .sub{font-size:12px;font-weight:800;opacity:.75}.feature-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #d9c77c}.feature-row:first-of-type{border-top:0}.feature-progress{height:10px;background:#d8ca96;border:1px solid #6d5200;border-radius:999px;overflow:hidden;margin:7px 0}.feature-progress>span{display:block;height:100%;background:#f2c536}.feature-btn{border:2px solid #241900;border-radius:12px;background:#f2c536;color:#241900;font-weight:1000;padding:9px 12px}.feature-btn:disabled{opacity:.45}.season-track{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:10px}.season-tier{padding:10px 6px;border:1px solid #6d5200;border-radius:12px;text-align:center;background:#fff3bd;font-size:11px;font-weight:900}.season-tier.claimed{background:#d7f7d4}.season-tier.ready{outline:3px solid #f2c536}.profile-card{grid-column:1/-1}.profile-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.profile-stat{background:#fff3bd;border:1px solid #7f681e;border-radius:12px;padding:10px;text-align:center}.profile-stat b{display:block;font-size:21px}.event-banner{background:linear-gradient(135deg,#1f1a48,#4b2d8f);color:#fff;border-color:#d6b6ff;box-shadow:0 8px 0 #1a1038}.event-banner .feature-row{border-color:#ffffff2b}.event-banner .feature-progress{background:#ffffff2b;border-color:#d6b6ff}.event-banner .feature-progress>span{background:#b780ff}.tournament-bracket{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.tournament-round{border:1px solid #7f681e;border-radius:12px;padding:10px;text-align:center;background:#fff3bd}.evo-badge{position:absolute;left:7px;top:7px;z-index:3;background:#00b894;color:white;border:2px solid white;padding:4px 7px;border-radius:999px;font-size:9px;font-weight:1000}.card.evolved{box-shadow:0 0 0 3px #00b894,0 10px 24px #00b89444}.feature-kicker{font-size:11px;font-weight:1000;letter-spacing:.08em;color:#7a5b00}.achievement-list{display:grid;gap:8px}.achievement-item{border:1px solid #7f681e;background:#fff3bd;border-radius:12px;padding:10px;display:flex;align-items:center;justify-content:space-between;gap:10px}.achievement-item.done{background:#d7f7d4}@media(max-width:760px){.feature-grid{grid-template-columns:1fr}.profile-card{grid-column:auto}.profile-stats{grid-template-columns:repeat(2,1fr)}.season-track{grid-template-columns:repeat(2,1fr)}}
+/* V11 Premium */
+.gp-plan-status{font-size:8px;font-weight:1000;letter-spacing:.09em;margin-top:1px;color:#6d5a1c}.gp-plan-status.premium{color:#9a6900;text-shadow:0 1px #fff3a4}
+.premium-card{background:linear-gradient(145deg,#fff8d2,#f7ce47);border-color:#7b5600;box-shadow:0 8px 0 #7b5600}.premium-benefits{display:grid;gap:7px;margin:12px 0;font-size:12px;font-weight:900}.premium-code{display:flex;gap:8px;margin-top:10px}.premium-code input{min-width:0;flex:1;border:2px solid #6d5200;border-radius:11px;padding:10px 12px;font:900 14px system-ui;background:#fffdf2;color:#241900}.premium-code button{white-space:nowrap}
+.gp-premium-unlock{position:fixed;inset:0;z-index:2147483200;display:none;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(circle at 50% 50%,#fff6a6 0,#e8ad13 18%,#5b3700 55%,#050300 100%);color:white}.gp-premium-unlock.show{display:flex;animation:gpPremBg .7s ease both}.gp-premium-rays{position:absolute;width:150vmax;height:150vmax;background:repeating-conic-gradient(from 0deg,#ffe978 0 5deg,transparent 5deg 15deg);opacity:.22;animation:gpPremSpin 10s linear infinite}.gp-premium-burst{position:absolute;width:240px;height:240px;border-radius:50%;background:#fff7a0;filter:blur(35px);opacity:.7;animation:gpPremPulse 1s ease-in-out infinite alternate}.gp-premium-content{position:relative;z-index:2;text-align:center;padding:25px;animation:gpPremPop .8s cubic-bezier(.16,.9,.22,1.25) both}.gp-premium-star{font-size:74px;filter:drop-shadow(0 7px 16px #0008);animation:gpPremStar .9s ease both}.gp-premium-content h1{font-size:clamp(34px,8vw,72px);margin:5px 0;color:#fff6a5;text-shadow:0 5px 0 #7b4b00,0 12px 28px #000}.gp-premium-content p{font-size:18px;font-weight:1000;margin:7px}.gp-premium-reward{font-size:28px!important;color:#fff6a5}.gp-premium-continue{margin-top:18px;border:2px solid white;border-radius:13px;background:#ffe36d;color:#241900;padding:12px 24px;font-weight:1000;font-size:16px;opacity:0;pointer-events:none;transition:.3s}.gp-premium-continue.ready{opacity:1;pointer-events:auto}@keyframes gpPremSpin{to{transform:rotate(360deg)}}@keyframes gpPremPulse{to{transform:scale(1.6);opacity:.35}}@keyframes gpPremPop{0%{transform:scale(.3);opacity:0}65%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}@keyframes gpPremStar{0%{transform:translateY(-100px) rotate(-30deg) scale(.2);opacity:0}100%{transform:none;opacity:1}}@keyframes gpPremBg{from{opacity:0}to{opacity:1}}
 </style>
 
 <link rel="preload" as="image" href="./assets/Random.jpg">
@@ -1003,11 +1007,14 @@ html,body{background-color:#061a35}
  </div>
 </div>
 
+<div id="gpPremiumUnlock" class="gp-premium-unlock" aria-hidden="true"><div class="gp-premium-rays"></div><div class="gp-premium-burst"></div><div class="gp-premium-content"><div class="gp-premium-star">★</div><h1>PREMIUM UNLOCKED</h1><p>Welcome to Golden Pulls Premium</p><p class="gp-premium-reward">● +50,000 COINS</p><button id="gpPremiumContinue" class="gp-premium-continue" onclick="gpClosePremiumUnlock()">CONTINUE</button></div></div>
+
 <div class="app">
 <div class="top">
   <div class="gp-brand-stack">
     <div class="brand">GOLDEN PULLS <span class="vbadge">V11</span></div>
     <button id="gpAccountBtn" class="gp-account-btn" type="button" onclick="gpLogoutPrompt()" title="Account">ACCOUNT</button>
+    <div id="gpPlanStatus" class="gp-plan-status">FREE</div>
   </div>
   <button id="updateBtn" class="update" onclick="checkForUpdate()">UPDATE</button>
   <div class="wallet">● <span id="coins">0</span></div>
@@ -2807,6 +2814,27 @@ async function startRomaniaBoss(){
 
 /* V11.11 Feature Hub logic */
 function gpDateKey(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
+const GP_PREMIUM_PRICE=500000, GP_PREMIUM_MONTHLY=50000, GP_PREMIUM_MONTH_MS=30*24*60*60*1000;
+function gpPremium(){
+ const p=state.premium||(state.premium={active:false,purchasedAt:0,nextMonthlyAt:0,dailyPackAt:0});
+ if(!Number.isFinite(Number(p.nextMonthlyAt)))p.nextMonthlyAt=0;if(!Number.isFinite(Number(p.dailyPackAt)))p.dailyPackAt=0;return p;
+}
+function gpIsPremium(){return !!gpPremium().active}
+function gpUpdatePlanStatus(){const isPrem=gpIsPremium();const el=document.getElementById('gpPlanStatus');if(el){el.textContent=isPrem?'★ PREMIUM':'FREE';el.classList.toggle('premium',isPrem)}document.body.classList.toggle('gp-premium-theme',isPrem)}
+function gpBuyPremium(){
+ const p=gpPremium();if(p.active){toast('Premium is already active');return}
+ if((state.coins||0)<GP_PREMIUM_PRICE){toast('You need 500,000 coins');return}
+ state.coins-=GP_PREMIUM_PRICE;state.coins+=50000;p.active=true;p.purchasedAt=Date.now();p.nextMonthlyAt=Date.now()+GP_PREMIUM_MONTH_MS;p.dailyPackAt=0;save();gpUpdatePlanStatus();gpShowPremiumUnlock();render();
+}
+function gpShowPremiumUnlock(){const o=document.getElementById('gpPremiumUnlock'),b=document.getElementById('gpPremiumContinue');if(!o)return;o.classList.add('show');o.setAttribute('aria-hidden','false');if(b){b.classList.remove('ready');setTimeout(()=>b.classList.add('ready'),2300)}}
+function gpClosePremiumUnlock(){const o=document.getElementById('gpPremiumUnlock');if(o){o.classList.remove('show');o.setAttribute('aria-hidden','true')}gpRenderFeatures()}
+function gpClaimPremiumDailyPack(){const p=gpPremium();if(!p.active)return toast('Premium required');if(Date.now()<p.dailyPackAt)return toast('Premium Pack is not ready yet');p.dailyPackAt=Date.now()+24*60*60*1000;save();openPack('Epic','reward')}
+function gpClaimPremiumMonthly(){const p=gpPremium();if(!p.active)return toast('Premium required');if(Date.now()<p.nextMonthlyAt)return toast('Monthly reward is not ready yet');state.coins+=GP_PREMIUM_MONTHLY;p.nextMonthlyAt=Date.now()+GP_PREMIUM_MONTH_MS;save();render();toast('Premium monthly reward · +50,000 coins')}
+function gpRedeemCode(){const input=document.getElementById('gpRedeemCode'),code=(input?.value||'').trim();state.redeemedCodes=state.redeemedCodes||{};if(!code)return toast('Enter a code');if(state.redeemedCodes[code])return toast('That code was already redeemed');if(code==='8214'){state.redeemedCodes[code]=Date.now();state.coins=(state.coins||0)+1000000000;save();if(input)input.value='';render();toast('CODE REDEEMED · +1,000,000,000 coins');return}toast('Invalid code')}
+function gpPremiumMission(){const f=gpFeature();f.premiumDaily=f.premiumDaily||{key:'',claimed:false};if(f.premiumDaily.key!==gpDateKey())f.premiumDaily={key:gpDateKey(),claimed:false};return f.premiumDaily}
+function gpClaimPremiumMission(){if(!gpIsPremium())return toast('Premium required');const f=gpFeature(),m=gpPremiumMission();if(m.claimed)return;const p=Number(f.daily.packs||0);if(p<3)return toast('Open 3 packs first');m.claimed=true;state.coins+=10000;f.season.xp+=50;save();render();toast('Premium mission · +10,000 coins · +50 XP')}
+function gpPremiumTime(ms){if(ms<=0)return 'READY';const d=Math.floor(ms/86400000),h=Math.floor((ms%86400000)/3600000);return d>0?`${d}d ${h}h`:`${h}h`}
+
 function gpFeature(){
  const f=state.featureHub||(state.featureHub={});
  f.stats=f.stats||{packs:0,wins:0,sells:0,fusPacks:0,fusCards:0};
@@ -2874,7 +2902,7 @@ function gpAchievementDefs(){
 function gpClaimAchievement(id){const f=gpFeature(),a=gpAchievementDefs().find(x=>x.id===id);if(!a||f.achievements[id])return;if(!a.done){toast("Achievement is still locked");return}f.achievements[id]=true;state.coins+=a.reward;f.season.xp+=25;save();toast(`${a.name} claimed · +${fmt(a.reward)} coins`)}
 function gpProfileTitle(){const f=gpFeature();if((f.tournament.titles||0)>=3)return "CUP LEGEND";if((state.battleWins||0)>=100)return "BATTLE MASTER";if(FUS_CARDS.filter(c=>(fusData().owned[c.id]||0)>0).length>=50)return "FUS COLLECTOR";return "COLLECTOR"}
 function gpRenderFeatures(){
- const root=$("#featureHubContent");if(!root)return;const f=gpFeature();
+ gpUpdatePlanStatus();const root=$("#featureHubContent");if(!root)return;const f=gpFeature();
  const user=(typeof gpCurrentUser==="function"?gpCurrentUser():"")||"PLAYER";
  const mainUnique=CARDS.filter(c=>(state.owned[c.id]||0)>0).length,fusUnique=FUS_CARDS.filter(c=>(fusData().owned[c.id]||0)>0).length;
  const ach=gpAchievementDefs(),achCount=ach.filter(a=>f.achievements[a.id]).length;
@@ -2882,9 +2910,11 @@ function gpRenderFeatures(){
  const seasonXP=Number(f.season.xp||0),seasonLevel=Math.min(10,Math.floor(seasonXP/100));
  const dailyReady=Date.now()>=f.dailyPackAt;
  const eventLeft=Math.max(0,(f.event.startedAt+7*24*60*60*1000)-Date.now());const eventDays=Math.ceil(eventLeft/86400000);
- const t=f.tournament;
+ const t=f.tournament,prem=gpPremium(),premDailyReady=Date.now()>=prem.dailyPackAt,premMonthlyReady=Date.now()>=prem.nextMonthlyAt;
  root.innerHTML=`<div class="feature-grid">
   <section class="feature-card profile-card"><div class="feature-kicker">PROFILE</div><h2>${user.toUpperCase()} · ${gpProfileTitle()}</h2><div class="profile-stats"><div class="profile-stat"><b>${level}</b><span>LEVEL</span></div><div class="profile-stat"><b>${fmt(state.coins||0)}</b><span>COINS</span></div><div class="profile-stat"><b>${mainUnique}/${CARDS.length}</b><span>GP CARDS</span></div><div class="profile-stat"><b>${fusUnique}/${FUS_CARDS.length}</b><span>FUS CARDS</span></div></div></section>
+  <section class="feature-card premium-card"><div class="feature-kicker">★ GOLDEN PULLS PREMIUM</div><h2>${prem.active?'PREMIUM ACTIVE':'Upgrade to Premium'}</h2><div class="premium-benefits"><div>✓ No random video ads</div><div>✓ ★ PREMIUM account badge</div><div>✓ Daily Premium Epic Pack</div><div>✓ Extra Premium Daily Mission</div><div>✓ 50,000 coins every 30 days</div></div>${!prem.active?`<p class="sub">One-time price: ● 500,000 · Get ● 50,000 instantly when you join.</p><button class="feature-btn" onclick="gpBuyPremium()">BUY PREMIUM · 500K</button>`:`<div class="feature-row"><div><b>Daily Premium Pack</b><div class="sub">${premDailyReady?'Ready now':'Next pack in '+gpPremiumTime(prem.dailyPackAt-Date.now())}</div></div><button class="feature-btn" onclick="gpClaimPremiumDailyPack()" ${premDailyReady?'':'disabled'}>${premDailyReady?'OPEN':'LOCKED'}</button></div><div class="feature-row"><div><b>Monthly 50K</b><div class="sub">${premMonthlyReady?'Ready now':'Next reward in '+gpPremiumTime(prem.nextMonthlyAt-Date.now())}</div></div><button class="feature-btn" onclick="gpClaimPremiumMonthly()" ${premMonthlyReady?'':'disabled'}>${premMonthlyReady?'CLAIM 50K':'LOCKED'}</button></div><div class="feature-row"><div><b>Premium Mission</b><div class="sub">Open 3 packs today · ${Math.min(3,Number(f.daily.packs||0))}/3 · +10K · +50 XP</div></div><button class="feature-btn" onclick="gpClaimPremiumMission()" ${gpPremiumMission().claimed||Number(f.daily.packs||0)<3?'disabled':''}>${gpPremiumMission().claimed?'CLAIMED':'CLAIM'}</button></div>`}</section>
+  <section class="feature-card"><div class="feature-kicker">REDEEM CODE</div><h2>Enter a Code</h2><p class="sub">Redeem special Golden Pulls codes on this account.</p><div class="premium-code"><input id="gpRedeemCode" inputmode="numeric" autocomplete="off" placeholder="CODE"><button class="feature-btn" onclick="gpRedeemCode()">REDEEM</button></div></section>
   <section class="feature-card"><div class="feature-kicker">DAILY MISSIONS</div><h2>Today's Missions</h2>${GP_DAILY_MISSIONS.map(m=>{const p=Math.min(m.target,Number(f.daily[m.id]||0)),claimed=!!f.daily.claimed[m.id];return `<div class="feature-row"><div><b>${m.label}</b><div class="sub">${p}/${m.target} · +${fmt(m.reward)} coins · +${m.xp} XP</div><div class="feature-progress"><span style="width:${p/m.target*100}%"></span></div></div><button class="feature-btn" onclick="gpClaimDaily('${m.id}')" ${claimed||p<m.target?'disabled':''}>${claimed?'CLAIMED':'CLAIM'}</button></div>`}).join('')}</section>
   <section class="feature-card"><div class="feature-kicker">DAILY FREE PACK</div><h2>${dailyReady?'Rare Pack Ready':'Come Back Tomorrow'}</h2><p class="sub">A separate free Rare Pack every 24 hours.</p><button class="feature-btn" onclick="gpClaimDailyPack()" ${dailyReady?'':'disabled'}>${dailyReady?'OPEN FREE RARE PACK':'LOCKED'}</button></section>
   <section class="feature-card"><div class="feature-kicker">SEASON PASS</div><h2>Season Level ${seasonLevel} · ${seasonXP} XP</h2><div class="feature-progress"><span style="width:${Math.min(100,(seasonXP%100))}%"></span></div><div class="season-track">${GP_SEASON_REWARDS.map((r,i)=>{const lv=i+1,ready=seasonXP>=lv*100,claimed=!!f.season.claimed[lv];return `<div class="season-tier ${claimed?'claimed':ready?'ready':''}"><b>LV ${lv}</b><div>● ${fmt(r)}</div><button class="feature-btn" style="margin-top:6px;padding:5px 7px" onclick="gpClaimSeason(${lv})" ${!ready||claimed?'disabled':''}>${claimed?'✓':'CLAIM'}</button></div>`}).join('')}</div></section>
@@ -4128,43 +4158,51 @@ function bjLeaveGame(){if(BJ.playing){state.coins+=BJ.bet;bjPersist();bjSyncCoin
 <style>
 #gpAdOverlay{position:fixed;inset:0;z-index:2147483000;background:#000;display:none;align-items:center;justify-content:center}.gp-ad-wrap{position:relative;width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center}#gpAdVideo{width:100%;height:100%;object-fit:contain;background:#000}.gp-ad-skip{position:absolute;right:18px;top:max(18px,env(safe-area-inset-top));border:1px solid rgba(255,255,255,.45);background:rgba(0,0,0,.68);color:#fff;border-radius:10px;padding:11px 15px;font:800 14px/1 system-ui;z-index:2}.gp-ad-skip:disabled{opacity:.65}
 </style>
-<div id="gpAdOverlay" aria-hidden="true"><div class="gp-ad-wrap"><video id="gpAdVideo" playsinline preload="metadata"><source src="ads/custom_ad_01.mp4" type="video/mp4"></video><button id="gpAdSkip" class="gp-ad-skip" disabled>SKIP IN 5</button></div></div>
+<div id="gpAdOverlay" aria-hidden="true"><div class="gp-ad-wrap"><video id="gpAdVideo" playsinline webkit-playsinline preload="auto"></video><button id="gpAdSkip" class="gp-ad-skip" disabled>SKIP IN 5</button></div></div>
 <script>
 (()=>{
  const FIRST_MIN=5000, MIN_GAP=5*60*1000, MAX_GAP=10*60*1000;
+ const ADS=[
+  'ads/custom_ad_01.mp4','ads/custom_ad_02.mp4','ads/custom_ad_03.mp4','ads/custom_ad_04.mp4','ads/custom_ad_05.mp4',
+  'ads/custom_ad_06.mp4','ads/custom_ad_07.mp4','ads/custom_ad_08.mp4','ads/custom_ad_09.mp4','ads/custom_ad_10.mp4',
+  'ads/custom_ad_11.mp4','ads/custom_ad_12.mp4','ads/custom_ad_13.mp4','ads/custom_ad_14.mp4','ads/custom_ad_15.mp4'
+ ];
  const overlay=document.getElementById('gpAdOverlay'), video=document.getElementById('gpAdVideo'), skip=document.getElementById('gpAdSkip');
- let showing=false, timer=null, unlockTimer=null, lastInteraction=Date.now(), firstAdPending=true;
+ let showing=false,timer=null,unlockTimer=null,watchdog=null,lastInteraction=Date.now(),firstAdPending=true,lastAd=-1;
  const rndGap=()=>MIN_GAP+Math.random()*(MAX_GAP-MIN_GAP);
  ['pointerdown','keydown','touchstart'].forEach(e=>document.addEventListener(e,()=>{lastInteraction=Date.now()},{passive:true}));
  function blocked(ignoreRecentInteraction=false){
-   if(document.hidden||showing) return true;
-   // Never interrupt pack openings, games, results, dialogs, or other full-screen gameplay overlays.
-   const selectors=['#fusPackModal','.pack-modal','#packModal','#battleScreen','#battleGame','#blackjackScreen','#bjScreen','#goldenArenaScreen','.modal.show','.modal.active','dialog[open]'];
+   if(document.hidden||showing)return true;
+   const selectors=['#fusPackModal','.pack-modal','#packModal','.battle-modal.show','.result-screen.show','#gaGame.show','#gaMatchmaking.show','#gaBattleIntro.show','#gaResult.show','#bjGame.show','#blackjackScreen','#bjScreen','#goldenArenaScreen','.modal.show','.modal.active','dialog[open]','#gpAccountGate.show','#gpAccountGate'];
    for(const sel of selectors){for(const el of document.querySelectorAll(sel)){const st=getComputedStyle(el);if(st.display!=='none'&&st.visibility!=='hidden'&&st.opacity!=='0')return true;}}
    const bodyText=(document.body.className||'')+' '+(document.body.id||'');
    if(/battle-playing|pack-opening|blackjack-playing|arena-playing/i.test(bodyText))return true;
-   return !ignoreRecentInteraction && Date.now()-lastInteraction<12000;
+   return !ignoreRecentInteraction&&Date.now()-lastInteraction<12000;
  }
  function schedule(ms=rndGap()){clearTimeout(timer);timer=setTimeout(tryShow,ms)}
  function tryShow(){
+   if(typeof gpIsPremium==='function'&&gpIsPremium()){firstAdPending=false;schedule();return;}
    const isFirst=firstAdPending;
    if(blocked(isFirst)){schedule(isFirst?1000:30000+Math.random()*60000);return;}
-   firstAdPending=false;
-   showAd();
+   firstAdPending=false;showAd();
+ }
+ function chooseAd(){let i=Math.floor(Math.random()*ADS.length);if(ADS.length>1&&i===lastAd)i=(i+1+Math.floor(Math.random()*(ADS.length-1)))%ADS.length;lastAd=i;return ADS[i]}
+ function startSkipCountdown(){
+   if(unlockTimer)return;let n=5;skip.disabled=true;skip.textContent='SKIP IN '+n;
+   unlockTimer=setInterval(()=>{n--;if(n<=0){clearInterval(unlockTimer);unlockTimer=null;skip.disabled=false;skip.textContent='SKIP AD'}else skip.textContent='SKIP IN '+n},1000);
  }
  function showAd(){
-   showing=true;overlay.style.display='flex';overlay.setAttribute('aria-hidden','false');skip.disabled=true;
-   let n=5;skip.textContent='SKIP IN '+n;
-   clearInterval(unlockTimer);unlockTimer=setInterval(()=>{n--;if(n<=0){clearInterval(unlockTimer);skip.disabled=false;skip.textContent='SKIP AD'}else skip.textContent='SKIP IN '+n},1000);
-   video.currentTime=0;video.load();
-   const playPromise=video.play();
-   if(playPromise&&typeof playPromise.catch==='function')playPromise.catch(()=>{});
+   showing=true;overlay.style.display='flex';overlay.setAttribute('aria-hidden','false');skip.disabled=true;skip.textContent='SKIP IN 5';
+   clearInterval(unlockTimer);unlockTimer=null;clearTimeout(watchdog);
+   video.pause();video.muted=false;video.src=chooseAd();video.currentTime=0;video.load();
+   watchdog=setTimeout(()=>{if(showing&&video.paused)closeAd()},10000);
+   const p=video.play();
+   if(p&&typeof p.catch==='function')p.catch(()=>{video.muted=true;const p2=video.play();if(p2&&typeof p2.catch==='function')p2.catch(closeAd)});
  }
- function closeAd(){if(!showing)return;showing=false;clearInterval(unlockTimer);video.pause();overlay.style.display='none';overlay.setAttribute('aria-hidden','true');schedule()}
+ function closeAd(){if(!showing)return;showing=false;clearInterval(unlockTimer);unlockTimer=null;clearTimeout(watchdog);video.pause();video.removeAttribute('src');video.load();overlay.style.display='none';overlay.setAttribute('aria-hidden','true');schedule()}
+ video.addEventListener('playing',()=>{clearTimeout(watchdog);startSkipCountdown()});
  skip.addEventListener('click',()=>{if(!skip.disabled)closeAd()});
- video.addEventListener('ended',closeAd);
- video.addEventListener('error',()=>{closeAd()});
- // TEST MODE: first ad attempts to appear 5 seconds after startup. Later ads return to the normal random 5–10 minute gap.
+ video.addEventListener('ended',closeAd);video.addEventListener('error',closeAd);
  schedule(FIRST_MIN);
 })();
 </script>
